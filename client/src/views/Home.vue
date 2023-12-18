@@ -1,4 +1,5 @@
 <template>
+  <navbar></navbar>
   <main class="2xl:max-w-screen-2xl m-auto">
     <div class="grid grid-cols-2 justify-items-center items-center">
       <div>
@@ -9,11 +10,15 @@
           decydujesz, czym chcesz się podzielić!
         </p>
         <div>
+          <router-link :to="{ name: 'Chat' }">
+            <home-button
+              :url="'/chat'"
+              :text="'Zacznij anonimowo'"
+              class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
+            ></home-button>
+          </router-link>
           <home-button
-            :text="'Zacznij anonimowo'"
-            class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
-          ></home-button>
-          <home-button
+            :url="'#'"
             :text="'Załóż konto'"
             class="bg-secondary hover:bg-secondaryLight text-primaryDark"
             @click="modalStore.openModal('register')"
@@ -53,12 +58,17 @@
       </div>
     </div>
   </main>
+  <footer-el></footer-el>
 </template>
 
 <script setup>
+import Navbar from "@/components/navbar/Navbar.vue";
 import HomeButton from "@/components/buttons/HomeButton.vue";
 import Card from "@/components/home/Card.vue";
+import FooterEl from "@/components/footer/FooterEl.vue";
 import { useModalStore } from "@/stores/ModalStore";
+import { useRouter } from "vue-router";
 
 const modalStore = useModalStore();
+const router = useRouter();
 </script>
