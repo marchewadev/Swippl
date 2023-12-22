@@ -5,7 +5,7 @@
       v-if="modalStore.show && modalName === modalStore.selectedModal"
     >
       <div class="mb-8 relative">
-        <h3 class="text-lg text-center uppercase">{{ modalTitle }}</h3>
+        <h2 class="text-lg text-center uppercase">{{ modalTitle }}</h2>
         <button
           class="absolute left-full top-full -translate-x-full -translate-y-full transition-colors duration-300 hover:text-red-700"
           @click="modalStore.closeModal"

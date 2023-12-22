@@ -17,6 +17,15 @@ export default {
       fontSize: {
         "10xl": "12rem",
       },
+      screens: {
+        "3xl": "1700px",
+        "4xl": "1900px",
+        "5xl": "2200px",
+      },
+      minWidth: {
+        "1/2": "50%",
+        "4/5": "80%",
+      },
     },
   },
   plugins: [],

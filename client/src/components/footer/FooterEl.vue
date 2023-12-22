@@ -1,5 +1,7 @@
 <template>
-  <footer class="text-sm text-center text-gray-50 bg-primary p-6 mt-auto">
+  <footer
+    class="text-xs text-center text-gray-50 bg-primary px-20 py-3 mt-auto"
+  >
     <p>
       Aby móc korzystać ze Swippl musisz mieć ukończone 18 lat. Korzystanie ze
       strony oznacza zgodę na wykorzystanie plików cookie. Rozpoczęcie rozmowy
