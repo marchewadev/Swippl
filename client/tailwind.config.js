@@ -26,6 +26,11 @@ export default {
         "1/2": "50%",
         "4/5": "80%",
       },
+      gridTemplateRows: {
+        // Chat container layout
+        "chat-layout-xl": "70vh auto;",
+        "chat-layout-lg": "60vh auto",
+      },
     },
   },
   plugins: [],
