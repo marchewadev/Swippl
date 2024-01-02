@@ -14,7 +14,7 @@
       <img
         src="@/assets/avatar.png"
         alt="Stranger avatar"
-        class="stranger--avatar h-72 rounded-full"
+        class="stranger--avatar h-64 rounded-full"
       />
     </div>
     <div class="stranger--personal-info text-center">
@@ -27,19 +27,19 @@
         class="text-gray-50 bg-primary p-2 rounded-md transition-colors duration-300 hover:bg-primaryLight flex flex-col items-center"
       >
         <ion-icon name="person-add-outline" class="text-xl"></ion-icon>
-        <span class="text-sm">Dodaj do znajomych</span>
+        <span class="text-xs">Dodaj do znajomych</span>
       </button>
       <button
         class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
       >
         <ion-icon name="ban-outline" class="text-xl"></ion-icon>
-        <span class="text-sm">Zablokuj</span>
+        <span class="text-xs">Zablokuj</span>
       </button>
       <button
         class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
       >
         <ion-icon name="flag-outline" class="text-xl"></ion-icon>
-        <span class="text-sm">Zgłoś</span>
+        <span class="text-xs">Zgłoś</span>
       </button>
     </div>
   </div>

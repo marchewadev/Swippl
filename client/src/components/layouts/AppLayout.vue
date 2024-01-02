@@ -1,8 +1,8 @@
 <template>
-  <navbar></navbar>
+  <main-navbar></main-navbar>
   <main class="box flex-grow min-w-4/5 mx-auto my-14 rounded-md">
     <div
-      class="sidebar--profile bg-secondary p-4 rounded-tl-md shadow-md flex items-center gap-2"
+      class="sidebar--profile bg-secondary p-5 rounded-tl-md shadow-md flex items-center gap-2"
     >
       <div>
         <ion-icon name="people-outline" class="text-4xl"></ion-icon>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import Navbar from "../navbar/Navbar.vue";
+import MainNavbar from "../navbar/MainNavbar.vue";
 import StrangerProfile from "../chat/StrangerProfile.vue";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 
@@ -52,6 +52,7 @@ const strangerProfileStore = useStrangerProfileStore();
   grid-template-columns: 1fr 4fr;
   grid-template-rows: auto 1fr;
   box-shadow: 1px 3px 10px rgba(0, 0, 0, 0.2);
+  width: 80vw;
 }
 .sidebar--profile {
   grid-column: 1;

@@ -1,5 +1,5 @@
 <template>
-  <navbar></navbar>
+  <main-navbar></main-navbar>
   <main class="2xl:max-w-screen-2xl m-auto">
     <div class="grid grid-cols-2 justify-items-center items-center">
       <div>
@@ -62,13 +62,11 @@
 </template>
 
 <script setup>
-import Navbar from "@/components/navbar/Navbar.vue";
+import MainNavbar from "@/components/navbar/MainNavbar.vue";
 import HomeButton from "@/components/buttons/HomeButton.vue";
 import Card from "@/components/home/Card.vue";
 import FooterEl from "@/components/footer/FooterEl.vue";
 import { useModalStore } from "@/stores/ModalStore";
-import { useRouter } from "vue-router";
 
 const modalStore = useModalStore();
-const router = useRouter();
 </script>

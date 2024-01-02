@@ -21,14 +21,16 @@
       <div
         class="py-2 settings flex items-center gap-1 absolute left-full bottom-full -translate-x-full translate-y-full"
       >
-        <button class="settings--btn">
+        <router-link :to="{ name: 'Settings' }" class="settings--btn">
           <ion-icon
             name="settings-outline"
             class="settings--icon text-xl transition-transform duration-700"
           ></ion-icon>
-        </button>
+        </router-link>
 
-        <button class="transition-colors duration-300 hover:text-red-700">
+        <button
+          class="disconnect--btn transition-colors duration-300 hover:text-red-700"
+        >
           <ion-icon name="close-outline" class="text-2xl"></ion-icon>
         </button>
       </div>
@@ -36,7 +38,6 @@
     <template #boxContent>
       <div
         class="chat-container h-full grid 5xl:grid-rows-chat-layout-xl 4xl:grid-rows-chat-layout-lg"
-        ref="boxEl"
       >
         <div
           class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
