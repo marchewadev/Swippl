@@ -4,10 +4,15 @@
       <navbar-link
         v-for="setting in settingsStore.buttons"
         :key="setting.id"
-        :path="`/settings/${setting.path}`"
-        @click="isActive = setting.id"
+        :path="
+          setting.requiresAuth && !settingsStore.isLoggedIn
+            ? ''
+            : `/settings/${setting.path}`
+        "
         :class="{
           'group is-red': setting.isRed,
+          'opacity-50 pointer-events-none':
+            setting.requiresAuth && !settingsStore.isLoggedIn,
         }"
       >
         <template #icon>

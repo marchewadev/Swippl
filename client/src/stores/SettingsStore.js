@@ -9,6 +9,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "chat-settings",
         iconName: "chatbubbles-outline",
         isRed: false,
+        requiresAuth: false,
       },
       {
         id: 2,
@@ -16,6 +17,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "profile",
         iconName: "happy-outline",
         isRed: false,
+        requiresAuth: true,
       },
       {
         id: 3,
@@ -23,6 +25,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "email",
         iconName: "mail-outline",
         isRed: false,
+        requiresAuth: true,
       },
       {
         id: 4,
@@ -30,6 +33,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "password",
         iconName: "lock-closed-outline",
         isRed: false,
+        requiresAuth: true,
       },
       {
         id: 5,
@@ -37,6 +41,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "blocked-users",
         iconName: "ban-outline",
         isRed: false,
+        requiresAuth: true,
       },
       {
         id: 6,
@@ -44,8 +49,9 @@ export const useSettingsStore = defineStore("settingsStore", {
         path: "delete-account",
         iconName: "trash-outline",
         isRed: true,
+        requiresAuth: true,
       },
     ],
-    isLogged: true,
+    isLoggedIn: true,
   }),
 });

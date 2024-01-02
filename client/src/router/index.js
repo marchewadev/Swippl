@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useSettingsStore } from "@/stores/SettingsStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,22 @@ const router = createRouter({
       component: () => import("@/views/NotFound.vue"),
     },
   ],
+});
+
+router.beforeEach((to) => {
+  const settingsStore = useSettingsStore();
+
+  const authRequiredRoutes = [
+    "Profile",
+    "Email",
+    "Password",
+    "BlockedUsers",
+    "DeleteAccount",
+  ];
+
+  if (authRequiredRoutes.includes(to.name) && !settingsStore.isLoggedIn) {
+    return { name: "ChatSettings" };
+  }
 });
 
 export default router;
