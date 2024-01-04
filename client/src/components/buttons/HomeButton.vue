@@ -1,16 +1,23 @@
 <template>
-  <a
-    :href="url"
+  <router-link
+    :to="path"
     class="text-base p-4 rounded-md transition-all duration-300 inline-block hover:-translate-y-0.5"
     @click="handleClick"
-    >{{ text }}</a
   >
+    {{ text }}
+  </router-link>
 </template>
 
 <script setup>
 const props = defineProps({
-  text: String,
-  url: String,
+  text: {
+    type: String,
+    required: true,
+  },
+  path: {
+    type: String,
+    required: true,
+  },
 });
 
 const emit = defineEmits(["click"]);

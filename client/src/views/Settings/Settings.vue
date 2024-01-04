@@ -6,7 +6,9 @@
       </div>
     </template>
     <template #boxContent>
-      <router-view></router-view>
+      <div class="flex flex-col h-full justify-center items-center">
+        <router-view></router-view>
+      </div>
     </template>
   </app-layout>
 </template>

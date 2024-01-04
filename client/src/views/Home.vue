@@ -10,15 +10,13 @@
           decydujesz, czym chcesz się podzielić!
         </p>
         <div>
-          <router-link :to="{ name: 'Chat' }">
-            <home-button
-              :url="'/chat'"
-              :text="'Zacznij anonimowo'"
-              class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
-            ></home-button>
-          </router-link>
           <home-button
-            :url="'#'"
+            :path="'/chat'"
+            :text="'Zacznij anonimowo'"
+            class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
+          ></home-button>
+          <home-button
+            :path="''"
             :text="'Załóż konto'"
             class="bg-secondary hover:bg-secondaryLight text-primaryDark"
             @click="modalStore.openModal('register')"

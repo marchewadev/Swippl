@@ -86,10 +86,6 @@ const strangerProfileStore = useStrangerProfileStore();
   transform: rotate(360deg);
 }
 
-/* .chat-container {
-  grid-template-rows: 70vh auto;
-} */
-
 .messages-wrapper {
   scrollbar-width: thin;
 }
