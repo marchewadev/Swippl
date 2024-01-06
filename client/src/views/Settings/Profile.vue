@@ -4,7 +4,7 @@
       <div class="avatar-container relative">
         <img src="@/assets/avatar.png" alt="User's avatar" class="h-72" />
         <button
-          class="bg-gray-100/50 hover:text-red-700 p-2 rounded-md transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
+          class="bg-gray-100/50 hover:text-red-600 p-2 rounded-md transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
           type="button"
         >
           <ion-icon
@@ -17,7 +17,7 @@
         name="field"
         type="file"
         accept=".png, .jpg, .jpeg"
-        class="text-xs"
+        class="text-xs max-w-[15rem]"
       />
       <ErrorMessage name="field" as="p" />
     </div>
