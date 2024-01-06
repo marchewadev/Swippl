@@ -1,26 +1,35 @@
 <template>
-  <navbar></navbar>
+  <main-navbar></main-navbar>
   <main class="box flex-grow min-w-4/5 mx-auto my-14 rounded-md">
     <div
-      class="sidebar--profile bg-secondary p-4 rounded-tl-md shadow-md flex items-center gap-2"
+      class="sidebar--profile bg-secondary p-5 rounded-tl-md shadow-md flex items-center gap-2"
     >
       <div>
         <ion-icon name="people-outline" class="text-4xl"></ion-icon>
       </div>
       <h1 class="text-xl font-medium">Twoje czaty</h1>
     </div>
-    <div
-      class="sidebar--chats relative shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px]"
-    >
+
+    <div class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px]">
       <div
-        class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
+        class="sidebar--chats h-full relative"
+        v-if="!strangerProfileStore.show"
       >
-        <p class="text-sm text-center text-primaryDark">
-          Zaloguj się, aby mieć dostęp do tej zawartości
-        </p>
+        <div
+          class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
+        >
+          <p class="text-sm text-center text-primaryDark">
+            Zaloguj się, aby mieć dostęp do tej zawartości
+          </p>
+        </div>
       </div>
+      <stranger-profile
+        class="sidebar--stranger-profile"
+        v-else
+      ></stranger-profile>
     </div>
-    <div class="box--title p-4 shadow-md flex items-center gap-2 relative">
+
+    <div class="box--title p-4 shadow-md relative">
       <slot name="boxTitle"></slot>
     </div>
     <div class="box--content">
@@ -30,7 +39,11 @@
 </template>
 
 <script setup>
-import Navbar from "../navbar/Navbar.vue";
+import MainNavbar from "../navbar/MainNavbar.vue";
+import StrangerProfile from "../chat/StrangerProfile.vue";
+import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+
+const strangerProfileStore = useStrangerProfileStore();
 </script>
 
 <style scoped>
@@ -39,13 +52,14 @@ import Navbar from "../navbar/Navbar.vue";
   grid-template-columns: 1fr 4fr;
   grid-template-rows: auto 1fr;
   box-shadow: 1px 3px 10px rgba(0, 0, 0, 0.2);
+  width: 80vw;
 }
 .sidebar--profile {
   grid-column: 1;
   grid-row: 1;
 }
 
-.sidebar--chats {
+.sidebar--wrapper {
   grid-column: 1;
   grid-row: 2;
 }
