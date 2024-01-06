@@ -6,15 +6,26 @@
         name="email"
         type="email"
         :placeholder="'kowalski@example.com'"
+        :inputProps="{ minlength: 3, maxlength: 254 }"
       />
     </div>
     <div class="mb-4">
       <label for="" class="block mb-1">Hasło</label>
-      <InputText name="password" type="password" :placeholder="'********'" />
+      <InputText
+        name="password"
+        type="password"
+        :placeholder="'********'"
+        :inputProps="{ minlength: 8 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block mb-1">Potwierdź hasło</label>
-      <InputText name="password2" type="password" :placeholder="'********'" />
+      <InputText
+        name="password2"
+        type="password"
+        :placeholder="'********'"
+        :inputProps="{ minlength: 8 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block">Powód usunięcia konta</label>
@@ -44,14 +55,20 @@ import SelectField from "@/components/form/SelectField.vue";
 
 const { handleSubmit } = useForm({
   validationSchema: object({
-    email: string().required().email().trim(),
-    password: string().required(),
+    email: string()
+      .required("Adres e-mail jest wymagany")
+      .email("Niepoprawny adres e-mail")
+      .min(3, "Adres e-mail jest zbyt krótki")
+      .max(254, "Adres e-mail jest zbyt długi"),
+    password: string()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków"),
     password2: string()
-      .required()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków")
       .oneOf([ref("password")], "Hasła muszą być takie same"),
     reason: string()
-      .required()
-      .trim()
+      .required("Powód jest wymagany")
       .oneOf(["1", "2", "3"], "Niepoprawny powód"),
   }),
 });

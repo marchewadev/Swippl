@@ -14,24 +14,32 @@
         </button>
       </div>
       <Field
-        name="field"
+        name="avatar"
         type="file"
         accept=".png, .jpg, .jpeg"
         class="text-xs max-w-[15rem]"
       />
-      <ErrorMessage name="field" as="p" />
+      <ErrorMessage name="avatar" as="p" class="text-xs mt-1 text-red-600" />
     </div>
     <div class="mb-4">
       <label for="" class="block text-base mb-1">Jak się nazywasz?</label>
-      <InputText name="name" :placeholder="'Janek'" />
+      <InputText
+        name="name"
+        :placeholder="'Janek'"
+        :inputProps="{ minlength: 3, maxlength: 21 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block text-base mb-1">Miejscowość</label>
-      <InputText name="city" :placeholder="'Warszawa'" />
+      <InputText
+        name="city"
+        :placeholder="'Warszawa'"
+        :inputProps="{ maxlength: 31 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block text-base mb-1">Data urodzenia</label>
-      <InputText type="date" name="birthday" />
+      <InputText type="date" name="dateOfBirth" />
     </div>
     <FormButton
       :formId="'profileForm'"
@@ -50,30 +58,31 @@ import FormButton from "@/components/settings/FormButton.vue";
 
 const { handleSubmit } = useForm({
   validationSchema: object({
-    field: mixed()
+    avatar: mixed()
       .optional()
       .test("fileSelected", "", (value) => value !== undefined)
       .test(
-        "fileSize",
-        "Plik jest za duży",
-        (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
-      )
-      .test(
         "fileFormat",
-        "Nieobsługiwany format",
+        "* Nieobsługiwany format",
         (value) =>
           value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
+      )
+      .test(
+        "fileSize",
+        "* Plik jest za duży",
+        (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
       ),
     name: string()
       .required("Imię jest wymagane")
       .trim()
-      .min(1, "Imię musi składać się z minimum 1 znaku")
-      .max(25, "Imię może składać się z maksymalnie 25 znaków"),
+      .min(3, "Imię jest za krótkie")
+      .max(20, "Imię jest za długie"),
     city: string()
       .optional()
       .trim()
-      .max(30, "Miejscowość może składać się z maksymalnie 30 znaków"),
-    birthday: date()
+      .max(30, "Nazwa miejscowości jest zbyt długa"),
+    dateOfBirth: date()
+      .typeError("Data urodzenia musi być prawidłową datą")
       .required("Data urodzenia jest wymagana")
       .test(
         "is-18",

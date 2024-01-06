@@ -2,11 +2,21 @@
   <form @submit="onSubmit" id="passwordChangeForm">
     <div class="mb-4">
       <label for="" class="block mb-1">Stare hasło</label>
-      <InputText name="oldPassword" type="password" :placeholder="'********'" />
+      <InputText
+        name="oldPassword"
+        type="password"
+        :placeholder="'********'"
+        :inputProps="{ minlength: 8 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block mb-1">Nowe hasło</label>
-      <InputText name="newPassword" type="password" :placeholder="'********'" />
+      <InputText
+        name="newPassword"
+        type="password"
+        :placeholder="'********'"
+        :inputProps="{ minlength: 8 }"
+      />
     </div>
     <div class="mb-4">
       <label for="" class="block mb-1">Potwierdź nowe hasło</label>
@@ -14,6 +24,7 @@
         name="newPassword2"
         type="password"
         :placeholder="'********'"
+        :inputProps="{ minlength: 8 }"
       />
     </div>
     <FormButton
@@ -32,10 +43,15 @@ import FormButton from "@/components/settings/FormButton.vue";
 
 const { handleSubmit } = useForm({
   validationSchema: object({
-    oldPassword: string().required(),
-    newPassword: string().required(),
+    oldPassword: string()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków"),
+    newPassword: string()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków"),
     newPassword2: string()
-      .required()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków")
       .oneOf([ref("newPassword")], "Hasła muszą być takie same"),
   }),
 });
