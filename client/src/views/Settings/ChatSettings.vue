@@ -1,0 +1,103 @@
+<template>
+  <div class="settings-grid grid grid-cols-2 gap-x-16">
+    <form id="searchCriteriaForm" class="mb-10" @submit="onSubmit">
+      <div class="criteria--age mb-10">
+        <label for="" class="">Przedział wiekowy</label>
+        <range-slider
+          class="slider-blue mt-4 w-96"
+          :name="'ageRangeSearch'"
+          :initial-value="ageRangeValue"
+        ></range-slider>
+      </div>
+      <div class="criteria--gender">
+        <label for="" class="mr-2">Szukaj według płci</label>
+        <select-field name="genderSearch" :initial-value="'any'">
+          <template #values>
+            <option value="any">Dowolna</option>
+            <option value="woman">Kobieta</option>
+            <option value="male">Mężczyzna</option>
+          </template>
+        </select-field>
+      </div>
+    </form>
+    <form-button
+      :formId="'searchCriteriaForm'"
+      :buttonTitle="'Szukaj według kryteriów'"
+      class="search-by-criteria--btn"
+    ></form-button>
+    <button
+      class="search-random--btn text-base p-2 rounded-md bg-secondary text-primaryDark hover:bg-secondaryLight transition-colors duration-300"
+      type="button"
+    >
+      Szukaj dowolnie
+    </button>
+  </div>
+</template>
+
+<script setup>
+import { useRouter } from "vue-router";
+import { useForm } from "vee-validate";
+import { object, string, number, array } from "yup";
+import RangeSlider from "@/components/settings/RangeSlider.vue";
+import SelectField from "@/components/form/SelectField.vue";
+import FormButton from "@/components/settings/FormButton.vue";
+
+const router = useRouter();
+
+const ageRangeValue = [18, 100];
+const { handleSubmit } = useForm({
+  initialValues: {
+    ageRangeSearch: ageRangeValue,
+  },
+  validationSchema: object({
+    ageRangeSearch: array()
+      .of(
+        number()
+          .min(ageRangeValue[0], "Minimalny wiek szukania wynosi 18 lat")
+          .max(ageRangeValue[1], "Maksymalny wiek szukania wynosi 100 lat")
+      )
+      .required(),
+    genderSearch: string()
+      .oneOf(["any", "woman", "male"], "Niepoprawna płeć")
+      .trim()
+      .required(),
+  }),
+});
+
+const onSubmit = handleSubmit((values) => {
+  console.log(JSON.stringify(values));
+  // await router.push("/chat");
+});
+</script>
+
+<style scoped>
+.settings-grid {
+  grid-template-rows: 1fr auto;
+}
+
+form {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.search-by-criteria--btn {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.search-random--btn {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.slider-blue {
+  --slider-connect-bg: #ffc131;
+  --slider-tooltip-bg: #313d51;
+  --slider-handle-ring-color: #ffc131;
+  --slider-height: 4px;
+  --slider-handle-width: 12px;
+  --slider-handle-height: 12px;
+  --slider-handle-ring-width: 2px;
+  --slider-tooltip-font-size: 0.7rem;
+}
+</style>

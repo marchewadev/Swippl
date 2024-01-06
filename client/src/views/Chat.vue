@@ -1,32 +1,44 @@
 <template>
   <app-layout>
     <template #boxTitle>
-      <img
-        src="@/assets/avatar.png"
-        alt="Stranger avatar"
-        class="h-12 rounded-full"
-      />
-      <div class="stranger">
-        <h2 class="stranger--name text-lg mr-1 inline-block">Andrzej,</h2>
-        <p class="stranger--age text-lg inline-block">18</p>
+      <div class="stranger max-w-fit flex items-center gap-2">
+        <img
+          src="@/assets/avatar.png"
+          alt="Stranger avatar"
+          class="stranger--avatar h-12 rounded-full"
+        />
+        <div>
+          <h2 class="stranger--name text-lg mr-1 inline-block">Andrzej,</h2>
+          <p class="stranger--age text-lg inline-block">18</p>
+        </div>
+        <button class="flex" @click="strangerProfileStore.openProfile">
+          <ion-icon
+            name="information-outline"
+            class="text-base border border-primary rounded-full transition-colors duration-300 hover:bg-primary hover:text-gray-50"
+          ></ion-icon>
+        </button>
       </div>
       <div
         class="py-2 settings flex items-center gap-1 absolute left-full bottom-full -translate-x-full translate-y-full"
       >
-        <button class="settings--btn">
+        <router-link :to="{ name: 'Settings' }" class="settings--btn">
           <ion-icon
             name="settings-outline"
             class="settings--icon text-xl transition-transform duration-700"
           ></ion-icon>
-        </button>
+        </router-link>
 
-        <button class="transition-colors duration-300 hover:text-red-700">
+        <button
+          class="disconnect--btn transition-colors duration-300 hover:text-red-700"
+        >
           <ion-icon name="close-outline" class="text-2xl"></ion-icon>
         </button>
       </div>
     </template>
     <template #boxContent>
-      <div class="chat-container grid h-full" ref="boxEl">
+      <div
+        class="chat-container h-full grid 5xl:grid-rows-chat-layout-xl 4xl:grid-rows-chat-layout-lg"
+      >
         <div
           class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
         >
@@ -64,15 +76,14 @@
 <script setup>
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import Message from "@/components/chat/Message.vue";
+import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+
+const strangerProfileStore = useStrangerProfileStore();
 </script>
 
 <style scoped>
 .settings--btn:hover .settings--icon {
   transform: rotate(360deg);
-}
-
-.chat-container {
-  grid-template-rows: 70vh auto;
 }
 
 .messages-wrapper {
