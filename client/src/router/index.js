@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useSettingsStore } from "@/stores/SettingsStore";
+import { useUserStore } from "@/stores/UserStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,16 +63,13 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const settingsStore = useSettingsStore();
+  const userStore = useUserStore();
 
-  const authRequiredRoutes = [
-    "Profile",
-    "Email",
-    "Password",
-    "BlockedUsers",
-    "DeleteAccount",
-  ];
+  const authRequiredRoutes = settingsStore.buttons
+    .filter((button) => button.requiresAuth)
+    .map((button) => `/settings/${button.path}`);
 
-  if (authRequiredRoutes.includes(to.name) && !settingsStore.isLoggedIn) {
+  if (authRequiredRoutes.includes(to.path) && !userStore.isUserLoggedIn) {
     return { name: "ChatSettings" };
   }
 });

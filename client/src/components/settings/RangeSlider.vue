@@ -12,14 +12,25 @@
 </template>
 
 <script setup>
-import { defineEmits } from "vue";
+import { useFieldArray } from "vee-validate";
 import Slider from "@vueform/slider";
 
-const value = [18, 100];
-const emit = defineEmits(["handleAgeRange"]);
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  initialValue: {
+    type: Array,
+    required: true,
+  },
+});
+const value = props.initialValue;
 
-const handleChange = (value) => {
-  emit("handleAgeRange", value);
+const { update } = useFieldArray(() => props.name);
+
+const handleChange = (values) => {
+  values.forEach((value, index) => update(index, value));
 };
 </script>
 

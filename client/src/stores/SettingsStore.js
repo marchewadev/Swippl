@@ -52,6 +52,5 @@ export const useSettingsStore = defineStore("settingsStore", {
         requiresAuth: true,
       },
     ],
-    isLoggedIn: true,
   }),
 });

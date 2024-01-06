@@ -6,7 +6,8 @@
       </div>
     </template>
     <template #boxContent>
-      <div class="flex flex-col h-full justify-center items-center">
+      <!-- <div class="h-full flex flex-col justify-center items-center"> -->
+      <div class="h-full grid items-center justify-center">
         <router-view></router-view>
       </div>
     </template>

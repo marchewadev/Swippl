@@ -5,14 +5,14 @@
         v-for="setting in settingsStore.buttons"
         :key="setting.id"
         :path="
-          setting.requiresAuth && !settingsStore.isLoggedIn
+          setting.requiresAuth && !userStore.isUserLoggedIn
             ? ''
             : `/settings/${setting.path}`
         "
         :class="{
           'group is-red': setting.isRed,
           'opacity-50 pointer-events-none':
-            setting.requiresAuth && !settingsStore.isLoggedIn,
+            setting.requiresAuth && !userStore.isUserLoggedIn,
         }"
       >
         <template #icon>
@@ -26,7 +26,10 @@
 
 <script setup>
 import { useSettingsStore } from "@/stores/SettingsStore";
+import { useUserStore } from "@/stores/UserStore";
 import BaseNavbar from "./BaseNavbar.vue";
 import NavbarLink from "./NavbarLink.vue";
+
 const settingsStore = useSettingsStore();
+const userStore = useUserStore();
 </script>

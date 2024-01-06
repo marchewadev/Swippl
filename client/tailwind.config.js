@@ -31,6 +31,9 @@ export default {
         "chat-layout-xl": "70vh auto;",
         "chat-layout-lg": "60vh auto",
       },
+      inset: {
+        99: "99%",
+      },
     },
   },
   plugins: [],
