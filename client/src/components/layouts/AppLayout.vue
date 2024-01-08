@@ -17,6 +17,7 @@
       >
         <div
           class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
+          v-if="!userStore.isUserLoggedIn"
         >
           <p class="text-sm text-center text-primaryDark">
             Zaloguj się, aby mieć dostęp do tej zawartości
@@ -25,7 +26,7 @@
       </div>
       <stranger-profile
         class="sidebar--stranger-profile"
-        v-else
+        v-else-if="isChatRoute && strangerProfileStore.show"
       ></stranger-profile>
     </div>
 
@@ -39,11 +40,18 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { useUserStore } from "@/stores/UserStore";
 import MainNavbar from "../navbar/MainNavbar.vue";
 import StrangerProfile from "../chat/StrangerProfile.vue";
-import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+
+const route = useRoute();
+const isChatRoute = computed(() => route.name === "Chat");
 
 const strangerProfileStore = useStrangerProfileStore();
+const userStore = useUserStore();
 </script>
 
 <style scoped>

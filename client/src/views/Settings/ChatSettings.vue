@@ -10,7 +10,7 @@
         ></range-slider>
       </div>
       <div class="criteria--gender">
-        <label for="" class="mr-2">Szukaj według płci</label>
+        <label for="">Szukaj według płci</label>
         <select-field name="genderSearch" :initial-value="'any'">
           <template #values>
             <option value="any">Dowolna</option>
@@ -56,11 +56,11 @@ const { handleSubmit } = useForm({
           .min(ageRangeValue[0], "Minimalny wiek szukania wynosi 18 lat")
           .max(ageRangeValue[1], "Maksymalny wiek szukania wynosi 100 lat")
       )
-      .required(),
+      .required("Przedział wiekowy jest wymagany"),
     genderSearch: string()
       .oneOf(["any", "woman", "male"], "Niepoprawna płeć")
       .trim()
-      .required(),
+      .required("Płeć jest wymagana"),
   }),
 });
 

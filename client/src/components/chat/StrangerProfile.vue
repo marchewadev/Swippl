@@ -12,7 +12,7 @@
     </button>
     <div class="stranger--avatar-wrapper">
       <img
-        src="@/assets/avatar.png"
+        :src="strangerProfileStore.getAvatar"
         alt="Stranger avatar"
         class="stranger--avatar h-64 rounded-full"
       />

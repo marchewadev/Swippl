@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vee-validate/yup": "^4.12.4",
     "@vueform/slider": "^2.1.10",
+    "@vueuse/components": "^10.7.1",
+    "@vueuse/core": "^10.7.1",
     "dayjs": "^1.11.10",
     "pinia": "^2.1.7",
     "vee-validate": "^4.12.4",

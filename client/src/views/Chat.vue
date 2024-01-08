@@ -3,9 +3,10 @@
     <template #boxTitle>
       <div class="stranger max-w-fit flex items-center gap-2">
         <img
-          src="@/assets/avatar.png"
+          :src="strangerProfileStore.getAvatar"
           alt="Stranger avatar"
-          class="stranger--avatar h-12 rounded-full"
+          class="stranger--avatar h-12 rounded-full cursor-pointer"
+          @click="strangerProfileStore.openProfile"
         />
         <div>
           <h2 class="stranger--name text-lg mr-1 inline-block">Andrzej,</h2>

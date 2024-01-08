@@ -15,7 +15,7 @@ export const useSettingsStore = defineStore("settingsStore", {
         id: 2,
         title: "Profil",
         path: "profile",
-        iconName: "happy-outline",
+        iconName: "person-outline",
         isRed: false,
         requiresAuth: true,
       },

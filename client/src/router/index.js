@@ -72,6 +72,11 @@ router.beforeEach((to) => {
   if (authRequiredRoutes.includes(to.path) && !userStore.isUserLoggedIn) {
     return { name: "ChatSettings" };
   }
+
+  // If user is logged in and tries to go to Home, redirect to Settings
+  if (to.name === "Home" && userStore.isUserLoggedIn) {
+    return { name: "Settings" };
+  }
 });
 
 export default router;

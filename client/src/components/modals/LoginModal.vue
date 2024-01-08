@@ -35,6 +35,7 @@
           <a
             href="#"
             class="font-medium hover:underline hover:text-primaryDark"
+            @click="modalStore.openModal('register')"
           >
             Możesz je założyć tutaj!
           </a>
@@ -47,9 +48,12 @@
 <script setup>
 import { useForm } from "vee-validate";
 import { object, string } from "yup";
+import { useModalStore } from "@/stores/ModalStore";
 import InputText from "@/components/form/InputText.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
+
+const modalStore = useModalStore();
 
 const { handleSubmit } = useForm({
   validationSchema: object({

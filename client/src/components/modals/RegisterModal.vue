@@ -38,6 +38,19 @@
         ></input-text>
       </div>
       <div class="mb-4">
+        <label for="" class="block mb-1">Płeć</label>
+        <select-field
+          name="gender"
+          :initial-value="'woman'"
+          :custom-class="'w-full'"
+        >
+          <template #values>
+            <option value="woman">Kobieta</option>
+            <option value="male">Mężczyzna</option>
+          </template>
+        </select-field>
+      </div>
+      <div class="mb-4">
         <label for="" class="block mb-1">Data urodzenia</label>
         <input-text name="dateOfBirth" type="date"></input-text>
       </div>
@@ -76,6 +89,7 @@
           <a
             href="#"
             class="font-medium hover:underline hover:text-primaryDark"
+            @click="modalStore.openModal('login')"
           >
             Zaloguj się tutaj!
           </a>
@@ -88,17 +102,22 @@
 <script setup>
 import { useForm } from "vee-validate";
 import { object, string, ref, date, boolean } from "yup";
+import { useModalStore } from "@/stores/ModalStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
+import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
+
+const modalStore = useModalStore();
 
 const { handleSubmit } = useForm({
   validationSchema: object({
     name: string()
       .required("Imię jest wymagane")
       .min(3, "Imię jest za krótkie")
-      .max(20, "Imię jest za długie"),
+      .max(20, "Imię jest za długie")
+      .trim(),
     email: string()
       .required("Adres e-mail jest wymagany")
       .email("Niepoprawny adres e-mail")
@@ -111,6 +130,9 @@ const { handleSubmit } = useForm({
       .required("Hasło jest wymagane")
       .min(8, "Hasło musi mieć co najmniej 8 znaków")
       .oneOf([ref("password")], "Hasła muszą być takie same"),
+    gender: string()
+      .oneOf(["woman", "male"], "Niepoprawna płeć")
+      .required("Płeć jest wymagana"),
     dateOfBirth: date()
       .typeError("Data urodzenia musi być prawidłową datą")
       .required("Data urodzenia jest wymagana")
