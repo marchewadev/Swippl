@@ -100,16 +100,21 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
 import { object, string, ref, date, boolean } from "yup";
 import { useModalStore } from "@/stores/ModalStore";
+import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
 
+const router = useRouter();
+
 const modalStore = useModalStore();
+const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
   validationSchema: object({
@@ -153,7 +158,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit((values) => {
-  console.log(JSON.stringify(values));
+  userStore.signUpUser(router, values);
 });
 </script>
 

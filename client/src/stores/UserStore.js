@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import { useModalStore } from "./ModalStore";
+// import { createNewUser } from "@/firebase/AuthService";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -14,14 +16,27 @@ export const useUserStore = defineStore("userStore", {
     },
     blockedUsers: [],
     friends: [],
-    isUserLoggedIn: false,
+    isUserLoggedIn: true,
   }),
   actions: {
-    logout() {
+    signUpUser(router, { name, email, password, gender, dateOfBirth }) {
+      // We use the router instance and pass it to the closeModalAndRedirect method
+      // to redirect the user to the Settings page after they successfully sign up.
+
+      // createNewUser(name, email, password, gender, dateOfBirth);
+      this.isUserLoggedIn = true;
+      this.closeModalAndRedirect(router, "Settings");
+    },
+    signInUser() {
+      this.isUserLoggedIn = true;
+    },
+    logoutUser() {
       this.isUserLoggedIn = false;
     },
-    login() {
-      this.isUserLoggedIn = true;
+    closeModalAndRedirect(router, path) {
+      const modalStore = useModalStore();
+      modalStore.closeModal();
+      router.push({ name: path });
     },
   },
   getters: {

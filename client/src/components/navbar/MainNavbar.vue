@@ -75,7 +75,7 @@
                 <navbar-link
                   :path="{ name: 'Home' }"
                   :custom-class-link="'text-base block rounded-none rounded-bl-md rounded-br-md flex items-center gap-2'"
-                  @click="userStore.logout"
+                  @click="userStore.logoutUser"
                 >
                   <template #icon>
                     <ion-icon name="power-outline" class="text-lg"></ion-icon>
