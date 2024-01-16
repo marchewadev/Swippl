@@ -8,6 +8,13 @@ exports.createAdminSchema = yup.object({
     .required("Id użytkownika jest wymagane"),
 });
 
+exports.deleteAdminSchema = yup.object({
+  adminId: yup
+    .number()
+    .min(2, "ID admina musi być większe od 1")
+    .required("Id admina jest wymagane"),
+});
+
 exports.banUserSchema = yup.object({
   userId: yup
     .number()
@@ -26,4 +33,11 @@ exports.banUserSchema = yup.object({
       "Data nie może być wcześniejsza niż dzień jutrzejszy"
     )
     .required("Data jest wymagana"),
+});
+
+exports.unbanUserSchema = yup.object({
+  userId: yup
+    .number()
+    .min(1, "ID użytkownika musi być większe od 0")
+    .required("Id użytkownika jest wymagane"),
 });
