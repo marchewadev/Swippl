@@ -1,4 +1,5 @@
 const express = require("express");
+
 const UserModel = require("../models/userModel");
 const authUser = require("../middleware/authUser");
 
@@ -24,19 +25,37 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.delete("/delete", authUser, async (req, res) => {
+router.patch("/update/profile", authUser, async (req, res) => {
   try {
-    await UserModel.deleteUser(req.body, req.userId);
-    res.status(200).send({ message: "User deleted successfully" });
+    await UserModel.updateUserProfileById(req.body, req.userId);
+    res.status(200).send({ message: "User updated successfully" });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
 });
 
-router.patch("/update/profile", authUser, async (req, res) => {
+router.patch("/update/email", authUser, async (req, res) => {
   try {
-    await UserModel.updateUserProfileById(req.body, req.userId);
+    await UserModel.updateUserEmailById(req.body, req.userId);
     res.status(200).send({ message: "User updated successfully" });
+  } catch (err) {
+    res.status(err.status).send({ message: err.message });
+  }
+});
+
+router.patch("/update/password", authUser, async (req, res) => {
+  try {
+    await UserModel.updateUserPasswordById(req.body, req.userId);
+    res.status(200).send({ message: "User updated successfully" });
+  } catch (err) {
+    res.status(err.status).send({ message: err.message });
+  }
+});
+
+router.delete("/delete", authUser, async (req, res) => {
+  try {
+    await UserModel.deleteUser(req.body, req.userId);
+    res.status(200).send({ message: "User deleted successfully" });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }

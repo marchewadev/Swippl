@@ -80,9 +80,9 @@ exports.deleteUserSchema = yup.object({
 exports.updateUserProfileSchema = yup.object({
   name: yup
     .string()
+    .optional()
     .min(3, "Imię jest zbyt krótkie")
-    .max(20, "Imię jest zbyt długie")
-    .required("Imię jest wymagane"),
+    .max(20, "Imię jest zbyt długie"),
   city: yup
     .string()
     .trim()
@@ -91,15 +91,48 @@ exports.updateUserProfileSchema = yup.object({
   birthdate: yup
     .date()
     .typeError("Data urodzenia musi być prawidłową datą")
-    .test(
-      "is-18",
-      "Musisz mieć co najmniej 18 lat",
-      (value) => dayjs().diff(dayjs(value), "years") >= 18
-    )
-    .test(
-      "is-less-than-100",
-      "Nie możesz mieć więcej niż 100 lat",
-      (value) => dayjs().diff(dayjs(value), "years") < 100
-    )
-    .required("Data urodzenia jest wymagana"),
+    .test("is-18", "Musisz mieć co najmniej 18 lat", (value) => {
+      if (!value) return true;
+      return dayjs().diff(dayjs(value), "years") >= 18;
+    })
+    .test("is-less-than-100", "Nie możesz mieć więcej niż 100 lat", (value) => {
+      if (!value) return true;
+      return dayjs().diff(dayjs(value), "years") < 100;
+    }),
+});
+
+exports.updateUserEmailSchema = yup.object({
+  email: yup
+    .string()
+    .required("Adres e-mail jest wymagany")
+    .email("Niepoprawny adres e-mail")
+    .min(3, "Adres e-mail jest zbyt krótki")
+    .max(254, "Adres e-mail jest zbyt długi"),
+  email2: yup
+    .string()
+    .required("Adres e-mail jest wymagany")
+    .email("Niepoprawny adres e-mail")
+    .min(3, "Adres e-mail jest zbyt krótki")
+    .max(254, "Adres e-mail jest zbyt długi")
+    .oneOf([yup.ref("email")], "Adresy e-mail muszą być takie same"),
+  password: yup
+    .string()
+    .required("Hasło jest wymagane")
+    .min(8, "Hasło musi mieć co najmniej 8 znaków"),
+});
+
+exports.updateUserPasswordSchema = yup.object({
+  oldPassword: yup
+    .string()
+    .required("Hasło jest wymagane")
+    .min(8, "Hasło musi mieć co najmniej 8 znaków"),
+  newPassword: yup
+    .string()
+    .required("Hasło jest wymagane")
+    .min(8, "Hasło musi mieć co najmniej 8 znaków"),
+  newPassword2: yup
+    .string()
+    .required("Hasło jest wymagane")
+    .min(8, "Hasło musi mieć co najmniej 8 znaków")
+    .oneOf([yup.ref("newPassword")], "Hasła muszą być takie same"),
 });
