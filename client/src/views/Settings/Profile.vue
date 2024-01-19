@@ -39,7 +39,7 @@
     </div>
     <div class="mb-4">
       <label for="" class="block text-base mb-1">Data urodzenia</label>
-      <InputText type="date" name="dateOfBirth" />
+      <InputText type="date" name="birthdate" />
     </div>
     <FormButton
       :formId="'profileForm'"
@@ -52,52 +52,61 @@
 <script setup>
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
+import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
+const userStore = useUserStore();
+
 const { handleSubmit } = useForm({
   validationSchema: object({
-    avatar: mixed()
-      .optional()
-      .test("fileSelected", "", (value) => value !== undefined)
-      .test(
-        "fileFormat",
-        "* Nieobsługiwany format",
-        (value) =>
-          value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
-      )
-      .test(
-        "fileSize",
-        "* Plik jest za duży",
-        (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
-      ),
+    // avatar: mixed()
+    //   .optional()
+    //   .test("fileSelected", "", (value) => value !== undefined)
+    //   .test(
+    //     "fileFormat",
+    //     "* Nieobsługiwany format",
+    //     (value) =>
+    //       value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
+    //   )
+    //   .test(
+    //     "fileSize",
+    //     "* Plik jest za duży",
+    //     (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
+    //   ),
     name: string()
+      .trim()
       .required("Imię jest wymagane")
-      .trim()
-      .min(3, "Imię jest za krótkie")
-      .max(20, "Imię jest za długie"),
+      .min(3, "Imię jest zbyt krótkie")
+      .max(20, "Imię jest zbyt długie"),
     city: string()
-      .optional()
       .trim()
+      .optional()
       .max(30, "Nazwa miejscowości jest zbyt długa"),
-    dateOfBirth: date()
+    birthdate: date()
       .typeError("Data urodzenia musi być prawidłową datą")
-      .required("Data urodzenia jest wymagana")
-      .test(
-        "is-18",
-        "Musisz mieć co najmniej 18 lat",
-        (value) => dayjs().diff(dayjs(value), "years") >= 18
-      )
+      .test("is-18", "Musisz mieć co najmniej 18 lat", (value) => {
+        if (!value) return true;
+        return dayjs().diff(dayjs(value), "years") >= 18;
+      })
       .test(
         "is-less-than-100",
         "Nie możesz mieć więcej niż 100 lat",
-        (value) => dayjs().diff(dayjs(value), "years") < 100
+        (value) => {
+          if (!value) return true;
+          return dayjs().diff(dayjs(value), "years") < 100;
+        }
       ),
   }),
+  initialValues: {
+    name: userStore.user.name,
+    city: userStore.user.city,
+    birthdate: userStore.user.birthdate,
+  },
 });
 
 const onSubmit = handleSubmit((values) => {
-  console.log(JSON.stringify(values));
+  userStore.updateUserProfile(values);
 });
 </script>

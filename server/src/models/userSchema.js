@@ -80,14 +80,15 @@ exports.deleteUserSchema = yup.object({
 exports.updateUserProfileSchema = yup.object({
   name: yup
     .string()
-    .optional()
+    .trim()
+    .required("Imię jest wymagane")
     .min(3, "Imię jest zbyt krótkie")
     .max(20, "Imię jest zbyt długie"),
   city: yup
     .string()
     .trim()
-    .max(30, "Nazwa miejscowości jest zbyt długa")
-    .optional(),
+    .optional()
+    .max(30, "Nazwa miejscowości jest zbyt długa"),
   birthdate: yup
     .date()
     .typeError("Data urodzenia musi być prawidłową datą")

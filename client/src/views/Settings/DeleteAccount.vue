@@ -47,11 +47,17 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
 import { object, string, ref } from "yup";
+import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 import SelectField from "@/components/form/SelectField.vue";
+
+const router = useRouter();
+
+const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
   validationSchema: object({
@@ -74,6 +80,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit((values) => {
-  console.log(JSON.stringify(values));
+  userStore.deleteUserAccount(router, values);
+  // console.log(JSON.stringify(values));
 });
 </script>

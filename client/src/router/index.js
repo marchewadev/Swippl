@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createRouter, createWebHistory } from "vue-router";
 import { useSettingsStore } from "@/stores/SettingsStore";
 import { useUserStore } from "@/stores/UserStore";
@@ -61,22 +62,36 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to) => {
+router.beforeEach(async (to, from, next) => {
   const settingsStore = useSettingsStore();
   const userStore = useUserStore();
 
+  const token = userStore.token;
   const authRequiredRoutes = settingsStore.buttons
     .filter((button) => button.requiresAuth)
     .map((button) => `/settings/${button.path}`);
 
-  if (authRequiredRoutes.includes(to.path) && !userStore.isUserLoggedIn) {
-    return { name: "ChatSettings" };
+  if (!token && authRequiredRoutes.includes(to.path)) {
+    next("/");
+  } else if (token && to.name === "Home") {
+    next("/settings");
+  } else if (token) {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      userStore.setUserData(response.data.userObject);
+      next();
+    } catch (err) {
+      console.error(err);
+      userStore.resetUserStore;
+      next("/");
+    }
   }
 
-  // If user is logged in and tries to go to Home, redirect to Settings
-  if (to.name === "Home" && userStore.isUserLoggedIn) {
-    return { name: "Settings" };
-  }
+  next();
 });
 
 export default router;

@@ -17,7 +17,7 @@
       >
         <div
           class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
-          v-if="!userStore.isUserLoggedIn"
+          v-if="!userStore.checkIfUserIsLoggedIn"
         >
           <p class="text-sm text-center text-primaryDark">
             Zaloguj się, aby mieć dostęp do tej zawartości

@@ -1,37 +1,118 @@
+import axios from "axios";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { useModalStore } from "./ModalStore";
-// import { createNewUser } from "@/firebase/AuthService";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
     user: {
       id: null,
       name: "",
-      email: "",
-      password: "",
-      gender: "",
-      dateOfBirth: "",
+      birthdate: "",
       city: "",
       avatar: "",
     },
     blockedUsers: [],
     friends: [],
-    isUserLoggedIn: true,
+    token: useStorage("token", null),
   }),
   actions: {
-    signUpUser(router, { name, email, password, gender, dateOfBirth }) {
-      // We use the router instance and pass it to the closeModalAndRedirect method
-      // to redirect the user to the Settings page after they successfully sign up.
+    async signUpUser(router, userJSON) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/register`,
+          userJSON
+        );
 
-      // createNewUser(name, email, password, gender, dateOfBirth);
-      this.isUserLoggedIn = true;
-      this.closeModalAndRedirect(router, "Settings");
+        this.token = response.data.userObject.token;
+
+        this.closeModalAndRedirect(router, "Settings");
+      } catch (err) {
+        console.error(err.response.data);
+      }
     },
-    signInUser() {
-      this.isUserLoggedIn = true;
+    async signInUser(router, userJSON) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/login`,
+          userJSON
+        );
+
+        this.token = response.data.userObject.token;
+
+        this.closeModalAndRedirect(router, "Settings");
+      } catch (err) {
+        console.error(err.response.data);
+      }
     },
-    logoutUser() {
-      this.isUserLoggedIn = false;
+    async updateUserProfile(userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/profile`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+      } catch (err) {
+        console.error(err.response.data);
+      }
+    },
+    async updateUserEmail(router, userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/email`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+      } catch (err) {
+        console.error(err.response.data);
+      }
+    },
+    async updateUserPassword(router, userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/password`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+      } catch (err) {
+        console.error(err.response.data);
+      }
+    },
+    async deleteUserAccount(router, userJSON) {
+      try {
+        const response = await axios.delete(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/delete`,
+          {
+            data: userJSON,
+            headers: { Authorization: `Bearer ${this.token}` },
+          }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+      } catch (err) {
+        console.error(err.response.data);
+      }
+    },
+    setUserData(userObject) {
+      const { id, name, birthdate, city } = userObject;
+
+      this.user.id = id;
+      this.user.name = name;
+      this.user.birthdate = birthdate;
+      if (city) {
+        this.user.city = city;
+      }
+    },
+    resetUserStore() {
+      this.$reset();
+      this.token = null;
     },
     closeModalAndRedirect(router, path) {
       const modalStore = useModalStore();
@@ -42,6 +123,9 @@ export const useUserStore = defineStore("userStore", {
   getters: {
     userAvatar() {
       return this.user.avatar || "/src/assets/avatar.png";
+    },
+    checkIfUserIsLoggedIn() {
+      return this.token !== null;
     },
   },
 });

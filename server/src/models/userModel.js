@@ -60,7 +60,7 @@ class UserModel extends BaseModel {
       const user = result.rows[0];
       const token = this.#generateAuthToken(user.id);
 
-      return token;
+      return { token };
     } catch (err) {
       if (err.code === "23505") {
         throw {
@@ -80,7 +80,7 @@ class UserModel extends BaseModel {
       const { email: clientEmail, password: clientPassword } = userJSON;
 
       const user = await this.pool.query(
-        "SELECT id, password FROM users WHERE email = $1",
+        "SELECT id, name, city, birthdate, password FROM users WHERE email = $1",
         [clientEmail]
       );
 
@@ -93,27 +93,27 @@ class UserModel extends BaseModel {
 
       const token = this.#generateAuthToken(user.rows[0].id);
 
-      return token;
+      return { token };
     } catch (err) {
       this.handleValidationErrorOrServerIssue(err);
     }
   }
 
-  // async getUserById(userId) {
-  //   try {
-  //     const user = await this.pool.query("SELECT * FROM users WHERE id = $1", [
-  //       userId,
-  //     ]);
+  async getUserById(userId) {
+    try {
+      const user = await this.pool.query(
+        "SELECT id, name, birthdate, city FROM users WHERE id = $1",
+        [userId]
+      );
 
-  //     if (user.rows.length === 0) {
-  //       throw { status: 404, message: "Nie znaleziono użytkownika" };
-  //     }
+      const userData = user.rows[0];
+      userData.birthdate = dayjs(userData.birthdate).format("YYYY-MM-DD");
 
-  //     return user.rows[0];
-  //   } catch (err) {
-  //     this.handleValidationErrorOrServerIssue(err);
-  //   }
-  // }
+      return userData;
+    } catch (err) {
+      this.handleValidationErrorOrServerIssue(err);
+    }
+  }
 
   async updateUserProfileById(userJSON, userId) {
     try {
@@ -137,26 +137,25 @@ class UserModel extends BaseModel {
         birthdate: clientBirthdate,
       } = userJSON;
 
-      if (clientName !== undefined) {
-        if (databaseName === clientName) {
-          throw { status: 409, message: "Podane imię jest takie samo" };
-        }
-      }
-      if (clientCity !== undefined) {
-        if (databaseCity === clientCity) {
-          throw { status: 409, message: "Podana miejscowość jest taka sama" };
-        }
-      }
-      if (clientBirthdate !== undefined) {
-        const dbDate = dayjs(databaseBirthdate);
-        const clientDate = dayjs(clientBirthdate);
+      // Convert the date strings to dayjs objects to compare them.
+      const dbDate = dayjs(databaseBirthdate);
+      const clientDate = dayjs(clientBirthdate);
 
-        if (dbDate.isSame(clientDate, "day")) {
-          throw {
-            status: 409,
-            message: "Podana data urodzenia jest taka sama",
-          };
-        }
+      if (clientName === databaseName) {
+        delete userJSON.name;
+      }
+      if (clientCity === databaseCity) {
+        delete userJSON.city;
+      }
+      if (dbDate.isSame(clientDate, "day")) {
+        delete userJSON.birthdate;
+      }
+
+      if (Object.keys(userJSON).length === 0) {
+        throw {
+          status: 409,
+          message: "Twoje dane są aktualne. Brak konieczności aktualizacji.",
+        };
       }
 
       let query = "UPDATE users SET ";
@@ -169,6 +168,8 @@ class UserModel extends BaseModel {
       query += clauses.join("");
       query += ` WHERE id = $${values.length + 1}`;
       values.push(userId);
+
+      await this.pool.query(query, values);
 
       return;
     } catch (err) {
@@ -253,7 +254,6 @@ class UserModel extends BaseModel {
 
     try {
       await deleteUserSchema.validate(userJSON);
-
       const user = await this.pool.query(
         "SELECT email, password FROM users WHERE id = $1",
         [userId]

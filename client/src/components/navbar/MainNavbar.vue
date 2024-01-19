@@ -26,18 +26,18 @@
         <navbar-link
           @click="modalStore.openModal('login')"
           :path="''"
-          v-if="!userStore.isUserLoggedIn"
+          v-if="!userStore.checkIfUserIsLoggedIn"
         >
           <template #title>Zaloguj się</template>
         </navbar-link>
         <navbar-link
           @click="modalStore.openModal('register')"
           :path="''"
-          v-if="!userStore.isUserLoggedIn"
+          v-if="!userStore.checkIfUserIsLoggedIn"
         >
           <template #title>Zarejestruj się</template>
         </navbar-link>
-        <li v-if="userStore.isUserLoggedIn">
+        <li v-if="userStore.checkIfUserIsLoggedIn">
           <div class="relative">
             <img
               :src="userStore.userAvatar"
@@ -75,7 +75,7 @@
                 <navbar-link
                   :path="{ name: 'Home' }"
                   :custom-class-link="'text-base block rounded-none rounded-bl-md rounded-br-md flex items-center gap-2'"
-                  @click="userStore.logoutUser"
+                  @click="userStore.resetUserStore"
                 >
                   <template #icon>
                     <ion-icon name="power-outline" class="text-lg"></ion-icon>
@@ -93,6 +93,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { vOnClickOutside } from "@vueuse/components";
 import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";

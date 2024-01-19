@@ -41,18 +41,18 @@
         <label for="" class="block mb-1">Płeć</label>
         <select-field
           name="gender"
-          :initial-value="'woman'"
+          :initial-value="'female'"
           :custom-class="'w-full'"
         >
           <template #values>
-            <option value="woman">Kobieta</option>
+            <option value="female">Kobieta</option>
             <option value="male">Mężczyzna</option>
           </template>
         </select-field>
       </div>
       <div class="mb-4">
         <label for="" class="block mb-1">Data urodzenia</label>
-        <input-text name="dateOfBirth" type="date"></input-text>
+        <input-text name="birthdate" type="date"></input-text>
       </div>
       <div class="mb-4 grid terms-container gap-x-2">
         <input-text
@@ -136,9 +136,9 @@ const { handleSubmit } = useForm({
       .min(8, "Hasło musi mieć co najmniej 8 znaków")
       .oneOf([ref("password")], "Hasła muszą być takie same"),
     gender: string()
-      .oneOf(["woman", "male"], "Niepoprawna płeć")
+      .oneOf(["female", "male"], "Niepoprawna płeć")
       .required("Płeć jest wymagana"),
-    dateOfBirth: date()
+    birthdate: date()
       .typeError("Data urodzenia musi być prawidłową datą")
       .required("Data urodzenia jest wymagana")
       .test(

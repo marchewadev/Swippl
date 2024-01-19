@@ -5,11 +5,19 @@ const authUser = require("../middleware/authUser");
 
 const router = express.Router();
 
+router.get("/verify", authUser, async (req, res) => {
+  try {
+    const userObject = await UserModel.getUserById(req.userId);
+    res.status(200).send({ message: "User verified successfully", userObject });
+  } catch (err) {
+    res.status(err.status).send({ message: err.message });
+  }
+});
+
 router.post("/register", async (req, res) => {
   try {
-    const user = req.body;
-    const token = await UserModel.createUser(user);
-    res.status(201).send({ message: "User created successfully", token });
+    const userObject = await UserModel.createUser(req.body);
+    res.status(201).send({ message: "User created successfully", userObject });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -17,9 +25,10 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const user = req.body;
-    const token = await UserModel.loginUser(user);
-    res.status(200).send({ message: "User logged in successfully", token });
+    const userObject = await UserModel.loginUser(req.body);
+    res
+      .status(200)
+      .send({ message: "User logged in successfully", userObject });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
