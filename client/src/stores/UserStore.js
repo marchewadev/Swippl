@@ -27,8 +27,9 @@ export const useUserStore = defineStore("userStore", {
         this.token = response.data.userObject.token;
 
         this.closeModalAndRedirect(router, "Settings");
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     async signInUser(router, userJSON) {
@@ -41,8 +42,9 @@ export const useUserStore = defineStore("userStore", {
         this.token = response.data.userObject.token;
 
         this.closeModalAndRedirect(router, "Settings");
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     async updateUserProfile(userJSON) {
@@ -52,8 +54,10 @@ export const useUserStore = defineStore("userStore", {
           userJSON,
           { headers: { Authorization: `Bearer ${this.token}` } }
         );
+
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     async updateUserEmail(router, userJSON) {
@@ -66,8 +70,10 @@ export const useUserStore = defineStore("userStore", {
 
         this.resetUserStore();
         router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     async updateUserPassword(router, userJSON) {
@@ -80,8 +86,10 @@ export const useUserStore = defineStore("userStore", {
 
         this.resetUserStore();
         router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     async deleteUserAccount(router, userJSON) {
@@ -96,8 +104,10 @@ export const useUserStore = defineStore("userStore", {
 
         this.resetUserStore();
         router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
       } catch (err) {
-        console.error(err.response.data);
+        this.displayMessageModal(err.response.data.message, true);
       }
     },
     setUserData(userObject) {
@@ -118,6 +128,10 @@ export const useUserStore = defineStore("userStore", {
       const modalStore = useModalStore();
       modalStore.closeModal();
       router.push({ name: path });
+    },
+    displayMessageModal(message, isErrorMessage = false) {
+      const modalStore = useModalStore();
+      modalStore.displayMessageModal(message, isErrorMessage);
     },
   },
   getters: {

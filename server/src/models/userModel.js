@@ -126,6 +126,11 @@ class UserModel extends BaseModel {
         [userId]
       );
 
+      // If the user doesn't provide a value for a city field, set it to null due to the database schema.
+      if (userJSON.city === "") {
+        userJSON.city = null;
+      }
+
       const {
         name: databaseName,
         city: databaseCity,
@@ -154,19 +159,19 @@ class UserModel extends BaseModel {
       if (Object.keys(userJSON).length === 0) {
         throw {
           status: 409,
-          message: "Twoje dane są aktualne. Brak konieczności aktualizacji.",
+          message: "Twoje dane są aktualne. Brak konieczności aktualizacji",
         };
       }
 
       let query = "UPDATE users SET ";
       let values = [];
 
-      const clauses = Object.entries(userJSON).map(([key, value], i, arr) => {
+      Object.entries(userJSON).forEach(([key, value]) => {
         values.push(value);
-        return `${key} = $${values.length}${i === arr.length - 1 ? "" : ", "}`;
+        query += `${key} = $${values.length}, `;
       });
-      query += clauses.join("");
-      query += ` WHERE id = $${values.length + 1}`;
+
+      query += `updated_at = now() WHERE id = $${values.length + 1}`;
       values.push(userId);
 
       await this.pool.query(query, values);

@@ -8,7 +8,9 @@ const router = express.Router();
 router.get("/verify", authUser, async (req, res) => {
   try {
     const userObject = await UserModel.getUserById(req.userId);
-    res.status(200).send({ message: "User verified successfully", userObject });
+    res
+      .status(200)
+      .send({ message: "Użytkownik pomyślnie zweryfikowany", userObject });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -17,7 +19,9 @@ router.get("/verify", authUser, async (req, res) => {
 router.post("/register", async (req, res) => {
   try {
     const userObject = await UserModel.createUser(req.body);
-    res.status(201).send({ message: "User created successfully", userObject });
+    res
+      .status(201)
+      .send({ message: "Twoje konto zostało utworzone", userObject });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -26,9 +30,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const userObject = await UserModel.loginUser(req.body);
-    res
-      .status(200)
-      .send({ message: "User logged in successfully", userObject });
+    res.status(200).send({ message: "Zalogowano pomyślnie", userObject });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -37,7 +39,7 @@ router.post("/login", async (req, res) => {
 router.patch("/update/profile", authUser, async (req, res) => {
   try {
     await UserModel.updateUserProfileById(req.body, req.userId);
-    res.status(200).send({ message: "User updated successfully" });
+    res.status(200).send({ message: "Twoje konto zostało zaktualizowane" });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -46,7 +48,12 @@ router.patch("/update/profile", authUser, async (req, res) => {
 router.patch("/update/email", authUser, async (req, res) => {
   try {
     await UserModel.updateUserEmailById(req.body, req.userId);
-    res.status(200).send({ message: "User updated successfully" });
+    res
+      .status(200)
+      .send({
+        message:
+          "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
+      });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -55,7 +62,12 @@ router.patch("/update/email", authUser, async (req, res) => {
 router.patch("/update/password", authUser, async (req, res) => {
   try {
     await UserModel.updateUserPasswordById(req.body, req.userId);
-    res.status(200).send({ message: "User updated successfully" });
+    res
+      .status(200)
+      .send({
+        message:
+          "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
+      });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -64,7 +76,7 @@ router.patch("/update/password", authUser, async (req, res) => {
 router.delete("/delete", authUser, async (req, res) => {
   try {
     await UserModel.deleteUser(req.body, req.userId);
-    res.status(200).send({ message: "User deleted successfully" });
+    res.status(200).send({ message: "Twoje konto zostało usunięte" });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }

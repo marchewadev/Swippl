@@ -49,6 +49,7 @@
               v-show="dropdownOpen"
               class="absolute bg-white mt-2 w-48 rounded-md right-0 dropdown-menu"
               v-on-click-outside="closeDropdown"
+              @click="dropdownOpen = false"
             >
               <ul>
                 <navbar-link
@@ -93,7 +94,6 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import { vOnClickOutside } from "@vueuse/components";
 import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
