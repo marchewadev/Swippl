@@ -25,12 +25,16 @@ const props = defineProps({
     required: true,
   },
 });
+
+const emits = defineEmits(["change"]);
+
 const value = props.initialValue;
 
 const { update } = useFieldArray(() => props.name);
 
 const handleChange = (values) => {
   values.forEach((value, index) => update(index, value));
+  emits("change", values);
 };
 </script>
 

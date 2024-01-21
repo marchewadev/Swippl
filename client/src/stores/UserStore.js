@@ -15,6 +15,10 @@ export const useUserStore = defineStore("userStore", {
     blockedUsers: [],
     friends: [],
     token: useStorage("token", null),
+    searchCriteria: useStorage("searchCriteria", {
+      ageRangeSearch: [18, 100],
+      genderSearch: "any",
+    }),
   }),
   actions: {
     async signUpUser(router, userJSON) {
