@@ -127,6 +127,10 @@ export const useUserStore = defineStore("userStore", {
       }
       this.user.gender = gender;
     },
+    setAnonData(userObject) {
+      this.user.gender = userObject.gender;
+      this.user.birthdate = userObject.birthdate;
+    },
     resetUserStore() {
       this.$reset();
       this.token = null;
