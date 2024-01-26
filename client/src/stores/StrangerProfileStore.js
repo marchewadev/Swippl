@@ -6,7 +6,7 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
       id: null,
       name: "",
       gender: "",
-      dateOfBirth: "",
+      age: "",
       city: "",
       avatar: "",
     },
@@ -19,6 +19,15 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     },
     closeProfile() {
       this.show = false;
+    },
+    setStrangerData({ name, age, gender, city }) {
+      this.stranger.name = name;
+      this.stranger.age = age;
+      this.stranger.gender = gender;
+      this.stranger.city = city;
+    },
+    resetStrangerData() {
+      this.$reset();
     },
   },
   getters: {

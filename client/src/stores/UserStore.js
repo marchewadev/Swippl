@@ -10,6 +10,7 @@ export const useUserStore = defineStore("userStore", {
       name: "",
       birthdate: "",
       city: "",
+      gender: "",
       avatar: "",
     },
     blockedUsers: [],
@@ -45,6 +46,7 @@ export const useUserStore = defineStore("userStore", {
 
         this.token = response.data.userObject.token;
 
+        // TODO: if the user is under Settings route already, then i dont know reload or something
         this.closeModalAndRedirect(router, "Settings");
         this.displayMessageModal(response.data.message);
       } catch (err) {
@@ -115,7 +117,7 @@ export const useUserStore = defineStore("userStore", {
       }
     },
     setUserData(userObject) {
-      const { id, name, birthdate, city } = userObject;
+      const { id, name, birthdate, city, gender } = userObject;
 
       this.user.id = id;
       this.user.name = name;
@@ -123,6 +125,7 @@ export const useUserStore = defineStore("userStore", {
       if (city) {
         this.user.city = city;
       }
+      this.user.gender = gender;
     },
     resetUserStore() {
       this.$reset();

@@ -18,9 +18,23 @@
       />
     </div>
     <div class="stranger--personal-info text-center">
-      <h3 class="stranger--name">Andrzej</h3>
-      <p class="stranger--age inline-block mr-1">18 lat,</p>
-      <p class="stranger--city inline-block">Wrocław</p>
+      <h3 class="stranger--name">{{ strangerProfileStore.stranger.name }},</h3>
+      <p>
+        {{
+          strangerProfileStore.stranger.gender === "female"
+            ? "kobieta"
+            : "mężczyzna"
+        }}
+      </p>
+      <p class="stranger--age inline-block">
+        {{ strangerProfileStore.stranger.age }} lat
+      </p>
+      <p
+        class="stranger--city inline-block"
+        v-if="strangerProfileStore.stranger.city"
+      >
+        , {{ strangerProfileStore.stranger.city }}
+      </p>
     </div>
     <div class="stranger--options flex gap-2">
       <button

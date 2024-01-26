@@ -19,7 +19,7 @@
         >
           <template #values>
             <option value="any">Dowolna</option>
-            <option value="woman">Kobieta</option>
+            <option value="female">Kobieta</option>
             <option value="male">Mężczyzna</option>
           </template>
         </select-field>
@@ -65,7 +65,7 @@ const { handleSubmit } = useForm({
       )
       .required("Przedział wiekowy jest wymagany"),
     genderSearch: string()
-      .oneOf(["any", "woman", "male"], "Niepoprawna płeć")
+      .oneOf(["any", "female", "male"], "Niepoprawna płeć")
       .trim()
       .required("Płeć jest wymagana"),
   }),
@@ -79,8 +79,7 @@ const updateGender = (newGender) => {
 };
 
 const onSubmit = handleSubmit((values) => {
-  console.log(values);
-  // router.push("/chat");
+  router.push("/chat");
 });
 </script>
 

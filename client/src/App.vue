@@ -12,4 +12,9 @@ import LoginModal from "./components/modals/LoginModal.vue";
 import RegisterModal from "./components/modals/RegisterModal.vue";
 
 import MessageModal from "./components/modals/MessageModal.vue";
+
+// Connect to socket on app load to get session id
+import { useChatStore } from "./stores/ChatStore";
+const chatStore = useChatStore();
+chatStore.connectToSocket();
 </script>

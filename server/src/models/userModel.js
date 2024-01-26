@@ -102,7 +102,7 @@ class UserModel extends BaseModel {
   async getUserById(userId) {
     try {
       const user = await this.pool.query(
-        "SELECT id, name, birthdate, city FROM users WHERE id = $1",
+        "SELECT id, name, birthdate, city, gender FROM users WHERE id = $1",
         [userId]
       );
 

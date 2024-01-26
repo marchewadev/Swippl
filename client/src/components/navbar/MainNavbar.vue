@@ -13,7 +13,13 @@
     <base-navbar class="flex items-center text-lg gap-5">
       <template #additional>
         <div>
-          <p>1234 aktywnych osób</p>
+          <p v-if="chatStore.totalUsers === 1">
+            {{ chatStore.totalUsers }} aktywna osoba
+          </p>
+          <p v-else-if="chatStore.totalUsers < 5">
+            {{ chatStore.totalUsers }} aktywne osoby
+          </p>
+          <p v-else>{{ chatStore.totalUsers }} aktywnych osób</p>
         </div>
       </template>
       <template #links>
@@ -43,13 +49,12 @@
               :src="userStore.userAvatar"
               alt="User's avatar"
               @click="dropdownOpen = !dropdownOpen"
+              v-on-click-outside="closeDropdown"
               class="cursor-pointer h-10 rounded-full"
             />
             <div
               v-show="dropdownOpen"
               class="absolute bg-white mt-2 w-48 rounded-md right-0 dropdown-menu"
-              v-on-click-outside="closeDropdown"
-              @click="dropdownOpen = false"
             >
               <ul>
                 <navbar-link
@@ -97,12 +102,14 @@ import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
+import { useChatStore } from "@/stores/ChatStore";
 import BaseNavbar from "./BaseNavbar.vue";
 import NavbarLink from "./NavbarLink.vue";
 
 const dropdownOpen = ref(false);
 const modalStore = useModalStore();
 const userStore = useUserStore();
+const chatStore = useChatStore();
 
 function closeDropdown() {
   dropdownOpen.value = false;

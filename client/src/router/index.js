@@ -71,7 +71,9 @@ router.beforeEach(async (to, from, next) => {
     .filter((button) => button.requiresAuth)
     .map((button) => `/settings/${button.path}`);
 
-  if (!token && authRequiredRoutes.includes(to.path)) {
+  if (!token) {
+    next();
+  } else if (!token && authRequiredRoutes.includes(to.path)) {
     next("/");
   } else if (token && to.name === "Home") {
     next("/settings");
@@ -86,12 +88,10 @@ router.beforeEach(async (to, from, next) => {
       next();
     } catch (err) {
       console.error(err);
-      userStore.resetUserStore;
+      userStore.resetUserStore();
       next("/");
     }
   }
-
-  next();
 });
 
 export default router;

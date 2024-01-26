@@ -1,5 +1,7 @@
 <template>
-  <div class="message p-2 mb-2 rounded break-words text-primary bg-gray-100">
+  <div
+    class="message-stranger p-2 mb-2 rounded break-words text-primary bg-gray-100"
+  >
     <p class="message--content text-sm">
       <slot></slot>
     </p>
@@ -9,7 +11,7 @@
 <script setup></script>
 
 <style scoped>
-.message {
+.message-stranger {
   max-width: 45%;
   grid-column: 1 / span 2;
   justify-self: start;
