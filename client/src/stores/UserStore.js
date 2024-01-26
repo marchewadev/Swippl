@@ -1,7 +1,152 @@
+import axios from "axios";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
+import { useModalStore } from "./ModalStore";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
-    isUserLoggedIn: true,
+    user: {
+      id: null,
+      name: "",
+      birthdate: "",
+      city: "",
+      gender: "",
+      avatar: "",
+    },
+    blockedUsers: [],
+    friends: [],
+    token: useStorage("token", null),
+    searchCriteria: useStorage("searchCriteria", {
+      ageRangeSearch: [18, 100],
+      genderSearch: "any",
+    }),
   }),
+  actions: {
+    async signUpUser(router, userJSON) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/register`,
+          userJSON
+        );
+
+        this.token = response.data.userObject.token;
+
+        this.closeModalAndRedirect(router, "Settings");
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async signInUser(router, userJSON) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/login`,
+          userJSON
+        );
+
+        this.token = response.data.userObject.token;
+
+        // TODO: if the user is under Settings route already, then i dont know reload or something
+        this.closeModalAndRedirect(router, "Settings");
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async updateUserProfile(userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/profile`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async updateUserEmail(router, userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/email`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async updateUserPassword(router, userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/password`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async deleteUserAccount(router, userJSON) {
+      try {
+        const response = await axios.delete(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/delete`,
+          {
+            data: userJSON,
+            headers: { Authorization: `Bearer ${this.token}` },
+          }
+        );
+
+        this.resetUserStore();
+        router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    setUserData(userObject) {
+      const { id, name, birthdate, city, gender } = userObject;
+
+      this.user.id = id;
+      this.user.name = name;
+      this.user.birthdate = birthdate;
+      if (city) {
+        this.user.city = city;
+      }
+      this.user.gender = gender;
+    },
+    resetUserStore() {
+      this.$reset();
+      this.token = null;
+    },
+    closeModalAndRedirect(router, path) {
+      const modalStore = useModalStore();
+      modalStore.closeModal();
+      router.push({ name: path });
+    },
+    displayMessageModal(message, isErrorMessage = false) {
+      const modalStore = useModalStore();
+      modalStore.displayMessageModal(message, isErrorMessage);
+    },
+  },
+  getters: {
+    userAvatar() {
+      return this.user.avatar || "/src/assets/avatar.png";
+    },
+    checkIfUserIsLoggedIn() {
+      return this.token !== null;
+    },
+  },
 });

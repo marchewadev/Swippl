@@ -5,14 +5,14 @@
         v-for="setting in settingsStore.buttons"
         :key="setting.id"
         :path="
-          setting.requiresAuth && !userStore.isUserLoggedIn
+          setting.requiresAuth && !userStore.checkIfUserIsLoggedIn
             ? ''
             : `/settings/${setting.path}`
         "
         :class="{
           'group is-red': setting.isRed,
           'opacity-50 pointer-events-none':
-            setting.requiresAuth && !userStore.isUserLoggedIn,
+            setting.requiresAuth && !userStore.checkIfUserIsLoggedIn,
         }"
       >
         <template #icon>

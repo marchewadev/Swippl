@@ -4,6 +4,9 @@ export const useModalStore = defineStore("modalStore", {
   state: () => ({
     show: false,
     selectedModal: "",
+    showMessageModal: false,
+    textMessageModal: "",
+    isErrorMessageModal: false,
   }),
   actions: {
     openModal(selectedModal) {
@@ -13,6 +16,16 @@ export const useModalStore = defineStore("modalStore", {
     closeModal() {
       this.show = false;
       this.selectedModal = "";
+    },
+    displayMessageModal(message, isErrorMessage = false) {
+      this.showMessageModal = true;
+      this.textMessageModal = message;
+      this.isErrorMessageModal = isErrorMessage;
+    },
+    closeMessageModal() {
+      this.showMessageModal = false;
+      this.textMessageModal = "";
+      this.isErrorMessageModal = false;
     },
   },
 });

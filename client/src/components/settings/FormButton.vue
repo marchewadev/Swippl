@@ -4,7 +4,9 @@
     :disabled="!isValid"
     :class="{
       'opacity-50': !isValid,
-      'hover:bg-primaryLight': isValid,
+      'hover:bg-primaryLight': isValid && !isRed,
+      'bg-red-700': isRed,
+      'hover:bg-red-600': isValid && isRed,
     }"
     :form="formId"
   >
@@ -24,6 +26,10 @@ const props = defineProps({
   buttonTitle: {
     type: String,
     required: true,
+  },
+  isRed: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

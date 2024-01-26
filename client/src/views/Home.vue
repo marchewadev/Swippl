@@ -11,7 +11,7 @@
         </p>
         <div>
           <home-button
-            :path="'/chat'"
+            :path="{ name: 'Settings' }"
             :text="'Zacznij anonimowo'"
             class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
           ></home-button>

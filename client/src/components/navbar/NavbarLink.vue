@@ -2,7 +2,10 @@
   <li>
     <router-link
       :to="path"
-      class="p-2 hover:text-gray-50 hover:bg-primary hover:transition-colors duration-150 rounded-md group-[.is-settings]:bg-gray-100 group-[.is-settings]:hover:bg-primary group-[.is-settings]:flex group-[.is-settings]:items-center group-[.is-settings]:gap-2 group-[.is-red]:hover:!bg-red-700"
+      :class="[
+        'p-2 hover:text-gray-50 hover:bg-primary hover:transition-colors duration-150 rounded-md group-[.is-settings]:bg-gray-100 group-[.is-settings]:hover:bg-primary group-[.is-settings]:flex group-[.is-settings]:items-center group-[.is-settings]:gap-2 group-[.is-red]:hover:!bg-red-700',
+        customClassLink,
+      ]"
       @click="handleClick"
       :active-class="setActiveClass(path)"
     >
@@ -19,6 +22,10 @@ const props = defineProps({
   path: {
     type: String,
     required: true,
+  },
+  customClassLink: {
+    type: String,
+    default: "",
   },
 });
 const emit = defineEmits(["click"]);

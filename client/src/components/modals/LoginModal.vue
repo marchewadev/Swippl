@@ -1,38 +1,80 @@
 <template>
   <base-modal :modal-title="'Zaloguj się'" :modal-name="'login'">
-    <form action="/signin" class="flex flex-col">
-      <label for="" class="text-base mb-1">Adres e-mail</label>
-      <input
-        type="email"
-        placeholder="kowalski@example.com"
-        class="text-sm p-2 bg-gray-100 rounded-md border border-gray-300 mb-4"
-      />
-      <label for="" class="text-base mb-1">Hasło</label>
-      <input
-        type="password"
-        placeholder="********"
-        class="text-sm p-2 bg-gray-100 rounded-md border border-gray-300 mb-1"
-      />
-      <div class="text-center mb-3">
-        <a href="#" class="text-sm hover:underline hover:text-primaryDark"
-          >Nie pamiętam hasła</a
-        >
+    <form action="/signin" id="signInForm" @submit="onSubmit">
+      <div class="mb-4">
+        <label for="" class="block mb-1">Adres e-mail</label>
+        <input-text
+          name="email"
+          type="email"
+          :placeholder="'kowalski@example.com'"
+          :input-props="{ minlength: 3, maxlength: 254 }"
+        ></input-text>
       </div>
-      <button
-        class="text-base bg-primary text-gray-50 p-2 mb-1 rounded-md transition-colors duration-300 hover:bg-primaryLight"
-      >
-        Zaloguj się
-      </button>
-      <p class="text-sm text-center">
-        Nie masz jeszcze konta?
-        <a href="#" class="font-medium hover:underline hover:text-primaryDark"
-          >Możesz je założyć tutaj!</a
-        >
-      </p>
+      <div class="mb-1">
+        <label for="" class="block mb-1">Hasło</label>
+        <input-text
+          name="password"
+          type="password"
+          :placeholder="'********'"
+          :input-props="{ minlength: 8 }"
+        ></input-text>
+      </div>
+      <div class="text-center mb-3">
+        <a href="#" class="text-sm hover:underline hover:text-primaryDark">
+          Nie pamiętam hasła
+        </a>
+      </div>
+      <form-button
+        :formId="'signInForm'"
+        :buttonTitle="'Zaloguj się'"
+        class="w-full mb-1"
+      ></form-button>
+      <div class="text-sm text-center">
+        <p>
+          Nie masz jeszcze konta?
+          <a
+            href="#"
+            class="font-medium hover:underline hover:text-primaryDark"
+            @click="modalStore.openModal('register')"
+          >
+            Możesz je założyć tutaj!
+          </a>
+        </p>
+      </div>
     </form>
   </base-modal>
 </template>
 
 <script setup>
-import BaseModal from "./BaseModal.vue";
+import { useRouter } from "vue-router";
+import { useForm } from "vee-validate";
+import { object, string } from "yup";
+import { useModalStore } from "@/stores/ModalStore";
+import { useUserStore } from "@/stores/UserStore";
+import InputText from "@/components/form/InputText.vue";
+import FormButton from "@/components/settings/FormButton.vue";
+import BaseModal from "@/components/modals/BaseModal.vue";
+
+const router = useRouter();
+
+const modalStore = useModalStore();
+const userStore = useUserStore();
+
+const { handleSubmit } = useForm({
+  validationSchema: object({
+    email: string()
+      .required("Adres e-mail jest wymagany")
+      .email("Niepoprawny adres e-mail")
+      .min(3, "Adres e-mail jest zbyt krótki")
+      .max(254, "Adres e-mail jest zbyt długi"),
+    password: string()
+      .required("Hasło jest wymagane")
+      .min(8, "Hasło musi mieć co najmniej 8 znaków"),
+  }),
+});
+
+const onSubmit = handleSubmit((values) => {
+  userStore.signInUser(router, values);
+  // console.log(JSON.stringify(values));
+});
 </script>

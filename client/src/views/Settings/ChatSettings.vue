@@ -4,17 +4,22 @@
       <div class="criteria--age mb-10">
         <label for="" class="">Przedział wiekowy</label>
         <range-slider
-          class="slider-blue mt-4 w-96"
+          class="slider-yellow mt-4 w-96"
           :name="'ageRangeSearch'"
           :initial-value="ageRangeValue"
+          @change="updateAgeRange"
         ></range-slider>
       </div>
       <div class="criteria--gender">
-        <label for="" class="mr-2">Szukaj według płci</label>
-        <select-field name="genderSearch" :initial-value="'any'">
+        <label for="">Szukaj według płci</label>
+        <select-field
+          name="genderSearch"
+          :initial-value="userStore.searchCriteria.genderSearch"
+          @change="updateGender"
+        >
           <template #values>
             <option value="any">Dowolna</option>
-            <option value="woman">Kobieta</option>
+            <option value="female">Kobieta</option>
             <option value="male">Mężczyzna</option>
           </template>
         </select-field>
@@ -37,14 +42,16 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
+import { useUserStore } from "@/stores/UserStore";
 import { object, string, number, array } from "yup";
 import RangeSlider from "@/components/settings/RangeSlider.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const router = useRouter();
+const userStore = useUserStore();
 
-const ageRangeValue = [18, 100];
+const ageRangeValue = userStore.searchCriteria.ageRangeSearch;
 const { handleSubmit } = useForm({
   initialValues: {
     ageRangeSearch: ageRangeValue,
@@ -53,20 +60,26 @@ const { handleSubmit } = useForm({
     ageRangeSearch: array()
       .of(
         number()
-          .min(ageRangeValue[0], "Minimalny wiek szukania wynosi 18 lat")
-          .max(ageRangeValue[1], "Maksymalny wiek szukania wynosi 100 lat")
+          .min(18, "Minimalny wiek szukania wynosi 18 lat")
+          .max(100, "Maksymalny wiek szukania wynosi 100 lat")
       )
-      .required(),
+      .required("Przedział wiekowy jest wymagany"),
     genderSearch: string()
-      .oneOf(["any", "woman", "male"], "Niepoprawna płeć")
+      .oneOf(["any", "female", "male"], "Niepoprawna płeć")
       .trim()
-      .required(),
+      .required("Płeć jest wymagana"),
   }),
 });
 
+const updateAgeRange = (newAgeRange) => {
+  userStore.searchCriteria.ageRangeSearch = newAgeRange;
+};
+const updateGender = (newGender) => {
+  userStore.searchCriteria.genderSearch = newGender;
+};
+
 const onSubmit = handleSubmit((values) => {
-  console.log(JSON.stringify(values));
-  // await router.push("/chat");
+  router.push("/chat");
 });
 </script>
 
@@ -90,7 +103,7 @@ form {
   grid-row: 2;
 }
 
-.slider-blue {
+.slider-yellow {
   --slider-connect-bg: #ffc131;
   --slider-tooltip-bg: #313d51;
   --slider-handle-ring-color: #ffc131;
