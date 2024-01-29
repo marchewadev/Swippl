@@ -47,9 +47,11 @@ import { object, string, number, array } from "yup";
 import RangeSlider from "@/components/settings/RangeSlider.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
+import { useModalStore } from "@/stores/ModalStore";
 
 const router = useRouter();
 const userStore = useUserStore();
+const modalStore = useModalStore();
 
 const ageRangeValue = userStore.searchCriteria.ageRangeSearch;
 const { handleSubmit } = useForm({
@@ -79,7 +81,14 @@ const updateGender = (newGender) => {
 };
 
 const onSubmit = handleSubmit((values) => {
-  router.push("/chat");
+  if (
+    (!userStore.user.gender || !userStore.user.birthdate) &&
+    !userStore.token
+  ) {
+    modalStore.openModal("chat-anonymously");
+  } else {
+    router.push("/chat");
+  }
 });
 </script>
 
