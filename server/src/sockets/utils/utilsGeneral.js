@@ -1,7 +1,12 @@
 "use strict";
 
 const { v4: uuidv4 } = require("uuid");
-const { areUsersCompatible, getUserDataObject } = require("./helperFunctions");
+const ChatModel = require("../../models/chatModel");
+const {
+  areUsersCompatible,
+  getUserDataObject,
+  createSession,
+} = require("./helperFunctions");
 const { messageSchema } = require("../schemas/messageSchema");
 const { userDataSchema } = require("../schemas/userSchema");
 const { anonDataSchema } = require("../schemas/anonSchema");
@@ -55,6 +60,10 @@ function leaveRoomBySocketID(rooms, socket) {
         content: "Twój rozmówca się rozłączył",
         type: "admin",
       });
+
+      // Close the chat session inside of the database
+      const sessionID = room.sessionID;
+      ChatModel.closeSession(sessionID);
     }
 
     return roomID;
@@ -70,6 +79,7 @@ function findFreeRoom(io, socket, rooms, userObject) {
       userDataSchema.validateSync(userObject);
     } else {
       anonDataSchema.validateSync(userObject);
+      Object.assign(userObject, { name: "Anonim" });
     }
 
     // Find a room that is open and has only one user
@@ -86,11 +96,29 @@ function findFreeRoom(io, socket, rooms, userObject) {
         id: uuidv4(),
         users: [{ id: socket.id, ...userObject }],
         isRoomOpen: true,
+        sessionID: null,
       };
       rooms.push(room);
     } else {
       room.users.push({ id: socket.id, ...userObject });
       room.isRoomOpen = false;
+
+      // Create a new chat session inside of the database
+      const sessionObject = {
+        firstUserID: room.users[0].userID,
+        secondUserID: room.users[1].userID,
+        firstUserIP: room.users[0].clientIP,
+        secondUserIP: room.users[1].clientIP,
+      };
+
+      ChatModel.createNewSession(sessionObject)
+        .then((sessionID) => {
+          Object.assign(room, { sessionID });
+        })
+        .catch((err) => {
+          // TODO: poprawić obsługę błędu, może dodawać to do logów?
+          console.error(err);
+        });
     }
 
     socket.join(room.id);
@@ -112,7 +140,7 @@ function findFreeRoom(io, socket, rooms, userObject) {
   }
 }
 
-function sendMessage(io, socket, rooms, message) {
+function sendMessage(io, socket, rooms, message, clientIP) {
   try {
     messageSchema.validateSync({ message });
 
@@ -123,6 +151,17 @@ function sendMessage(io, socket, rooms, message) {
         "Nie znaleziono pokoju, do którego można wysłać wiadomość"
       );
     }
+
+    const user = room.users.find((user) => user.id === socket.id);
+
+    // Save the message to the database
+    const sessionObject = {
+      sessionID: room.sessionID,
+      senderID: typeof user.userID === "undefined" ? null : user.userID,
+      senderIP: clientIP,
+      message,
+    };
+    ChatModel.saveMessageToDatabase(sessionObject);
 
     io.to(room.id).emit("generateMessage", {
       content: message,

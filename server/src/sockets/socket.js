@@ -22,6 +22,12 @@ module.exports = (server) => {
 
     socket.on("joinRoom", (userObject) => {
       try {
+        let clientIP = socket.handshake.address;
+        if (clientIP.includes("::ffff:")) {
+          clientIP = clientIP.replace("::ffff:", "");
+        }
+        Object.assign(userObject, { clientIP });
+
         findFreeRoom(io, socket, rooms, userObject);
       } catch (err) {
         emitError(socket, "joinRoomError", err.message);
@@ -52,7 +58,12 @@ module.exports = (server) => {
 
     socket.on("sendMessage", ({ message }) => {
       try {
-        sendMessage(io, socket, rooms, message);
+        let clientIP = socket.handshake.address;
+        if (clientIP.includes("::ffff:")) {
+          clientIP = clientIP.replace("::ffff:", "");
+        }
+
+        sendMessage(io, socket, rooms, message, clientIP);
       } catch (err) {
         emitError(socket, "roomError", err.message);
       }

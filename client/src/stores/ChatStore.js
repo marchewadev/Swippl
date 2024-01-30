@@ -42,6 +42,7 @@ export const useChatStore = defineStore("chatStore", {
           );
 
           Object.assign(userObject, {
+            userID: response.data.userObject.id,
             token: userStore.token,
             // id: this.sessionID,
             name: response.data.userObject.name,
@@ -132,7 +133,7 @@ export const useChatStore = defineStore("chatStore", {
     sendMessage(message) {
       socket.emit("sendMessage", {
         message,
-        sessionID: this.sessionID,
+        // sessionID: this.sessionID,
       });
     },
     generateMessage() {
