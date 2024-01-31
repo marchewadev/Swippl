@@ -8,9 +8,12 @@ const router = express.Router();
 router.get("/verify", authUser, async (req, res) => {
   try {
     const userObject = await UserModel.getUserById(req.userId);
-    res
-      .status(200)
-      .send({ message: "Użytkownik pomyślnie zweryfikowany", userObject });
+    const friendsObject = await UserModel.getFriendsList(req.userId);
+    res.status(200).send({
+      message: "Użytkownik pomyślnie zweryfikowany",
+      userObject,
+      friendsObject,
+    });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -48,12 +51,10 @@ router.patch("/update/profile", authUser, async (req, res) => {
 router.patch("/update/email", authUser, async (req, res) => {
   try {
     await UserModel.updateUserEmailById(req.body, req.userId);
-    res
-      .status(200)
-      .send({
-        message:
-          "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
-      });
+    res.status(200).send({
+      message:
+        "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
+    });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }
@@ -62,12 +63,10 @@ router.patch("/update/email", authUser, async (req, res) => {
 router.patch("/update/password", authUser, async (req, res) => {
   try {
     await UserModel.updateUserPasswordById(req.body, req.userId);
-    res
-      .status(200)
-      .send({
-        message:
-          "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
-      });
+    res.status(200).send({
+      message:
+        "Twoje konto zostało zaktualizowane. Możesz się zalogować ponownie",
+    });
   } catch (err) {
     res.status(err.status).send({ message: err.message });
   }

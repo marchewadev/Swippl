@@ -90,7 +90,6 @@ export const useChatStore = defineStore("chatStore", {
         // Add listeners related to the new room
         this.updateRoomData();
         this.generateMessage();
-        this.userDisconnected();
         this.onJoinRoomError();
         this.onRoomError();
       } catch (err) {
@@ -111,7 +110,6 @@ export const useChatStore = defineStore("chatStore", {
       socket.off("roomData");
       socket.off("strangerData");
       socket.off("generateMessage");
-      socket.off("userDisconnected");
       socket.off("joinRoomError");
       socket.off("roomError");
     },
@@ -138,17 +136,22 @@ export const useChatStore = defineStore("chatStore", {
     },
     generateMessage() {
       socket.on("generateMessage", (messageObject) => {
+        let messageType;
+
+        if (messageObject.type === "admin") {
+          messageType = "admin";
+        } else if (messageObject.senderID === this.sessionID) {
+          messageType = "user";
+        } else {
+          messageType = "stranger";
+        }
+
         const message = {
           content: messageObject.content,
-          type: messageObject.senderID === this.sessionID ? "user" : "stranger",
+          type: messageType,
         };
 
         this.messages.push(message);
-      });
-    },
-    userDisconnected() {
-      socket.on("userDisconnected", (messageObject) => {
-        this.messages.push(messageObject);
       });
     },
     onJoinRoomError() {

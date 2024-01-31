@@ -10,14 +10,22 @@
       <h1 class="text-xl font-medium">Twoje czaty</h1>
     </div>
 
-    <div class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px]">
+    <div
+      class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px] overflow-scroll h-full"
+    >
       <div
         class="sidebar--chats h-full relative"
         v-if="!strangerProfileStore.show"
       >
+        <sidebar-friend
+          v-if="userStore.checkIfUserIsLoggedIn"
+          v-for="(friend, index) in userStore.friends"
+          :key="index"
+          :friend_name="friend.name"
+        ></sidebar-friend>
         <div
           class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
-          v-if="!userStore.checkIfUserIsLoggedIn"
+          v-else="!userStore.checkIfUserIsLoggedIn"
         >
           <p class="text-sm text-center text-primaryDark">
             Zaloguj się, aby mieć dostęp do tej zawartości
@@ -46,6 +54,7 @@ import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import { useUserStore } from "@/stores/UserStore";
 import MainNavbar from "../navbar/MainNavbar.vue";
 import StrangerProfile from "../chat/StrangerProfile.vue";
+import SidebarFriend from "../chat/SidebarFriend.vue";
 
 const route = useRoute();
 const isChatRoute = computed(() => route.name === "Chat");
@@ -61,6 +70,7 @@ const userStore = useUserStore();
   grid-template-rows: auto 1fr;
   box-shadow: 1px 3px 10px rgba(0, 0, 0, 0.2);
   width: 80vw;
+  height: 80vh;
 }
 .sidebar--profile {
   grid-column: 1;

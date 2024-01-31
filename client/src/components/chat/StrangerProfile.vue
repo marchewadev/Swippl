@@ -38,10 +38,27 @@
     </div>
     <div class="stranger--options flex gap-2">
       <button
-        class="text-gray-50 bg-primary p-2 rounded-md transition-colors duration-300 hover:bg-primaryLight flex flex-col items-center"
+        class="text-gray-50 bg-primary p-2 rounded-md transition-colors duration-300 flex flex-col items-center"
+        @click="handleFriendRequest"
+        :class="{
+          'hover:bg-primaryLight':
+            strangerProfileStore.friendStatus !== 'pending',
+          'opacity-50 cursor-not-allowed':
+            strangerProfileStore.friendStatus === 'pending',
+        }"
+        :disabled="strangerProfileStore.friendStatus === 'pending'"
+        v-if="strangerProfileStore.friendStatus !== 'accepted'"
       >
         <ion-icon name="person-add-outline" class="text-xl"></ion-icon>
         <span class="text-xs">Dodaj do znajomych</span>
+      </button>
+      <button
+        class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
+        @click="strangerProfileStore.removeFriend"
+        v-else
+      >
+        <ion-icon name="person-remove-outline" class="text-xl"></ion-icon>
+        <span class="text-xs">Usuń ze znajomych</span>
       </button>
       <button
         class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
@@ -60,9 +77,18 @@
 </template>
 
 <script setup>
+import socket from "@/sockets/socket";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 
 const strangerProfileStore = useStrangerProfileStore();
+
+const handleFriendRequest = () => {
+  if (!strangerProfileStore.friendRequest) {
+    socket.emit("sendFriendRequest");
+  } else {
+    socket.emit("acceptFriendRequest");
+  }
+};
 </script>
 
 <style scoped>

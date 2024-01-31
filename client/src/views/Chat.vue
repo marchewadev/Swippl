@@ -137,10 +137,14 @@ const sendMessage = () => {
 
 onMounted(() => {
   chatStore.joinRoom();
+  strangerProfileStore.updateFriendRequest();
+  strangerProfileStore.updateFriendStatus();
 });
 
 onUnmounted(() => {
   chatStore.leaveRoom();
+  socket.off("friendRequest");
+  socket.off("friendStatus");
 });
 </script>
 

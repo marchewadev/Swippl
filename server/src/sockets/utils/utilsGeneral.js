@@ -2,11 +2,7 @@
 
 const { v4: uuidv4 } = require("uuid");
 const ChatModel = require("../../models/chatModel");
-const {
-  areUsersCompatible,
-  getUserDataObject,
-  createSession,
-} = require("./helperFunctions");
+const { areUsersCompatible, getUserDataObject } = require("./helperFunctions");
 const { messageSchema } = require("../schemas/messageSchema");
 const { userDataSchema } = require("../schemas/userSchema");
 const { anonDataSchema } = require("../schemas/anonSchema");
@@ -30,7 +26,7 @@ function findRoomBySocketID(rooms, socket) {
   return room;
 }
 
-function leaveRoomBySocketID(rooms, socket) {
+async function leaveRoomBySocketID(rooms, socket) {
   try {
     let room = findRoomBySocketID(rooms, socket);
 
@@ -56,14 +52,14 @@ function leaveRoomBySocketID(rooms, socket) {
       });
 
       // Emit an event to all users in the room that the other user has disconnected, except the user that left
-      socket.to(roomID).emit("userDisconnected", {
+      socket.to(roomID).emit("generateMessage", {
         content: "Twój rozmówca się rozłączył",
         type: "admin",
       });
 
       // Close the chat session inside of the database
       const sessionID = room.sessionID;
-      ChatModel.closeSession(sessionID);
+      await ChatModel.closeSession(sessionID);
     }
 
     return roomID;
@@ -72,7 +68,7 @@ function leaveRoomBySocketID(rooms, socket) {
   }
 }
 
-function findFreeRoom(io, socket, rooms, userObject) {
+async function findFreeRoom(io, socket, rooms, userObject) {
   try {
     // First, validate the user object
     if (userObject.token) {
@@ -111,14 +107,9 @@ function findFreeRoom(io, socket, rooms, userObject) {
         secondUserIP: room.users[1].clientIP,
       };
 
-      ChatModel.createNewSession(sessionObject)
-        .then((sessionID) => {
-          Object.assign(room, { sessionID });
-        })
-        .catch((err) => {
-          // TODO: poprawić obsługę błędu, może dodawać to do logów?
-          console.error(err);
-        });
+      const sessionID = await ChatModel.createNewSession(sessionObject);
+
+      Object.assign(room, { sessionID });
     }
 
     socket.join(room.id);
@@ -140,7 +131,7 @@ function findFreeRoom(io, socket, rooms, userObject) {
   }
 }
 
-function sendMessage(io, socket, rooms, message, clientIP) {
+async function sendMessage(io, socket, rooms, message, clientIP) {
   try {
     messageSchema.validateSync({ message });
 
@@ -161,12 +152,113 @@ function sendMessage(io, socket, rooms, message, clientIP) {
       senderIP: clientIP,
       message,
     };
-    ChatModel.saveMessageToDatabase(sessionObject);
+    await ChatModel.saveMessageToDatabase(sessionObject);
 
     io.to(room.id).emit("generateMessage", {
       content: message,
       senderID: socket.id,
     });
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function sendFriendRequest(io, socket, rooms) {
+  try {
+    const room = findRoomBySocketID(rooms, socket);
+
+    if (!room) {
+      throw new Error(
+        "Nie znaleziono pokoju, do którego można wysłać zaproszenie"
+      );
+    }
+
+    const user = room.users.find((user) => user.id === socket.id);
+    const stranger = room.users.find((user) => user.id !== socket.id);
+
+    if (!user.userID || !stranger.userID) {
+      throw new Error("Nie udało się wysłać zaproszenia");
+    }
+
+    // TODO: ogarnac te dwa warunki
+    // if (user.userID === stranger.userID) {
+    //   throw new Error("Nie możesz wysłać zaproszenia do siebie");
+    // }
+    // if (stranger.isFriend)
+
+    await ChatModel.sendFriendRequest({
+      userID: user.userID,
+      friendID: stranger.userID,
+    });
+
+    socket.to(room.id).emit("generateMessage", {
+      content: `Masz zaproszenie do znajomych od ${user.name}`,
+      type: "admin",
+    });
+
+    socket.emit("generateMessage", {
+      content: `Zaproszenie do znajomych zostało wysłane do ${stranger.name}`,
+      type: "admin",
+    });
+
+    socket.emit("friendStatus", "pending");
+    socket.to(room.id).emit("friendRequest", true);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function acceptFriendRequest(io, socket, rooms) {
+  try {
+    const room = findRoomBySocketID(rooms, socket);
+
+    if (!room) {
+      throw new Error(
+        "Nie znaleziono pokoju, w którym można zaakceptować zaproszenie"
+      );
+    }
+
+    const user = room.users.find((user) => user.id === socket.id);
+    const stranger = room.users.find((user) => user.id !== socket.id);
+
+    if (!user.userID || !stranger.userID) {
+      throw new Error("Nie udało się zaakceptować zaproszenia");
+    }
+
+    await ChatModel.acceptFriendRequest({
+      userID: user.userID,
+      friendID: stranger.userID,
+    });
+
+    io.to(room.id).emit("friendStatus", "accepted");
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function rejectFriendRequest(io, socket, rooms) {
+  try {
+    const room = findRoomBySocketID(rooms, socket);
+
+    if (!room) {
+      throw new Error(
+        "Nie znaleziono pokoju, w którym można odrzucić zaproszenie"
+      );
+    }
+
+    const user = room.users.find((user) => user.id === socket.id);
+    const stranger = room.users.find((user) => user.id !== socket.id);
+
+    if (!user.userID || !stranger.userID) {
+      throw new Error("Nie udało się odrzucić zaproszenia");
+    }
+
+    await ChatModel.rejectFriendRequest({
+      userID: user.userID,
+      friendID: stranger.userID,
+    });
+
+    io.to(room.id).emit("friendStatus", "rejected");
   } catch (err) {
     throw new Error(err.message);
   }
@@ -179,4 +271,7 @@ module.exports = {
   leaveRoomBySocketID,
   findFreeRoom,
   sendMessage,
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
 };

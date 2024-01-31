@@ -84,6 +84,7 @@ router.beforeEach(async (to, from, next) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      userStore.friends = response.data.friendsObject;
       userStore.setUserData(response.data.userObject);
       next();
     } catch (err) {

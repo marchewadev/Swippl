@@ -287,6 +287,29 @@ class UserModel extends BaseModel {
       this.handleValidationErrorOrServerIssue(err);
     }
   }
+
+  async getFriendsList(userId) {
+    try {
+      const query =
+        "SELECT friend_id FROM friends WHERE user_id = $1 AND STATUS = $2";
+      const values = [userId, "accepted"];
+
+      const result = await this.pool.query(query, values);
+
+      let friends = [];
+      for (let friend of result.rows) {
+        const query = "SELECT name FROM users WHERE id = $1";
+        const values = [friend.friend_id];
+
+        const result = await this.pool.query(query, values);
+        friends.push(result.rows[0]);
+      }
+
+      return friends;
+    } catch (err) {
+      this.handleValidationErrorOrServerIssue(err);
+    }
+  }
 }
 
 module.exports = new UserModel();

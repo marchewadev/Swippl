@@ -1,4 +1,8 @@
+import socket from "@/sockets/socket";
 import { defineStore } from "pinia";
+import { useUserStore } from "./UserStore";
+import { useModalStore } from "./ModalStore";
+import axios from "axios";
 
 export const useStrangerProfileStore = defineStore("strangerProfileStore", {
   state: () => ({
@@ -10,7 +14,8 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
       city: "",
       avatar: "",
     },
-    isFriend: false,
+    friendStatus: null,
+    friendRequest: false,
     show: false,
   }),
   actions: {
@@ -28,6 +33,44 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     },
     resetStrangerData() {
       this.$reset();
+    },
+    sendFriendRequest() {
+      socket.emit("sendFriendRequest");
+    },
+    acceptFriendRequest() {
+      socket.emit("acceptFriendRequest");
+    },
+    rejectFriendRequest() {
+      socket.emit("rejectFriendRequest");
+    },
+    removeFriend() {
+      socket.emit("removeFriend");
+    },
+    updateFriendStatus() {
+      const userStore = useUserStore();
+      const modalStore = useModalStore();
+
+      socket.on("friendStatus", async (friendStatus) => {
+        try {
+          if (friendStatus === "accepted") {
+            const response = await axios.get(
+              `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
+              { headers: { Authorization: `Bearer ${userStore.token}` } }
+            );
+
+            userStore.friends = response.data.friendsObject;
+          }
+
+          this.friendStatus = friendStatus;
+        } catch (err) {
+          modalStore.displayMessageModal(err.response.data.message, true);
+        }
+      });
+    },
+    updateFriendRequest() {
+      socket.on("friendRequest", (friendRequest) => {
+        this.friendRequest = friendRequest;
+      });
     },
   },
   getters: {

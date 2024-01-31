@@ -5,6 +5,8 @@ const {
   leaveRoomBySocketID,
   findFreeRoom,
   sendMessage,
+  sendFriendRequest,
+  acceptFriendRequest,
 } = require("./utils/utilsGeneral");
 
 module.exports = (server) => {
@@ -20,7 +22,7 @@ module.exports = (server) => {
     updateConnectedClients(io);
     socket.emit("sessionInfo", socket.id);
 
-    socket.on("joinRoom", (userObject) => {
+    socket.on("joinRoom", async (userObject) => {
       try {
         let clientIP = socket.handshake.address;
         if (clientIP.includes("::ffff:")) {
@@ -28,15 +30,15 @@ module.exports = (server) => {
         }
         Object.assign(userObject, { clientIP });
 
-        findFreeRoom(io, socket, rooms, userObject);
+        await findFreeRoom(io, socket, rooms, userObject);
       } catch (err) {
         emitError(socket, "joinRoomError", err.message);
       }
     });
 
-    socket.on("leaveRoom", (callback) => {
+    socket.on("leaveRoom", async (callback) => {
       try {
-        const roomID = leaveRoomBySocketID(rooms, socket);
+        const roomID = await leaveRoomBySocketID(rooms, socket);
         socket.leave(roomID);
         callback();
       } catch (err) {
@@ -44,9 +46,9 @@ module.exports = (server) => {
       }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       try {
-        leaveRoomBySocketID(rooms, socket);
+        await leaveRoomBySocketID(rooms, socket);
         updateConnectedClients(io);
       } catch (err) {
         // TODO: Consider creating a separate file for server logs to improve log management.
@@ -56,15 +58,32 @@ module.exports = (server) => {
       }
     });
 
-    socket.on("sendMessage", ({ message }) => {
+    socket.on("sendMessage", async ({ message }) => {
       try {
         let clientIP = socket.handshake.address;
         if (clientIP.includes("::ffff:")) {
           clientIP = clientIP.replace("::ffff:", "");
         }
 
-        sendMessage(io, socket, rooms, message, clientIP);
+        await sendMessage(io, socket, rooms, message, clientIP);
       } catch (err) {
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("sendFriendRequest", async () => {
+      try {
+        await sendFriendRequest(io, socket, rooms);
+      } catch (err) {
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("acceptFriendRequest", async () => {
+      try {
+        await acceptFriendRequest(io, socket, rooms);
+      } catch (err) {
+        console.error(err);
         emitError(socket, "roomError", err.message);
       }
     });
