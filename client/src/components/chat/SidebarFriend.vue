@@ -14,21 +14,24 @@
       <p
         class="message text-sm whitespace-nowrap overflow-hidden text-ellipsis"
       >
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-        voluptatum, quibusdam, quia, quod voluptatem voluptas quos
-        exercitationem quas quibusdam, quia, quod voluptatem voluptas quos
-        exercitationem quas
+        {{ latestMessage }}
       </p>
     </div>
   </div>
 </template>
 
 <script setup>
+import socket from "@/sockets/socket";
 import { useChatStore } from "@/stores/ChatStore";
+import { useUserStore } from "@/stores/UserStore";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const router = useRouter();
+
+const latestMessage = ref("");
 
 const props = defineProps({
   friend_name: {
@@ -51,6 +54,24 @@ const handleClick = () => {
     params: { friendID: props.friend_id, sessionID: props.session_id },
   });
 };
+
+const setLatestMessage = () => {
+  latestMessage.value = userStore.friends.find(
+    (friend) => friend.id === props.friend_id
+  ).latestMessage.message_content;
+};
+
+setLatestMessage();
+
+onMounted(() => {
+  socket.on("generatePrivateMessage", (messageObject) => {
+    userStore.friends.find(
+      (friend) => friend.sessionID === messageObject.sessionID
+    ).latestMessage.message_content = messageObject.content;
+
+    setLatestMessage();
+  });
+});
 </script>
 
 <style scoped>

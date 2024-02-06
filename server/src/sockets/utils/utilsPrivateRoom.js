@@ -82,6 +82,7 @@ async function sendPrivateMessage(
     io.to(room.sessionID).emit("generatePrivateMessage", {
       content: message,
       senderID: userID,
+      sessionID,
     });
   } catch (err) {
     throw new Error(err.message);

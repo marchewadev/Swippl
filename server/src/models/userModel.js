@@ -318,10 +318,19 @@ class UserModel extends BaseModel {
           ? sessionIDResult.rows[0].id
           : null;
 
+        const latestMessageQuery =
+          "SELECT message_content FROM chat_messages WHERE session_id = $1 ORDER BY sent_at DESC LIMIT 1";
+        const latestMessageValues = [sessionID];
+        const latestMessageResult = await this.pool.query(
+          latestMessageQuery,
+          latestMessageValues
+        );
+
         friends.push({
           name: friendName,
           id: friend.friend_id,
           sessionID: sessionID,
+          latestMessage: latestMessageResult.rows[0],
         });
       }
 

@@ -60,6 +60,7 @@ export const useChatStore = defineStore("chatStore", {
               age: userStore.searchCriteria.ageRangeSearch,
               gender: userStore.searchCriteria.genderSearch,
             },
+            friends: userStore.friends.map((friend) => friend.id),
           });
         } else {
           Object.assign(userObject, {
@@ -191,7 +192,7 @@ export const useChatStore = defineStore("chatStore", {
     generatePrivateMessage() {
       socket.on("generatePrivateMessage", (messageObject) => {
         const userStore = useUserStore();
-        console.log(messageObject);
+
         let messageType;
 
         if (messageObject.type === "admin") {

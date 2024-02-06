@@ -70,7 +70,15 @@ async function findFreeRoom(io, socket, rooms, userObject) {
     let room = rooms.find((room) => {
       if (room.isRoomOpen && room.users.length === 1) {
         const otherUser = room.users.find((user) => user.id !== socket.id);
-        return otherUser && areUsersCompatible(userObject, otherUser);
+
+        if (userObject.token) {
+          // Check if the user is not already friends with the other user
+          if (otherUser && !userObject.friends.includes(otherUser.userID)) {
+            return areUsersCompatible(userObject, otherUser);
+          }
+        } else {
+          return otherUser && areUsersCompatible(userObject, otherUser);
+        }
       }
       return false;
     });

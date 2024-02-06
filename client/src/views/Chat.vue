@@ -113,6 +113,7 @@ import Message from "@/components/chat/Message.vue";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import { useChatStore } from "@/stores/ChatStore";
 import LoadingScreen from "@/components/chat/LoadingScreen.vue";
+import { onBeforeRouteLeave } from "vue-router";
 
 const strangerProfileStore = useStrangerProfileStore();
 const chatStore = useChatStore();
@@ -141,10 +142,8 @@ onMounted(() => {
   strangerProfileStore.updateFriendStatus();
 });
 
-onUnmounted(() => {
+onBeforeRouteLeave(() => {
   chatStore.leaveRoom();
-  // socket.off("friendRequest");
-  // socket.off("friendStatus");
 });
 </script>
 
