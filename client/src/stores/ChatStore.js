@@ -1,20 +1,22 @@
-import dayjs from "dayjs";
-import { useUserStore } from "./UserStore";
 import { useStrangerProfileStore } from "./StrangerProfileStore";
+import { useUserStore } from "./UserStore";
 import { useModalStore } from "./ModalStore";
-import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
+import { defineStore } from "pinia";
 import socket from "@/sockets/socket";
 import axios from "axios";
+import dayjs from "dayjs";
 
 export const useChatStore = defineStore("chatStore", {
   state: () => ({
+    totalUsers: 0,
     sessionID: null,
-    isSearching: true,
     roomID: null,
     roomUsers: 0,
     messages: [],
-    totalUsers: 0,
+    isSearching: true,
+    privateSessionID: null,
+    activeFriendID: null,
   }),
   actions: {
     connectToSocket() {
@@ -29,62 +31,47 @@ export const useChatStore = defineStore("chatStore", {
       });
     },
     async joinRoom() {
-      console.log(this.sessionID);
       const userStore = useUserStore();
 
-      let userObject = {};
+      try {
+        let userObject = {};
 
-      if (userStore.token) {
-        try {
+        if (userStore.token) {
           const response = await axios.get(
             `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
-            { headers: { Authorization: `Bearer ${userStore.token}` } }
+            {
+              headers: {
+                Authorization: `Bearer ${userStore.token}`,
+              },
+            }
           );
 
           Object.assign(userObject, {
-            userID: response.data.userObject.id,
             token: userStore.token,
-            // id: this.sessionID,
+            userID: response.data.userObject.id,
             name: response.data.userObject.name,
+            gender: response.data.userObject.gender,
+            city: response.data.userObject.city,
             age: dayjs().diff(
               dayjs(response.data.userObject.birthdate),
               "year"
             ),
-            gender: response.data.userObject.gender,
-            city: response.data.userObject.city,
             searchCriteria: {
               age: userStore.searchCriteria.ageRangeSearch,
               gender: userStore.searchCriteria.genderSearch,
             },
           });
-        } catch (err) {
-          console.error(err);
-          userStore.resetUserStore();
-          // next("/");
-        }
-      } else {
-        try {
+        } else {
           Object.assign(userObject, {
-            // id: this.sessionID,
-            // name: "Anonim",
-            age: dayjs().diff(dayjs(userStore.user.birthdate), "year"),
             gender: userStore.user.gender,
+            age: dayjs().diff(dayjs(userStore.user.birthdate), "year"),
             searchCriteria: {
               age: userStore.searchCriteria.ageRangeSearch,
               gender: userStore.searchCriteria.genderSearch,
             },
           });
-        } catch (err) {
-          console.log("chatStore error");
-          return;
         }
-      }
 
-      const modalStore = useModalStore();
-      const router = useRouter();
-
-      try {
-        console.log(userObject.id);
         socket.emit("joinRoom", userObject);
 
         // Add listeners related to the new room
@@ -93,7 +80,12 @@ export const useChatStore = defineStore("chatStore", {
         this.onJoinRoomError();
         this.onRoomError();
       } catch (err) {
-        console.error(err);
+        const router = useRouter();
+        const modalStore = useModalStore();
+
+        userStore.resetUserStore();
+        modalStore.displayMessageModal(err.message, true);
+        router.push({ name: "Settings" });
       }
     },
     leaveRoom() {
@@ -131,7 +123,6 @@ export const useChatStore = defineStore("chatStore", {
     sendMessage(message) {
       socket.emit("sendMessage", {
         message,
-        // sessionID: this.sessionID,
       });
     },
     generateMessage() {
@@ -151,7 +142,7 @@ export const useChatStore = defineStore("chatStore", {
           type: messageType,
         };
 
-        this.messages.push(message);
+        this.$patch({ messages: [...this.messages, message] });
       });
     },
     onJoinRoomError() {
@@ -168,6 +159,55 @@ export const useChatStore = defineStore("chatStore", {
 
       socket.on("roomError", (error) => {
         modalStore.displayMessageModal(error, true);
+      });
+    },
+    createUserSession() {
+      const userStore = useUserStore();
+
+      socket.emit("createUserSession", {
+        userID: userStore.user.id,
+        friends: userStore.friends,
+      });
+    },
+    getChatHistory(chatObject, sessionID) {
+      this.privateSessionID = sessionID;
+
+      socket.emit("getChatHistory", chatObject, (chatHistory) => {
+        const strangerProfileStore = useStrangerProfileStore();
+        this.messages = chatHistory.chatHistory;
+        strangerProfileStore.friendStatus = chatHistory.friendStatus;
+        strangerProfileStore.setStrangerData(chatHistory.friendObject);
+      });
+    },
+    sendPrivateMessage({ message }) {
+      const userStore = useUserStore();
+
+      socket.emit("sendPrivateMessage", {
+        message,
+        userID: userStore.user.id,
+        sessionID: this.privateSessionID,
+      });
+    },
+    generatePrivateMessage() {
+      socket.on("generatePrivateMessage", (messageObject) => {
+        const userStore = useUserStore();
+        console.log(messageObject);
+        let messageType;
+
+        if (messageObject.type === "admin") {
+          messageType = "admin";
+        } else if (messageObject.senderID === userStore.user.id) {
+          messageType = "user";
+        } else {
+          messageType = "stranger";
+        }
+
+        const message = {
+          content: messageObject.content,
+          type: messageType,
+        };
+
+        this.$patch({ messages: [...this.messages, message] });
       });
     },
   },

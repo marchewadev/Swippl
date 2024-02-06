@@ -1,7 +1,9 @@
 <template>
   <div class="p-2">
     <div
-      class="friend-sidebar cursor-pointer hover:bg-gray-100 py-4 px-2 grid rounded-xl"
+      class="friend-sidebar cursor-pointer hover:bg-gray-100 py-4 px-2 grid rounded-xl transition-colors duration-200"
+      :class="{ 'bg-gray-100': props.friend_id === chatStore.activeFriendID }"
+      @click="handleClick"
     >
       <img
         src="@/assets/avatar.png"
@@ -22,12 +24,33 @@
 </template>
 
 <script setup>
+import { useChatStore } from "@/stores/ChatStore";
+import { useRouter } from "vue-router";
+
+const chatStore = useChatStore();
+const router = useRouter();
+
 const props = defineProps({
   friend_name: {
     type: String,
     required: true,
   },
+  friend_id: {
+    type: Number,
+    required: true,
+  },
+  session_id: {
+    type: Number,
+    required: true,
+  },
 });
+
+const handleClick = () => {
+  router.push({
+    name: "PrivateChat",
+    params: { friendID: props.friend_id, sessionID: props.session_id },
+  });
+};
 </script>
 
 <style scoped>

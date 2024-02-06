@@ -1,13 +1,22 @@
 const { Server } = require("socket.io");
+
+const { emitError, updateConnectedClients } = require("./utils/utilsGeneral");
 const {
-  emitError,
-  updateConnectedClients,
   leaveRoomBySocketID,
   findFreeRoom,
   sendMessage,
+} = require("./utils/utilsRoom");
+const {
+  getChatHistory,
+  sendPrivateMessage,
+  createUserSession,
+  toggleOnlineStatus,
+} = require("./utils/utilsPrivateRoom");
+const {
   sendFriendRequest,
   acceptFriendRequest,
-} = require("./utils/utilsGeneral");
+  rejectFriendRequest,
+} = require("./utils/utilsFriendStatus");
 
 module.exports = (server) => {
   const io = new Server(server, {
@@ -17,6 +26,7 @@ module.exports = (server) => {
   });
 
   let rooms = [];
+  let privateRooms = [];
 
   io.on("connection", (socket) => {
     updateConnectedClients(io);
@@ -24,12 +34,6 @@ module.exports = (server) => {
 
     socket.on("joinRoom", async (userObject) => {
       try {
-        let clientIP = socket.handshake.address;
-        if (clientIP.includes("::ffff:")) {
-          clientIP = clientIP.replace("::ffff:", "");
-        }
-        Object.assign(userObject, { clientIP });
-
         await findFreeRoom(io, socket, rooms, userObject);
       } catch (err) {
         emitError(socket, "joinRoomError", err.message);
@@ -38,7 +42,7 @@ module.exports = (server) => {
 
     socket.on("leaveRoom", async (callback) => {
       try {
-        const roomID = await leaveRoomBySocketID(rooms, socket);
+        const roomID = await leaveRoomBySocketID(socket, rooms);
         socket.leave(roomID);
         callback();
       } catch (err) {
@@ -48,7 +52,11 @@ module.exports = (server) => {
 
     socket.on("disconnect", async () => {
       try {
-        await leaveRoomBySocketID(rooms, socket);
+        if (socket.data.userID) {
+          await toggleOnlineStatus(privateRooms, socket.data.userID);
+        }
+
+        await leaveRoomBySocketID(socket, rooms);
         updateConnectedClients(io);
       } catch (err) {
         // TODO: Consider creating a separate file for server logs to improve log management.
@@ -60,12 +68,7 @@ module.exports = (server) => {
 
     socket.on("sendMessage", async ({ message }) => {
       try {
-        let clientIP = socket.handshake.address;
-        if (clientIP.includes("::ffff:")) {
-          clientIP = clientIP.replace("::ffff:", "");
-        }
-
-        await sendMessage(io, socket, rooms, message, clientIP);
+        await sendMessage(io, socket, rooms, message);
       } catch (err) {
         emitError(socket, "roomError", err.message);
       }
@@ -83,7 +86,32 @@ module.exports = (server) => {
       try {
         await acceptFriendRequest(io, socket, rooms);
       } catch (err) {
-        console.error(err);
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("createUserSession", async (sessionObject) => {
+      try {
+        await createUserSession(io, socket, privateRooms, sessionObject);
+        socket.data = { userID: sessionObject.userID };
+      } catch (err) {
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("getChatHistory", async (chatObject, callback) => {
+      try {
+        const chatHistory = await getChatHistory(chatObject);
+        callback(chatHistory);
+      } catch (err) {
+        emitError(socket, "joinRoomError", err.message);
+      }
+    });
+
+    socket.on("sendPrivateMessage", async (messageObject) => {
+      try {
+        await sendPrivateMessage(io, socket, privateRooms, messageObject);
+      } catch (err) {
         emitError(socket, "roomError", err.message);
       }
     });

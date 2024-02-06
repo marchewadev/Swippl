@@ -2,6 +2,7 @@ import axios from "axios";
 import { createRouter, createWebHistory } from "vue-router";
 import { useSettingsStore } from "@/stores/SettingsStore";
 import { useUserStore } from "@/stores/UserStore";
+import { useChatStore } from "@/stores/ChatStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,25 @@ const router = createRouter({
       path: "/chat",
       name: "Chat",
       component: () => import("@/views/Chat.vue"),
+    },
+    {
+      path: "/private-chat/user/:friendID/session/:sessionID",
+      name: "PrivateChat",
+      component: () => import("@/views/PrivateChat.vue"),
+      beforeEnter: (to, from) => {
+        const chatStore = useChatStore();
+        const userStore = useUserStore();
+
+        if (userStore.token) {
+          chatStore.getChatHistory(
+            {
+              userID: userStore.user.id,
+              friendID: to.params.friendID,
+            },
+            Number(to.params.sessionID)
+          );
+        }
+      },
     },
     {
       path: "/settings",
@@ -65,6 +85,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const settingsStore = useSettingsStore();
   const userStore = useUserStore();
+  const chatStore = useChatStore();
 
   const token = userStore.token;
   const authRequiredRoutes = settingsStore.buttons
@@ -86,6 +107,7 @@ router.beforeEach(async (to, from, next) => {
 
       userStore.friends = response.data.friendsObject;
       userStore.setUserData(response.data.userObject);
+      chatStore.createUserSession();
       next();
     } catch (err) {
       console.error(err);

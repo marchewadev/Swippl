@@ -302,7 +302,27 @@ class UserModel extends BaseModel {
         const values = [friend.friend_id];
 
         const result = await this.pool.query(query, values);
-        friends.push(result.rows[0]);
+        const friendName = result.rows[0].name;
+
+        const sessionIDQuery = `
+          SELECT id FROM chat_sessions 
+          WHERE ((user1_id = $1 AND user2_id = $2) OR (user1_id = $2 AND user2_id = $1)) 
+          AND end_timestamp IS NULL
+        `;
+        const sessionIDValues = [userId, friend.friend_id];
+        const sessionIDResult = await this.pool.query(
+          sessionIDQuery,
+          sessionIDValues
+        );
+        const sessionID = sessionIDResult.rows[0]
+          ? sessionIDResult.rows[0].id
+          : null;
+
+        friends.push({
+          name: friendName,
+          id: friend.friend_id,
+          sessionID: sessionID,
+        });
       }
 
       return friends;

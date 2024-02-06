@@ -54,7 +54,7 @@
             />
             <div
               v-show="dropdownOpen"
-              class="absolute bg-white mt-2 w-48 rounded-md right-0 dropdown-menu"
+              class="absolute bg-white mt-2 w-48 rounded-md right-0 dropdown-menu z-20"
             >
               <ul>
                 <navbar-link

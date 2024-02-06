@@ -1,4 +1,3 @@
-// These are helper functions that are used TODO: bla bla bla
 function isWithinAgeCriteria(user, criteria) {
   return user.age >= criteria[0] && user.age <= criteria[1];
 }
@@ -25,7 +24,25 @@ function getUserDataObject(user) {
   };
 }
 
+function findRoomBySocketID(socket, rooms) {
+  // Find the room where a user with the given socket ID is present
+  const room = rooms.find((room) =>
+    room.users.some((user) => user.id === socket.id)
+  );
+  return room;
+}
+
+function getClientIP(socket) {
+  let clientIP = socket.handshake.address;
+  if (clientIP.includes("::ffff:")) {
+    clientIP = clientIP.replace("::ffff:", "");
+  }
+  return clientIP;
+}
+
 module.exports = {
   areUsersCompatible,
   getUserDataObject,
+  findRoomBySocketID,
+  getClientIP,
 };

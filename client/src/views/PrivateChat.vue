@@ -1,10 +1,7 @@
 <template>
   <app-layout>
     <template #boxTitle>
-      <div
-        class="stranger max-w-fit flex items-center gap-2"
-        v-if="!chatStore.isSearching"
-      >
+      <div class="stranger max-w-fit flex items-center gap-2">
         <img
           :src="strangerProfileStore.getAvatar"
           alt="Stranger avatar"
@@ -27,7 +24,7 @@
         </button>
       </div>
       <div
-        class="py-2 settings flex items-center gap-1 absolute left-full bottom-full -translate-x-full translate-y-full"
+        class="p-2 settings absolute left-full bottom-full -translate-x-full translate-y-full"
       >
         <router-link :to="{ name: 'Settings' }" class="settings--btn">
           <ion-icon
@@ -35,30 +32,15 @@
             class="settings--icon text-xl transition-transform duration-700"
           ></ion-icon>
         </router-link>
-
-        <button
-          class="disconnect--btn transition-colors duration-300 hover:text-red-700"
-          @click="chatStore.changeRoom"
-        >
-          <ion-icon name="close-outline" class="text-2xl"></ion-icon>
-        </button>
       </div>
     </template>
     <template #boxContent>
-      <loading-screen v-if="chatStore.isSearching"></loading-screen>
       <div
         class="chat-container h-full grid 5xl:grid-rows-chat-layout-xl 4xl:grid-rows-chat-layout-lg"
-        v-if="!chatStore.isSearching"
       >
         <div
           class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
         >
-          <message class="message-admin">
-            Pamiętaj, aby zachowywać się w sposób stosowny! Możesz w szybki
-            sposób zmienić swojego rozmówcę wciskając dwa razy klawisz
-            <strong>ESC</strong> bądź klikając przycisk <strong>X</strong> w
-            prawym górnym rogu.
-          </message>
           <message
             v-for="(message, index) in chatStore.messages"
             :key="index"
@@ -86,18 +68,9 @@
               class="bg-gray-100 w-full h-full p-2 rounded-lg resize-none"
               v-model="newMessage"
               @keydown.enter.prevent="sendMessage"
-              :disabled="chatStore.roomUsers < 2"
-              :class="{ 'opacity-50': chatStore.roomUsers < 2 }"
             ></textarea>
           </div>
-          <button
-            :disabled="chatStore.roomUsers < 2"
-            :class="{
-              'opacity-50': chatStore.roomUsers < 2,
-              'active:scale-110 transition-transform duration-200':
-                chatStore.roomUsers === 2,
-            }"
-          >
+          <button class="active:scale-110 transition-transform duration-200">
             <ion-icon name="send" class="text-2xl"></ion-icon>
           </button>
         </div>
@@ -107,44 +80,68 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import Message from "@/components/chat/Message.vue";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import { useChatStore } from "@/stores/ChatStore";
-import LoadingScreen from "@/components/chat/LoadingScreen.vue";
+import socket from "@/sockets/socket";
+import { useUserStore } from "@/stores/UserStore";
+import { useRoute } from "vue-router";
 
 const strangerProfileStore = useStrangerProfileStore();
 const chatStore = useChatStore();
 
 const newMessage = ref("");
 
-watch(
-  () => chatStore.roomUsers,
-  (newVal, oldVal) => {
-    if (newVal === 2) {
-      chatStore.isSearching = false;
-    }
-  }
-);
-
 const sendMessage = () => {
   if (newMessage.value.trim() !== "") {
-    chatStore.sendMessage(newMessage.value);
+    chatStore.sendPrivateMessage({
+      message: newMessage.value,
+    });
     newMessage.value = "";
   }
 };
 
 onMounted(() => {
-  chatStore.joinRoom();
-  strangerProfileStore.updateFriendRequest();
-  strangerProfileStore.updateFriendStatus();
+  const userStore = useUserStore();
+  const route = useRoute();
+  chatStore.onJoinRoomError();
+
+  watch(
+    () => [route.params.friendID, route.params.sessionID],
+    ([friendID, sessionID]) => {
+      chatStore.getChatHistory(
+        {
+          userID: userStore.user.id,
+          friendID,
+        },
+        Number(sessionID)
+      );
+    }
+  );
+
+  // Automatically scroll to the bottom of the messages container
+  const messagesWrapper = document.querySelector(".messages-wrapper");
+  messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+  watch(
+    () => chatStore.messages,
+    async (newMessages, oldMessages) => {
+      if (newMessages.length > oldMessages.length) {
+        await nextTick();
+        messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+      }
+    }
+  );
+  chatStore.generatePrivateMessage();
 });
 
 onUnmounted(() => {
-  chatStore.leaveRoom();
-  // socket.off("friendRequest");
-  // socket.off("friendStatus");
+  strangerProfileStore.resetStrangerData();
+  chatStore.privateSessionID = null;
+  chatStore.activeFriendID = null;
+  chatStore.messages = [];
+  socket.off("generatePrivateMessage");
 });
 </script>
 

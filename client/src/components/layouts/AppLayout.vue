@@ -22,6 +22,9 @@
           v-for="(friend, index) in userStore.friends"
           :key="index"
           :friend_name="friend.name"
+          :friend_id="friend.id"
+          :session_id="friend.sessionID"
+          @click="setActiveFriend(friend.id)"
         ></sidebar-friend>
         <div
           class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
@@ -52,15 +55,23 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import { useUserStore } from "@/stores/UserStore";
+import { useChatStore } from "@/stores/ChatStore";
 import MainNavbar from "../navbar/MainNavbar.vue";
 import StrangerProfile from "../chat/StrangerProfile.vue";
 import SidebarFriend from "../chat/SidebarFriend.vue";
 
 const route = useRoute();
-const isChatRoute = computed(() => route.name === "Chat");
+const isChatRoute = computed(
+  () => route.name === "Chat" || route.name === "PrivateChat"
+);
 
 const strangerProfileStore = useStrangerProfileStore();
 const userStore = useUserStore();
+const chatStore = useChatStore();
+
+const setActiveFriend = (id) => {
+  chatStore.activeFriendID = id;
+};
 </script>
 
 <style scoped>
