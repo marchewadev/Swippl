@@ -170,14 +170,35 @@ export const useChatStore = defineStore("chatStore", {
         friends: userStore.friends,
       });
     },
-    getChatHistory(chatObject, sessionID) {
-      this.privateSessionID = sessionID;
+    getChatHistory(chatObject) {
+      this.privateSessionID = chatObject.sessionID;
 
       socket.emit("getChatHistory", chatObject, (chatHistory) => {
         const strangerProfileStore = useStrangerProfileStore();
         this.messages = chatHistory.chatHistory;
         strangerProfileStore.friendStatus = chatHistory.friendStatus;
         strangerProfileStore.setStrangerData(chatHistory.friendObject);
+      });
+    },
+    onFriendRemoved(router) {
+      const modalStore = useModalStore();
+      const userStore = useUserStore();
+
+      socket.on("friendRemoved", async ({ sessionID, userName }, callback) => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
+          { headers: { Authorization: `Bearer ${userStore.token}` } }
+        );
+        userStore.friends = response.data.friendsObject;
+
+        if (this.privateSessionID === sessionID) {
+          router.push({ name: "Settings" });
+        }
+
+        modalStore.displayMessageModal(
+          `Użytkownik ${userName} usunął cię z listy znajomych`
+        );
+        callback();
       });
     },
     sendPrivateMessage({ message }) {

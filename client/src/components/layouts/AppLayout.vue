@@ -51,8 +51,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
@@ -61,6 +61,7 @@ import StrangerProfile from "../chat/StrangerProfile.vue";
 import SidebarFriend from "../chat/SidebarFriend.vue";
 
 const route = useRoute();
+const router = useRouter();
 const isChatRoute = computed(
   () => route.name === "Chat" || route.name === "PrivateChat"
 );
@@ -68,6 +69,15 @@ const isChatRoute = computed(
 const strangerProfileStore = useStrangerProfileStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
+
+onMounted(() => {
+  const friendID = route.params.friendID;
+  if (friendID) {
+    chatStore.activeFriendID = Number(friendID);
+  }
+
+  chatStore.onFriendRemoved(router);
+});
 
 const setActiveFriend = (id) => {
   chatStore.activeFriendID = id;

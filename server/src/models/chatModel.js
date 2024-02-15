@@ -64,7 +64,9 @@ class ChatModel extends BaseModel {
 
   async closeSession(sessionID) {
     try {
-      const result = this.checkIfUsersAreFriends(sessionID);
+      console.log(sessionID);
+      const result = await this.checkIfUsersAreFriends(sessionID);
+      console.log(result);
       if (result) return;
 
       const query =
@@ -80,6 +82,7 @@ class ChatModel extends BaseModel {
 
   async saveMessageToDatabase(sessionObject) {
     try {
+      //TODO: Sprawdzać za każdym razem czy ta sesja jest prawidłowa dla tych użytkowników...
       const { sessionID, senderID, senderIP, message } = sessionObject;
 
       const query =
@@ -166,7 +169,29 @@ class ChatModel extends BaseModel {
     }
   }
 
-  async getChatHistory(firstUserID, secondUserID) {
+  async removeFriend(sessionObject) {
+    try {
+      const { userID, friendID, sessionID } = sessionObject;
+
+      const queryFriendsTable =
+        "DELETE FROM friends WHERE (user_id = $1 AND friend_id = $2) OR (user_id = $2 AND friend_id = $1)";
+      const valuesFriendsTable = [userID, friendID];
+
+      const querySessionsTable =
+        "UPDATE chat_sessions SET end_timestamp = now() WHERE id = $1";
+      const valuesSessionsTable = [sessionID];
+
+      await this.pool.query("BEGIN");
+      await this.pool.query(queryFriendsTable, valuesFriendsTable);
+      await this.pool.query(querySessionsTable, valuesSessionsTable);
+      await this.pool.query("COMMIT");
+    } catch (err) {
+      await this.pool.query("ROLLBACK");
+      this.handleValidationErrorOrServerIssue(err);
+    }
+  }
+
+  async getChatHistory(firstUserID, secondUserID, sessionID) {
     try {
       const query = `
         SELECT cm.message_content AS content,
@@ -176,9 +201,10 @@ class ChatModel extends BaseModel {
           END AS type
         FROM chat_sessions cs
         JOIN chat_messages cm ON cs.id = cm.session_id
-        WHERE (cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1);
+        WHERE (cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1)
+        AND cs.id = $3;
       `;
-      const values = [firstUserID, secondUserID];
+      const values = [firstUserID, secondUserID, sessionID];
       const { rows: chatHistory } = await this.pool.query(query, values);
 
       if (chatHistory.length < 1) {

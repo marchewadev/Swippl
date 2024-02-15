@@ -10,6 +10,7 @@ const {
   findRoomBySocketID,
   getClientIP,
 } = require("./helperFunctions");
+const { messageSchema } = require("../schemas/messageSchema");
 
 async function leaveRoomBySocketID(socket, rooms) {
   try {
@@ -55,9 +56,9 @@ async function findFreeRoom(io, socket, rooms, userObject) {
   try {
     // First, validate the user object
     if (userObject.token) {
-      userDataSchema.validate(userObject);
+      await userDataSchema.validate(userObject);
     } else {
-      anonDataSchema.validate(userObject);
+      await anonDataSchema.validate(userObject);
       Object.assign(userObject, { name: "Anonim" });
     }
 

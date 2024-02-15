@@ -99,8 +99,47 @@ async function rejectFriendRequest(io, socket, rooms) {
   }
 }
 
+async function removeFriend(
+  socket,
+  privateRooms,
+  { userID, userName, friendID, sessionID }
+) {
+  try {
+    // TODO: delete room from privateRooms
+    const room = privateRooms.find((room) => room.sessionID === sessionID);
+
+    if (!room) {
+      throw new Error("Nie udało się usunąć znajomego");
+    }
+
+    // Make sure that the user and the friend are in the same room
+    const userInRoom = room.users.some((user) => user.id === userID);
+    const friendInRoom = room.users.some((user) => user.id === friendID);
+
+    if (!userInRoom || !friendInRoom) {
+      throw new Error("Nie udało się usunąć znajomego");
+    }
+
+    // Remove the friend
+    await ChatModel.removeFriend({ userID, friendID, sessionID });
+
+    socket
+      .to(room.sessionID)
+      .emit("friendRemoved", { sessionID, userName }, () => {
+        // Remove the room from the privateRooms array
+        const roomIndex = privateRooms.findIndex(
+          (room) => room.sessionID === sessionID
+        );
+        privateRooms.splice(roomIndex, 1);
+      });
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
 module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  removeFriend,
 };

@@ -15,7 +15,7 @@ const {
 const {
   sendFriendRequest,
   acceptFriendRequest,
-  rejectFriendRequest,
+  removeFriend,
 } = require("./utils/utilsFriendStatus");
 
 module.exports = (server) => {
@@ -85,6 +85,15 @@ module.exports = (server) => {
     socket.on("acceptFriendRequest", async () => {
       try {
         await acceptFriendRequest(io, socket, rooms);
+      } catch (err) {
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("removeFriend", async (sessionObject, callback) => {
+      try {
+        await removeFriend(socket, privateRooms, sessionObject);
+        callback();
       } catch (err) {
         emitError(socket, "roomError", err.message);
       }

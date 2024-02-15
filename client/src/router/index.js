@@ -26,13 +26,11 @@ const router = createRouter({
         const userStore = useUserStore();
 
         if (userStore.token) {
-          chatStore.getChatHistory(
-            {
-              userID: userStore.user.id,
-              friendID: to.params.friendID,
-            },
-            Number(to.params.sessionID)
-          );
+          chatStore.getChatHistory({
+            userID: userStore.user.id,
+            friendID: to.params.friendID,
+            sessionID: Number(to.params.sessionID),
+          });
         }
       },
     },
@@ -91,14 +89,20 @@ router.beforeEach(async (to, from, next) => {
   const authRequiredRoutes = settingsStore.buttons
     .filter((button) => button.requiresAuth)
     .map((button) => `/settings/${button.path}`);
+  authRequiredRoutes.push("/private-chat/user/:friendID/session/:sessionID");
 
   if (!token) {
-    next();
-  } else if (!token && authRequiredRoutes.includes(to.path)) {
-    next("/");
-  } else if (token && to.name === "Home") {
-    next("/settings");
-  } else if (token) {
+    const requiresAuth = authRequiredRoutes.some((route) => {
+      const regex = new RegExp(`^${route.replace(/:[^/]+/g, "[^/]+")}$`);
+      return regex.test(to.path);
+    });
+
+    if (requiresAuth) {
+      next("/");
+    } else {
+      next();
+    }
+  } else {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
@@ -108,7 +112,11 @@ router.beforeEach(async (to, from, next) => {
       userStore.friends = response.data.friendsObject;
       userStore.setUserData(response.data.userObject);
       chatStore.createUserSession();
-      next();
+      if (to.name === "Home") {
+        next("/settings");
+      } else {
+        next();
+      }
     } catch (err) {
       console.error(err);
       userStore.resetUserStore();

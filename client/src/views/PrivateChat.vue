@@ -111,13 +111,11 @@ onMounted(() => {
   watch(
     () => [route.params.friendID, route.params.sessionID],
     ([friendID, sessionID]) => {
-      chatStore.getChatHistory(
-        {
-          userID: userStore.user.id,
-          friendID,
-        },
-        Number(sessionID)
-      );
+      chatStore.getChatHistory({
+        userID: userStore.user.id,
+        friendID,
+        sessionID: Number(sessionID),
+      });
     }
   );
 

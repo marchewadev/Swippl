@@ -46,9 +46,13 @@ async function createUserSession(io, socket, privateRooms, sessionObject) {
   }
 }
 
-async function getChatHistory({ userID, friendID }) {
+async function getChatHistory({ userID, friendID, sessionID }) {
   try {
-    const chatHistory = await ChatModel.getChatHistory(userID, friendID);
+    const chatHistory = await ChatModel.getChatHistory(
+      userID,
+      friendID,
+      sessionID
+    );
     Object.assign(chatHistory, { friendStatus: "accepted" });
 
     return chatHistory;

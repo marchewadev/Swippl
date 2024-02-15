@@ -43,8 +43,18 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     rejectFriendRequest() {
       socket.emit("rejectFriendRequest");
     },
-    removeFriend() {
-      socket.emit("removeFriend");
+    removeFriend(friendID, sessionID, router) {
+      const userStore = useUserStore();
+      const userID = userStore.user.id;
+      const userName = userStore.user.name;
+
+      socket.emit(
+        "removeFriend",
+        { userID, userName, friendID, sessionID },
+        () => {
+          router.push({ name: "Settings" });
+        }
+      );
     },
     updateFriendStatus() {
       const userStore = useUserStore();

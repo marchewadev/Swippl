@@ -54,7 +54,7 @@
       </button>
       <button
         class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
-        @click="strangerProfileStore.removeFriend"
+        @click="removeFriend"
         v-else
       >
         <ion-icon name="person-remove-outline" class="text-xl"></ion-icon>
@@ -79,7 +79,10 @@
 <script setup>
 import socket from "@/sockets/socket";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { useRoute, useRouter } from "vue-router";
 
+const route = useRoute();
+const router = useRouter();
 const strangerProfileStore = useStrangerProfileStore();
 
 const handleFriendRequest = () => {
@@ -88,6 +91,13 @@ const handleFriendRequest = () => {
   } else {
     socket.emit("acceptFriendRequest");
   }
+};
+
+const removeFriend = () => {
+  const friendID = Number(route.params.friendID);
+  const sessionID = Number(route.params.sessionID);
+
+  strangerProfileStore.removeFriend(friendID, sessionID, router);
 };
 </script>
 
