@@ -326,11 +326,15 @@ class UserModel extends BaseModel {
           latestMessageValues
         );
 
+        const latestMessage = latestMessageResult.rows[0] || {
+          message_content: "",
+        };
+
         friends.push({
           name: friendName,
           id: friend.friend_id,
           sessionID: sessionID,
-          latestMessage: latestMessageResult.rows[0],
+          latestMessage,
         });
       }
 

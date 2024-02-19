@@ -1,6 +1,6 @@
 <template>
   <button
-    class="text-base p-2 rounded-md bg-primary text-gray-50 transition-colors duration-300"
+    class="rounded-md bg-primary text-gray-50 transition-colors duration-300 min-[1330px]:text-base text-sm p-2"
     :disabled="!isValid"
     :class="{
       'opacity-50': !isValid,

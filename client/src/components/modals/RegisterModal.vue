@@ -2,7 +2,9 @@
   <base-modal :modal-title="'Zarejestruj się'" :modal-name="'register'">
     <form action="/signup" id="signUpForm" @submit="onSubmit">
       <div class="mb-4">
-        <label for="" class="block mb-1">Jak się nazywasz?</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Jak się nazywasz?</label
+        >
         <input-text
           name="name"
           type="text"
@@ -11,7 +13,9 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1">Adres e-mail</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Adres e-mail</label
+        >
         <input-text
           name="email"
           type="email"
@@ -20,7 +24,9 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1">Hasło</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Hasło</label
+        >
         <input-text
           name="password"
           type="password"
@@ -29,7 +35,9 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1">Potwierdź hasło</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Potwierdź hasło</label
+        >
         <input-text
           name="password2"
           type="password"
@@ -38,7 +46,9 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1">Płeć</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Płeć</label
+        >
         <select-field
           name="gender"
           :initial-value="'female'"
@@ -51,7 +61,9 @@
         </select-field>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1">Data urodzenia</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Data urodzenia</label
+        >
         <input-text name="birthdate" type="date"></input-text>
       </div>
       <div class="mb-4 grid terms-container gap-x-2">
@@ -61,7 +73,7 @@
           :custom-class="'mb-4'"
           :custom-error-class="'error-message-grid'"
         ></input-text>
-        <label for="" class="text-sm">
+        <label for="" class="min-[1330px]:text-sm text-xs">
           Rejestrując się w serwisie akceptuję
           <a
             href="#"
@@ -83,7 +95,7 @@
         :buttonTitle="'Załóż konto'"
         class="w-full mb-1"
       ></form-button>
-      <div class="text-sm text-center">
+      <div class="text-center min-[1330px]:text-sm text-xs">
         <p>
           Masz już konto?
           <a

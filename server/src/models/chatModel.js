@@ -64,9 +64,7 @@ class ChatModel extends BaseModel {
 
   async closeSession(sessionID) {
     try {
-      console.log(sessionID);
       const result = await this.checkIfUsersAreFriends(sessionID);
-      console.log(result);
       if (result) return;
 
       const query =
@@ -201,8 +199,9 @@ class ChatModel extends BaseModel {
           END AS type
         FROM chat_sessions cs
         JOIN chat_messages cm ON cs.id = cm.session_id
-        WHERE (cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1)
-        AND cs.id = $3;
+        WHERE ((cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1))
+        AND cs.id = $3
+        AND cs.end_timestamp IS NULL;
       `;
       const values = [firstUserID, secondUserID, sessionID];
       const { rows: chatHistory } = await this.pool.query(query, values);

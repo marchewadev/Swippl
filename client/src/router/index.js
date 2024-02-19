@@ -61,11 +61,6 @@ const router = createRouter({
           component: () => import("@/views/Settings/Password.vue"),
         },
         {
-          path: "blocked-users",
-          name: "BlockedUsers",
-          component: () => import("@/views/Settings/BlockedUsers.vue"),
-        },
-        {
           path: "delete-account",
           name: "DeleteAccount",
           component: () => import("@/views/Settings/DeleteAccount.vue"),

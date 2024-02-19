@@ -37,14 +37,6 @@ export const useSettingsStore = defineStore("settingsStore", {
       },
       {
         id: 5,
-        title: "Zablokowani",
-        path: "blocked-users",
-        iconName: "ban-outline",
-        isRed: false,
-        requiresAuth: true,
-      },
-      {
-        id: 6,
         title: "Usuń konto",
         path: "delete-account",
         iconName: "trash-outline",

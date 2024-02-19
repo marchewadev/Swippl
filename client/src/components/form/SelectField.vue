@@ -2,7 +2,7 @@
   <select
     v-model="value"
     :class="[
-      'text-sm bg-gray-100 border border-gray-300 rounded p-2 mt-1 block cursor-pointer',
+      'bg-gray-100 border border-gray-300 rounded p-2 mt-1 block cursor-pointer min-[1330px]:text-sm text-xs',
       customClass,
     ]"
     @change="handleChange"

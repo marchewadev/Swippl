@@ -5,7 +5,7 @@
     :type="type || 'text'"
     :class="[
       type !== 'checkbox' && type !== 'file'
-        ? 'text-sm p-2 rounded-md bg-gray-100 border border-gray-300 w-full'
+        ? 'p-2 rounded-md bg-gray-100 border border-gray-300 w-full min-[1330px]:text-sm text-xs'
         : '',
       customClass,
     ]"

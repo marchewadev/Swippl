@@ -2,7 +2,9 @@
   <base-modal :modal-title="'Zaloguj się'" :modal-name="'login'">
     <form action="/signin" id="signInForm" @submit="onSubmit">
       <div class="mb-4">
-        <label for="" class="block mb-1">Adres e-mail</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Adres e-mail</label
+        >
         <input-text
           name="email"
           type="email"
@@ -11,7 +13,9 @@
         ></input-text>
       </div>
       <div class="mb-1">
-        <label for="" class="block mb-1">Hasło</label>
+        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+          >Hasło</label
+        >
         <input-text
           name="password"
           type="password"
@@ -20,7 +24,10 @@
         ></input-text>
       </div>
       <div class="text-center mb-3">
-        <a href="#" class="text-sm hover:underline hover:text-primaryDark">
+        <a
+          href="#"
+          class="hover:underline hover:text-primaryDark min-[1330px]:text-sm text-xs"
+        >
           Nie pamiętam hasła
         </a>
       </div>
@@ -29,7 +36,7 @@
         :buttonTitle="'Zaloguj się'"
         class="w-full mb-1"
       ></form-button>
-      <div class="text-sm text-center">
+      <div class="text-center min-[1330px]:text-sm text-xs">
         <p>
           Nie masz jeszcze konta?
           <a
