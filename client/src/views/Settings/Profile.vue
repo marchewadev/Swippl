@@ -1,8 +1,12 @@
 <template>
-  <form @submit="onSubmit" id="profileForm" class="form-container">
+  <form @submit="onSubmit" id="profileForm" class="form-container py-5">
     <div class="mb-4">
       <div class="avatar-container relative">
-        <img src="@/assets/avatar.png" alt="User's avatar" class="h-72" />
+        <img
+          src="@/assets/avatar.png"
+          alt="User's avatar"
+          class="min-[1600px]:h-72 min-[1330px]:h-64 h-56"
+        />
         <button
           class="bg-gray-100/50 hover:text-red-600 p-2 rounded-md transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
           type="button"
@@ -22,7 +26,9 @@
       <ErrorMessage name="avatar" as="p" class="text-xs mt-1 text-red-600" />
     </div>
     <div class="mb-4">
-      <label for="" class="block text-base mb-1">Jak się nazywasz?</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Jak się nazywasz?</label
+      >
       <InputText
         name="name"
         :placeholder="'Janek'"
@@ -30,7 +36,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block text-base mb-1">Miejscowość</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Miejscowość</label
+      >
       <InputText
         name="city"
         :placeholder="'Warszawa'"
@@ -38,7 +46,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block text-base mb-1">Data urodzenia</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Data urodzenia</label
+      >
       <InputText type="date" name="birthdate" />
     </div>
     <FormButton

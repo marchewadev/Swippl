@@ -1,7 +1,9 @@
 <template>
   <form @submit="onSubmit" id="passwordChangeForm">
     <div class="mb-4">
-      <label for="" class="block mb-1">Stare hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Stare hasło</label
+      >
       <InputText
         name="oldPassword"
         type="password"
@@ -10,7 +12,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Nowe hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Nowe hasło</label
+      >
       <InputText
         name="newPassword"
         type="password"
@@ -19,7 +23,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Potwierdź nowe hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Potwierdź nowe hasło</label
+      >
       <InputText
         name="newPassword2"
         type="password"

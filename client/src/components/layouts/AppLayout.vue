@@ -1,20 +1,26 @@
 <template>
   <main-navbar></main-navbar>
-  <main class="box flex-grow min-w-4/5 mx-auto my-14 rounded-md">
+  <main class="box min-w-4/5 mx-auto rounded-md my-auto">
     <div
-      class="sidebar--profile bg-secondary p-5 rounded-tl-md shadow-md flex items-center gap-2"
+      class="sidebar--profile bg-secondary rounded-tl-md shadow-md flex items-center gap-2 min-[1200px]:p-5 p-3 max-[850px]:hidden"
     >
       <div>
-        <ion-icon name="people-outline" class="text-4xl"></ion-icon>
+        <ion-icon
+          name="people-outline"
+          class="min-[1600px]:text-4xl min-[1200px]:text-3xl text-2xl"
+        ></ion-icon>
       </div>
-      <h1 class="text-xl font-medium">Twoje czaty</h1>
+      <h1 class="font-medium min-[1600px]:text-xl min-[1200px]:text-lg text-sm">
+        Twoje czaty
+      </h1>
     </div>
 
-    <div
-      class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px] overflow-scroll h-full"
-    >
+    <div class="sidebar--wrapper overflow-scroll h-full">
+      <!-- <div
+      class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px] overflow-scroll h-full max-[850px]:hidden"
+    > -->
       <div
-        class="sidebar--chats h-full relative"
+        class="sidebar--chats h-full relative max-[850px]:hidden"
         v-if="!strangerProfileStore.show"
       >
         <sidebar-friend
@@ -41,10 +47,12 @@
       ></stranger-profile>
     </div>
 
-    <div class="box--title p-4 shadow-md relative">
+    <div
+      class="box--title p-4 shadow-md relative max-[850px]:h-16 max-[850px]:flex overflow-auto"
+    >
       <slot name="boxTitle"></slot>
     </div>
-    <div class="box--content">
+    <div class="box--content overflow-auto">
       <slot name="boxContent"></slot>
     </div>
   </main>
@@ -91,7 +99,7 @@ const setActiveFriend = (id) => {
   grid-template-rows: auto 1fr;
   box-shadow: 1px 3px 10px rgba(0, 0, 0, 0.2);
   width: 80vw;
-  height: 80vh;
+  height: 85vh;
 }
 .sidebar--profile {
   grid-column: 1;
@@ -101,6 +109,8 @@ const setActiveFriend = (id) => {
 .sidebar--wrapper {
   grid-column: 1;
   grid-row: 2;
+  box-shadow: 4px 0px 6px -1px rgba(0, 0, 0, 0.1);
+  /* rgba(0,0,0,0.1)_4px_0px_6px_-1px */
 }
 
 .box--title {
@@ -111,6 +121,26 @@ const setActiveFriend = (id) => {
 .box--content {
   grid-column: 2;
   grid-row: 2;
+}
+
+@media (max-width: 850px) {
+  .box--title {
+    grid-column: 1 / -1;
+  }
+
+  .box--content {
+    grid-column: 1 / -1;
+  }
+
+  .sidebar--wrapper {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    box-shadow: none;
+  }
+
+  /* .sidebar--wrapper {
+    grid-column: 1 / -1;
+  } */
 }
 
 .sidebar--chats:hover .get-access {

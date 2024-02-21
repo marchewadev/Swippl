@@ -1,7 +1,9 @@
 <template>
   <form @submit="onSubmit" id="emailChangeForm">
     <div class="mb-4">
-      <label for="" class="block mb-1">Nowy adres e-mail</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Nowy adres e-mail</label
+      >
       <InputText
         name="email"
         type="email"
@@ -10,7 +12,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Potwierdź adres e-mail</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Potwierdź adres e-mail</label
+      >
       <InputText
         name="email2"
         type="email"
@@ -19,7 +23,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Podaj hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Podaj hasło</label
+      >
       <InputText
         name="password"
         type="password"

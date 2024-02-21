@@ -1,23 +1,29 @@
 <template>
-  <div class="h-full flex flex-col justify-center items-center gap-5 relative">
+  <div
+    class="container h-full flex flex-col justify-center items-center gap-5 relative z-50"
+  >
     <button
-      class="stranger--close-profile-btn text-lg mt-3 ml-3 absolute top-0 left-0 flex items-center gap-2"
+      class="stranger--close-profile-btn mt-3 ml-3 absolute top-0 left-0 flex items-center gap-2"
       @click="strangerProfileStore.closeProfile"
     >
       <ion-icon
         name="arrow-back-outline"
-        class="arrow-back transition-transform duration-200"
+        class="arrow-back transition-transform duration-200 min-[1200px]:text-lg text-base"
       ></ion-icon>
-      <span>Cofnij</span>
+      <span class="min-[1600px]:text-lg min-[1200px]:text-base text-sm"
+        >Cofnij</span
+      >
     </button>
     <div class="stranger--avatar-wrapper">
       <img
         :src="strangerProfileStore.getAvatar"
         alt="Stranger avatar"
-        class="stranger--avatar h-64 rounded-full"
+        class="stranger--avatar rounded-full mx-auto w-1/2"
       />
     </div>
-    <div class="stranger--personal-info text-center">
+    <div
+      class="stranger--personal-info text-center min-[1600px]:text-base text-sm"
+    >
       <h3 class="stranger--name">{{ strangerProfileStore.stranger.name }},</h3>
       <p>
         {{
@@ -36,9 +42,9 @@
         , {{ strangerProfileStore.stranger.city }}
       </p>
     </div>
-    <div class="stranger--options flex gap-2">
+    <div class="stranger--options flex gap-2 flex-col">
       <button
-        class="text-gray-50 bg-primary p-2 rounded-md transition-colors duration-300 flex flex-col items-center"
+        class="text-gray-50 bg-primary rounded-md transition-colors duration-300 flex flex-col items-center min-[1600px]:p-2 p-1"
         @click="handleFriendRequest"
         :class="{
           'hover:bg-primaryLight':
@@ -49,21 +55,30 @@
         :disabled="strangerProfileStore.friendStatus === 'pending'"
         v-if="strangerProfileStore.friendStatus !== 'accepted'"
       >
-        <ion-icon name="person-add-outline" class="text-xl"></ion-icon>
+        <ion-icon
+          name="person-add-outline"
+          class="min-[1600px]:text-xl min-[1200px]:text-lg text-base"
+        ></ion-icon>
         <span class="text-xs">Dodaj do znajomych</span>
       </button>
       <button
-        class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
+        class="text-primary bg-gray-200 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center min-[1600px]:p-2 p-1"
         @click="removeFriend"
         v-else
       >
-        <ion-icon name="person-remove-outline" class="text-xl"></ion-icon>
+        <ion-icon
+          name="person-remove-outline"
+          class="min-[1600px]:text-xl min-[1200px]:text-lg text-base"
+        ></ion-icon>
         <span class="text-xs">Usuń ze znajomych</span>
       </button>
       <button
-        class="text-primary bg-gray-200 p-2 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center"
+        class="text-primary bg-gray-200 rounded-md transition-colors duration-300 hover:bg-red-700 hover:text-gray-50 flex flex-col items-center min-[1600px]:p-2 p-1"
       >
-        <ion-icon name="flag-outline" class="text-xl"></ion-icon>
+        <ion-icon
+          name="flag-outline"
+          class="min-[1600px]:text-xl min-[1200px]:text-lg text-base"
+        ></ion-icon>
         <span class="text-xs">Zgłoś</span>
       </button>
     </div>
@@ -98,5 +113,18 @@ const removeFriend = () => {
 <style scoped>
 .stranger--close-profile-btn:hover .arrow-back {
   transform: scale(1.1);
+}
+
+@media (min-width: 1200px) {
+  .stranger--options {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 850px) {
+  .container {
+    border-radius: 0.375rem;
+    background-color: white;
+  }
 }
 </style>

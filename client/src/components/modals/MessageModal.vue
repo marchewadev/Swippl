@@ -4,7 +4,11 @@
       class="message-modal bg-white rounded-tl-md rounded-tr-md absolute left-1/2 top-10 -translate-x-1/2 z-20"
       v-if="modalStore.showMessageModal"
     >
-      <p class="text-sm tracking-wide p-4">{{ modalStore.textMessageModal }}</p>
+      <p
+        class="tracking-wide min-[1330px]:text-sm min-[1330px]:p-4 text-xs p-3"
+      >
+        {{ modalStore.textMessageModal }}
+      </p>
       <div class="empty-bar bg-gray-400 w-full h-1">
         <div
           class="progess-bar h-full"

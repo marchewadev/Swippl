@@ -2,7 +2,7 @@
   <div
     class="message-stranger p-2 mb-2 rounded break-words text-primary bg-gray-100"
   >
-    <p class="message--content text-sm">
+    <p class="message--content min-[851px]:text-sm text-xs">
       <slot></slot>
     </p>
   </div>

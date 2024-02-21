@@ -14,9 +14,13 @@
           'opacity-50 pointer-events-none':
             setting.requiresAuth && !userStore.checkIfUserIsLoggedIn,
         }"
+        class="min-[1600px]:text-base min-[1200px]:text-sm text-xs whitespace-nowrap"
       >
         <template #icon>
-          <ion-icon :name="setting.iconName" class="text-lg"></ion-icon>
+          <ion-icon
+            :name="setting.iconName"
+            class="min-[1600px]:text-lg min-[1200px]:text-base text-sm"
+          ></ion-icon>
         </template>
         <template #title>{{ setting.title }}</template>
       </navbar-link>

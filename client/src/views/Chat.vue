@@ -8,14 +8,16 @@
         <img
           :src="strangerProfileStore.getAvatar"
           alt="Stranger avatar"
-          class="stranger--avatar h-12 rounded-full cursor-pointer"
+          class="stranger--avatar rounded-full cursor-pointer min-[1600px]:h-12 h-10"
           @click="strangerProfileStore.openProfile"
         />
         <div>
-          <h2 class="stranger--name text-lg mr-1 inline-block">
+          <h2
+            class="stranger--name mr-1 inline-block min-[1600px]:text-lg text-base"
+          >
             {{ strangerProfileStore.stranger.name }},
           </h2>
-          <p class="stranger--age text-lg inline-block">
+          <p class="stranger--age inline-block min-[1600px]:text-lg text-base">
             {{ strangerProfileStore.stranger.age }}
           </p>
         </div>
@@ -32,7 +34,7 @@
         <router-link :to="{ name: 'Settings' }" class="settings--btn">
           <ion-icon
             name="settings-outline"
-            class="settings--icon text-xl transition-transform duration-700"
+            class="settings--icon transition-transform duration-700 min-[1600px]:text-xl text-lg"
           ></ion-icon>
         </router-link>
 
@@ -40,16 +42,20 @@
           class="disconnect--btn transition-colors duration-300 hover:text-red-700"
           @click="chatStore.changeRoom"
         >
-          <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+          <ion-icon
+            name="close-outline"
+            class="min-[1600px]:text-2xl text-xl"
+          ></ion-icon>
         </button>
       </div>
     </template>
     <template #boxContent>
       <loading-screen v-if="chatStore.isSearching"></loading-screen>
-      <div
+      <!-- <div
         class="chat-container h-full grid 5xl:grid-rows-chat-layout-xl 4xl:grid-rows-chat-layout-lg"
         v-if="!chatStore.isSearching"
-      >
+      > -->
+      <div class="chat-container h-full grid" v-if="!chatStore.isSearching">
         <div
           class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
         >
@@ -75,7 +81,7 @@
           class="message-compose flex items-center justify-center gap-4"
           ref="composeEl"
         >
-          <div class="w-10/12 h-20 my-3">
+          <div class="w-10/12 my-3 min-[1600px]:h-20 min-[851px]:h-16 h-14">
             <textarea
               name=""
               id=""
@@ -98,7 +104,10 @@
                 chatStore.roomUsers === 2,
             }"
           >
-            <ion-icon name="send" class="text-2xl"></ion-icon>
+            <ion-icon
+              name="send"
+              class="min-[1600px]:text-2xl text-xl"
+            ></ion-icon>
           </button>
         </div>
       </div>
@@ -154,5 +163,9 @@ onBeforeRouteLeave(() => {
 
 .messages-wrapper {
   scrollbar-width: thin;
+}
+
+.chat-container {
+  grid-template-rows: 1fr auto;
 }
 </style>

@@ -34,7 +34,7 @@
 
         <transition name="fade">
           <div
-            class="h-screen absolute top-0 left-0 w-full z-40"
+            class="h-screen fixed top-0 left-0 w-full z-50 overflow-auto"
             v-if="isMobileNavOpen"
           >
             <div class="relative h-full mobile-nav">
@@ -51,7 +51,38 @@
                     />
                   </a>
                 </div>
-                <div class="options flex flex-col">
+                <button
+                  class="flex justify-between items-center border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150 w-full"
+                  @click="toggleFriendList"
+                  v-if="userStore.checkIfUserIsLoggedIn"
+                >
+                  <span class="text-lg">Twoje czaty</span>
+                  <ion-icon
+                    name="chevron-down-outline"
+                    class="text-xl"
+                    v-show="!isFriendListOpen"
+                  ></ion-icon>
+                  <ion-icon
+                    name="chevron-up-outline"
+                    class="text-xl"
+                    v-show="isFriendListOpen"
+                  ></ion-icon>
+                </button>
+                <div
+                  class="friends h-full bg-inherit"
+                  v-show="isFriendListOpen"
+                >
+                  <sidebar-friend
+                    v-if="userStore.checkIfUserIsLoggedIn"
+                    v-for="(friend, index) in userStore.friends"
+                    :key="index"
+                    :friend_name="friend.name"
+                    :friend_id="friend.id"
+                    :session_id="friend.sessionID"
+                    @click="setActiveFriend(friend.id)"
+                  ></sidebar-friend>
+                </div>
+                <div class="options flex flex-col" v-show="!isFriendListOpen">
                   <router-link
                     :to="''"
                     class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
@@ -191,14 +222,25 @@ import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
 import BaseNavbar from "./BaseNavbar.vue";
 import NavbarLink from "./NavbarLink.vue";
-import { onBeforeRouteUpdate } from "vue-router";
+import SidebarFriend from "../chat/SidebarFriend.vue";
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 
 const dropdownOpen = ref(false);
 const isMobileNavOpen = ref(false);
 
+const isFriendListOpen = ref(false);
+
 const modalStore = useModalStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
+
+const setActiveFriend = (id) => {
+  chatStore.activeFriendID = id;
+};
+
+function toggleFriendList() {
+  isFriendListOpen.value = !isFriendListOpen.value;
+}
 
 function closeDropdown() {
   dropdownOpen.value = false;
@@ -226,7 +268,13 @@ function closeMobileNav() {
 }
 
 onBeforeRouteUpdate(() => {
-  isMobileNavOpen.value = false;
+  closeMobileNav();
+  isFriendListOpen.value = false;
+});
+
+onBeforeRouteLeave(() => {
+  closeMobileNav();
+  isFriendListOpen.value = false;
 });
 </script>
 

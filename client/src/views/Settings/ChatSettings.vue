@@ -1,17 +1,21 @@
 <template>
-  <div class="settings-grid grid grid-cols-2 gap-x-16">
+  <div class="settings-grid grid grid-cols-2 min-[1600px]:gap-x-16 gap-x-8">
     <form id="searchCriteriaForm" class="mb-10" @submit="onSubmit">
       <div class="criteria--age mb-10">
-        <label for="" class="">Przedział wiekowy</label>
+        <label for="" class="min-[1330px]:text-base text-sm"
+          >Przedział wiekowy</label
+        >
         <range-slider
-          class="slider-yellow mt-4 w-96"
+          class="slider-yellow mt-4 min-[1600px]:w-96 min-[1200px]:w-72 min-[1000px]:w-52 w-44"
           :name="'ageRangeSearch'"
           :initial-value="ageRangeValue"
           @change="updateAgeRange"
         ></range-slider>
       </div>
       <div class="criteria--gender">
-        <label for="">Szukaj według płci</label>
+        <label for="" class="min-[1330px]:text-base text-sm"
+          >Szukaj według płci</label
+        >
         <select-field
           name="genderSearch"
           :initial-value="userStore.searchCriteria.genderSearch"
@@ -31,7 +35,7 @@
       class="search-by-criteria--btn"
     ></form-button>
     <button
-      class="search-random--btn text-base p-2 rounded-md bg-secondary text-primaryDark hover:bg-secondaryLight transition-colors duration-300"
+      class="search-random--btn p-2 rounded-md bg-secondary text-primaryDark hover:bg-secondaryLight transition-colors duration-300 min-[1330px]:text-base min-[1200px]:text-sm text-xs"
       type="button"
     >
       Szukaj dowolnie
@@ -110,6 +114,22 @@ form {
 .search-random--btn {
   grid-column: 2;
   grid-row: 2;
+}
+
+@media (max-width: 550px) {
+  #searchCriteriaForm {
+    margin-bottom: 1.25rem;
+  }
+
+  .search-random--btn {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .settings-grid {
+    row-gap: 0.5rem;
+    grid-template-columns: 1fr;
+  }
 }
 
 .slider-yellow {

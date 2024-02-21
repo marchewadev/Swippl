@@ -1,7 +1,9 @@
 <template>
   <form @submit="onSubmit" id="deleteAccountForm">
     <div class="mb-4">
-      <label for="" class="block mb-1">Adres e-mail</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Adres e-mail</label
+      >
       <InputText
         name="email"
         type="email"
@@ -10,7 +12,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Hasło</label
+      >
       <InputText
         name="password"
         type="password"
@@ -19,7 +23,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1">Potwierdź hasło</label>
+      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
+        >Potwierdź hasło</label
+      >
       <InputText
         name="password2"
         type="password"
@@ -28,7 +34,9 @@
       />
     </div>
     <div class="mb-4">
-      <label for="" class="block">Powód usunięcia konta</label>
+      <label for="" class="block min-[1330px]:text-base text-sm"
+        >Powód usunięcia konta</label
+      >
       <SelectField name="reason" :initialValue="'1'" :customClass="'w-full'">
         <template #values>
           <option value="1">Nie podoba mi się</option>

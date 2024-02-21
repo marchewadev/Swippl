@@ -1,18 +1,22 @@
 <template>
   <div class="p-2">
     <div
-      class="friend-sidebar cursor-pointer hover:bg-gray-100 py-4 px-2 grid rounded-xl transition-colors duration-200"
+      class="friend-sidebar cursor-pointer hover:bg-gray-100 py-4 px-2 grid rounded-xl transition-colors duration-200 active:bg-gray-100"
       :class="{ 'bg-gray-100': props.friend_id === chatStore.activeFriendID }"
       @click="handleClick"
     >
       <img
         src="@/assets/avatar.png"
         alt="Friend's avatar"
-        class="friend-avatar h-12 rounded-full mr-2"
+        class="friend-avatar rounded-full mr-2 min-[1600px]:h-12 h-10"
       />
-      <p class="friend-name h-min font-medium">{{ friend_name }}</p>
       <p
-        class="message text-sm whitespace-nowrap overflow-hidden text-ellipsis"
+        class="friend-name h-min font-medium min-[1600px]:text-base text-sm overflow-hidden text-ellipsis"
+      >
+        {{ friend_name }}
+      </p>
+      <p
+        class="message whitespace-nowrap overflow-hidden text-ellipsis min-[1600px]:text-sm text-xs"
       >
         {{ latestMessage }}
       </p>
