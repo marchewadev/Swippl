@@ -1,60 +1,55 @@
 <template>
   <header
-    class="flex items-center justify-between bg-white shadow-md shadow-gray-200 min-[1600px]:py-5 min-[1600px]:px-12 min-[851px]:py-4 min-[851px]:px-8 py-2.5 px-2.5"
+    class="bg-white shadow-md shadow-gray-200 px-2.5 py-2.5 flex items-center justify-between min-[851px]:px-8 min-[851px]:py-4 min-[1600px]:px-12 min-[1600px]:py-5"
   >
     <a href="#">
       <img
         src="../../assets/swippl-logo-light.png"
         alt="Swippl logo"
-        class="min-[1200px]:h-9 min-[400px]:h-7 h-6"
+        class="h-6 min-[400px]:h-7 min-[1200px]:h-9"
       />
     </a>
 
     <base-navbar
-      class="flex items-center min-[1200px]:text-base min-[1600px]:text-lg min-[400px]:text-sm min-[851px]:gap-5 text-xs gap-2.5"
+      class="text-xs flex items-center gap-2.5 min-[400px]:text-sm min-[851px]:gap-5 min-[1200px]:text-base min-[1600px]:text-lg"
     >
       <template #additional>
         <div>
-          <p v-if="chatStore.totalUsers === 1">
-            {{ chatStore.totalUsers }} aktywna osoba
-          </p>
-          <p v-else-if="chatStore.totalUsers < 5">
-            {{ chatStore.totalUsers }} aktywne osoby
-          </p>
-          <p v-else>{{ chatStore.totalUsers }} aktywnych osób</p>
+          <p v-if="totalUsers === 1">{{ totalUsers }} aktywna osoba</p>
+          <p v-else-if="totalUsers < 5">{{ totalUsers }} aktywne osoby</p>
+          <p v-else>{{ totalUsers }} aktywnych osób</p>
         </div>
       </template>
       <template #links>
         <button
-          class="mobile-nav--btn max-[850px]:flex hidden text-3xl"
+          class="mobile-nav--btn text-3xl hidden max-[850px]:flex"
           @click="toggleMobileNav"
         >
           <ion-icon name="menu-outline"></ion-icon>
         </button>
-
         <transition name="fade">
           <div
-            class="h-screen fixed top-0 left-0 w-full z-50 overflow-auto"
+            class="h-screen w-full overflow-auto fixed top-0 left-0 z-50"
             v-if="isMobileNavOpen"
           >
-            <div class="relative h-full mobile-nav">
+            <div class="mobile-nav h-full relative">
               <div
-                class="bg-white w-3/4 h-full z-40 shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px]"
+                class="bg-white h-full w-3/4 shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px] z-40"
                 v-on-click-outside="closeMobileNav"
               >
-                <div class="logo py-3 px-3 shadow-md shadow-gray-200">
-                  <a href="#" class="block w-fit">
+                <div class="logo p-3 shadow-md shadow-gray-200">
+                  <a href="#" class="w-fit block">
                     <img
                       src="../../assets/swippl-logo-light.png"
                       alt="Swippl logo"
-                      class="min-[1200px]:h-9 min-[400px]:h-7 h-6"
+                      class="h-6 min-[400px]:h-7 min-[1200px]:h-9"
                     />
                   </a>
                 </div>
                 <button
-                  class="flex justify-between items-center border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150 w-full"
+                  class="w-full border-b border-gray-300 px-4 py-2 flex items-center justify-between transition-colors duration-150 active:bg-primary active:text-gray-50"
+                  v-if="checkIfUserIsLoggedIn"
                   @click="toggleFriendList"
-                  v-if="userStore.checkIfUserIsLoggedIn"
                 >
                   <span class="text-lg">Twoje czaty</span>
                   <ion-icon
@@ -72,9 +67,10 @@
                   class="friends h-full bg-inherit"
                   v-show="isFriendListOpen"
                 >
+                  <!-- TODO: rozważyć poprawę według VueJS Style Guide: nie łączyć v-if z v-for -->
                   <sidebar-friend
-                    v-if="userStore.checkIfUserIsLoggedIn"
-                    v-for="(friend, index) in userStore.friends"
+                    v-if="checkIfUserIsLoggedIn"
+                    v-for="(friend, index) in friends"
                     :key="index"
                     :friend_name="friend.name"
                     :friend_id="friend.id"
@@ -83,52 +79,41 @@
                   ></sidebar-friend>
                 </div>
                 <div class="options flex flex-col" v-show="!isFriendListOpen">
-                  <router-link
-                    :to="''"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
-                    >O nas</router-link
-                  >
-                  <router-link
-                    :to="''"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
-                    >Kontakt</router-link
-                  >
-                  <router-link
-                    :to="''"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
+                  <mobile-nav-button :path="{}">O nas</mobile-nav-button>
+                  <mobile-nav-button :path="{}">Kontakt</mobile-nav-button>
+                  <mobile-nav-button
+                    :path="{}"
+                    v-if="!checkIfUserIsLoggedIn"
                     @click="openLoginModal"
-                    v-if="!userStore.checkIfUserIsLoggedIn"
-                    >Zaloguj się</router-link
                   >
-                  <router-link
-                    :to="''"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
+                    Zaloguj się
+                  </mobile-nav-button>
+                  <mobile-nav-button
+                    :path="{}"
+                    v-if="!checkIfUserIsLoggedIn"
                     @click="openRegisterModal"
-                    v-if="!userStore.checkIfUserIsLoggedIn"
-                    >Zarejestruj się</router-link
                   >
-                  <router-link
-                    :to="{ name: 'Profile' }"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
-                    v-if="userStore.checkIfUserIsLoggedIn"
+                    Zarejestruj się
+                  </mobile-nav-button>
+                  <mobile-nav-button
+                    :path="{ name: 'Profile' }"
+                    v-if="checkIfUserIsLoggedIn"
                   >
                     Profil
-                  </router-link>
-                  <router-link
-                    :to="{ name: 'ChatSettings' }"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
-                    v-if="userStore.checkIfUserIsLoggedIn"
+                  </mobile-nav-button>
+                  <mobile-nav-button
+                    :path="{ name: 'ChatSettings' }"
+                    v-if="checkIfUserIsLoggedIn"
                   >
                     Ustawienia
-                  </router-link>
-                  <router-link
-                    :to="{ name: 'Home' }"
-                    class="text-lg border-b border-gray-300 py-2 px-4 active:bg-primary active:text-gray-50 transition-colors duration-150"
-                    @click="userStore.resetUserStore"
-                    v-if="userStore.checkIfUserIsLoggedIn"
+                  </mobile-nav-button>
+                  <mobile-nav-button
+                    :path="{ name: 'Home' }"
+                    v-if="checkIfUserIsLoggedIn"
+                    @click="resetUserStore"
                   >
                     Wyloguj się
-                  </router-link>
+                  </mobile-nav-button>
                 </div>
               </div>
             </div>
@@ -136,38 +121,38 @@
         </transition>
 
         <div class="flex items-center gap-1 max-[850px]:hidden">
-          <navbar-link :path="''">
+          <navbar-link :path="{}">
             <template #title>O nas</template>
           </navbar-link>
-          <navbar-link :path="''">
+          <navbar-link :path="{}">
             <template #title>Kontakt</template>
           </navbar-link>
           <navbar-link
-            @click="modalStore.openModal('login')"
-            :path="''"
-            v-if="!userStore.checkIfUserIsLoggedIn"
+            v-if="!checkIfUserIsLoggedIn"
+            :path="{}"
+            @click="openModal('login')"
           >
             <template #title>Zaloguj się</template>
           </navbar-link>
           <navbar-link
-            @click="modalStore.openModal('register')"
-            :path="''"
-            v-if="!userStore.checkIfUserIsLoggedIn"
+            v-if="!checkIfUserIsLoggedIn"
+            :path="{}"
+            @click="openModal('register')"
           >
             <template #title>Zarejestruj się</template>
           </navbar-link>
-          <li v-if="userStore.checkIfUserIsLoggedIn">
+          <li v-if="checkIfUserIsLoggedIn">
             <div class="relative">
               <img
-                :src="userStore.userAvatar"
+                :src="userAvatar"
                 alt="User's avatar"
-                @click="dropdownOpen = !dropdownOpen"
-                v-on-click-outside="closeDropdown"
                 class="cursor-pointer h-10 rounded-full"
+                v-on-click-outside="closeDropdown"
+                @click="dropdownOpen = !dropdownOpen"
               />
               <div
-                v-show="dropdownOpen"
                 class="absolute bg-white mt-2 w-48 rounded-md right-0 dropdown-menu z-20"
+                v-show="dropdownOpen"
               >
                 <ul>
                   <navbar-link
@@ -197,7 +182,7 @@
                   <navbar-link
                     :path="{ name: 'Home' }"
                     :custom-class-link="'text-base block rounded-none rounded-bl-md rounded-br-md flex items-center gap-2'"
-                    @click="userStore.resetUserStore"
+                    @click="resetUserStore"
                   >
                     <template #icon>
                       <ion-icon name="power-outline" class="text-lg"></ion-icon>
@@ -216,23 +201,29 @@
 
 <script setup>
 import { ref } from "vue";
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import { vOnClickOutside } from "@vueuse/components";
+import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
 import BaseNavbar from "./BaseNavbar.vue";
+import MobileNavButton from "../buttons/MobileNavButton.vue";
 import NavbarLink from "./NavbarLink.vue";
 import SidebarFriend from "../chat/SidebarFriend.vue";
-import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
-
-const dropdownOpen = ref(false);
-const isMobileNavOpen = ref(false);
-
-const isFriendListOpen = ref(false);
 
 const modalStore = useModalStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
+
+const { checkIfUserIsLoggedIn, resetUserStore, userAvatar } = userStore;
+const { openModal } = modalStore;
+const { friends } = storeToRefs(userStore);
+const { totalUsers } = storeToRefs(chatStore);
+
+const dropdownOpen = ref(false);
+const isMobileNavOpen = ref(false);
+const isFriendListOpen = ref(false);
 
 const setActiveFriend = (id) => {
   chatStore.activeFriendID = id;

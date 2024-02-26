@@ -1,13 +1,13 @@
 <template>
   <button
-    class="rounded-md bg-primary text-gray-50 transition-colors duration-300 min-[1330px]:text-base min-[1200px]:text-sm text-xs p-2"
-    :disabled="!isValid"
+    class="text-xs text-gray-50 bg-primary p-2 rounded-md transition-colors duration-300 min-[1200px]:text-sm min-[1330px]:text-base"
     :class="{
       'opacity-50': !isValid,
       'hover:bg-primaryLight': isValid && !isRed,
       'bg-red-700': isRed,
       'hover:bg-red-600': isValid && isRed,
     }"
+    :disabled="!isValid"
     :form="formId"
   >
     {{ buttonTitle }}
@@ -23,10 +23,12 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
   buttonTitle: {
     type: String,
     required: true,
   },
+
   isRed: {
     type: Boolean,
     default: false,

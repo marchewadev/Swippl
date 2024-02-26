@@ -1,43 +1,37 @@
 <template>
-  <form @submit="onSubmit" id="passwordChangeForm">
+  <form id="passwordChangeForm" @submit="onSubmit">
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Stare hasło</label
-      >
-      <InputText
+      <label-field>Stare hasło</label-field>
+      <input-text
         name="oldPassword"
         type="password"
         :placeholder="'********'"
-        :inputProps="{ minlength: 8 }"
-      />
+        :input-props="{ minlength: 8 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Nowe hasło</label
-      >
-      <InputText
+      <label-field>Nowe hasło</label-field>
+      <input-text
         name="newPassword"
         type="password"
         :placeholder="'********'"
-        :inputProps="{ minlength: 8 }"
-      />
+        :input-props="{ minlength: 8 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Potwierdź nowe hasło</label
-      >
-      <InputText
+      <label-field>Potwierdź nowe hasło</label-field>
+      <input-text
         name="newPassword2"
         type="password"
         :placeholder="'********'"
         :inputProps="{ minlength: 8 }"
-      />
+      ></input-text>
     </div>
-    <FormButton
-      :formId="'passwordChangeForm'"
-      :buttonTitle="'Zmień hasło'"
+    <form-button
+      :form-id="'passwordChangeForm'"
+      :button-title="'Zmień hasło'"
       class="w-full"
-    />
+    ></form-button>
   </form>
 </template>
 
@@ -47,10 +41,10 @@ import { useForm } from "vee-validate";
 import { object, string, ref } from "yup";
 import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const router = useRouter();
-
 const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
@@ -70,6 +64,5 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit((values) => {
   userStore.updateUserPassword(router, values);
-  // console.log(JSON.stringify(values));
 });
 </script>

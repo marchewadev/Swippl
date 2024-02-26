@@ -3,10 +3,10 @@ import { defineStore } from "pinia";
 export const useModalStore = defineStore("modalStore", {
   state: () => ({
     show: false,
-    selectedModal: "",
     showMessageModal: false,
-    textMessageModal: "",
     isErrorMessageModal: false,
+    selectedModal: "",
+    textMessageModal: "",
   }),
   actions: {
     openModal(selectedModal) {

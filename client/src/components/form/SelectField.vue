@@ -1,10 +1,10 @@
 <template>
   <select
-    v-model="value"
     :class="[
-      'bg-gray-100 border border-gray-300 rounded p-2 mt-1 block cursor-pointer min-[1330px]:text-sm text-xs full',
+      'text-xs bg-gray-100 border border-gray-300 p-2 mt-1 rounded cursor-pointer block min-[1330px]:text-sm full',
       customClass,
     ]"
+    v-model="value"
     @change="handleChange"
   >
     <slot name="values"></slot>
@@ -21,10 +21,12 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
   initialValue: {
     type: String,
     required: true,
   },
+
   customClass: {
     type: String,
     default: "",

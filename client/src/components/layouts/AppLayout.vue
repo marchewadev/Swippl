@@ -1,31 +1,29 @@
 <template>
   <main-navbar></main-navbar>
-  <main class="box min-w-4/5 mx-auto rounded-md my-auto">
+  <main class="box min-w-4/5 rounded-md mx-auto my-auto">
     <div
-      class="sidebar--profile bg-secondary rounded-tl-md shadow-md flex items-center gap-2 min-[1200px]:p-5 p-3 max-[850px]:hidden"
+      class="sidebar--profile bg-secondary p-3 rounded-tl-md shadow-md flex items-center gap-2 max-[850px]:hidden min-[1200px]:p-5"
     >
       <div>
         <ion-icon
           name="people-outline"
-          class="min-[1600px]:text-4xl min-[1200px]:text-3xl text-2xl"
+          class="text-2xl min-[1200px]:text-3xl min-[1600px]:text-4xl"
         ></ion-icon>
       </div>
-      <h1 class="font-medium min-[1600px]:text-xl min-[1200px]:text-lg text-sm">
+      <h1 class="text-sm font-medium min-[1200px]:text-lg min-[1600px]:text-xl">
         Twoje czaty
       </h1>
     </div>
 
-    <div class="sidebar--wrapper overflow-scroll h-full">
-      <!-- <div
-      class="sidebar--wrapper shadow-[rgba(0,0,0,0.1)_4px_0px_6px_-1px] overflow-scroll h-full max-[850px]:hidden"
-    > -->
+    <div class="sidebar--wrapper h-full overflow-scroll">
       <div
         class="sidebar--chats h-full relative max-[850px]:hidden"
-        v-if="!strangerProfileStore.show"
+        v-if="!showProfile"
       >
+        <!-- TODO: rozważyć poprawę według VueJS Style Guide: nie łączyć v-if z v-for -->
         <sidebar-friend
-          v-if="userStore.checkIfUserIsLoggedIn"
-          v-for="(friend, index) in userStore.friends"
+          v-if="checkIfUserIsLoggedIn"
+          v-for="(friend, index) in friends"
           :key="index"
           :friend_name="friend.name"
           :friend_id="friend.id"
@@ -33,22 +31,22 @@
           @click="setActiveFriend(friend.id)"
         ></sidebar-friend>
         <div
-          class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"
-          v-else="!userStore.checkIfUserIsLoggedIn"
+          class="get-access bg-secondary w-5/6 p-2 rounded-md opacity-0 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          v-else="!checkIfUserIsLoggedIn"
         >
-          <p class="text-sm text-center text-primaryDark">
+          <p class="text-sm text-primaryDark text-center">
             Zaloguj się, aby mieć dostęp do tej zawartości
           </p>
         </div>
       </div>
       <stranger-profile
         class="sidebar--stranger-profile"
-        v-else-if="isChatRoute && strangerProfileStore.show"
+        v-else-if="isChatRoute && showProfile"
       ></stranger-profile>
     </div>
 
     <div
-      class="box--title p-4 shadow-md relative max-[850px]:h-16 max-[850px]:flex overflow-auto"
+      class="box--title p-4 overflow-auto shadow-md relative max-[850px]:h-16 max-[850px]:flex"
     >
       <slot name="boxTitle"></slot>
     </div>
@@ -61,22 +59,28 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
+import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import MainNavbar from "../navbar/MainNavbar.vue";
 import StrangerProfile from "../chat/StrangerProfile.vue";
 import SidebarFriend from "../chat/SidebarFriend.vue";
 
 const route = useRoute();
 const router = useRouter();
+
+const userStore = useUserStore();
+const chatStore = useChatStore();
+const strangerProfileStore = useStrangerProfileStore();
+
+const { checkIfUserIsLoggedIn } = userStore;
+const { showProfile } = storeToRefs(strangerProfileStore);
+const { friends } = storeToRefs(userStore);
+
 const isChatRoute = computed(
   () => route.name === "Chat" || route.name === "PrivateChat"
 );
-
-const strangerProfileStore = useStrangerProfileStore();
-const userStore = useUserStore();
-const chatStore = useChatStore();
 
 onMounted(() => {
   const friendID = route.params.friendID;
@@ -110,7 +114,6 @@ const setActiveFriend = (id) => {
   grid-column: 1;
   grid-row: 2;
   box-shadow: 4px 0px 6px -1px rgba(0, 0, 0, 0.1);
-  /* rgba(0,0,0,0.1)_4px_0px_6px_-1px */
 }
 
 .box--title {
@@ -121,6 +124,11 @@ const setActiveFriend = (id) => {
 .box--content {
   grid-column: 2;
   grid-row: 2;
+}
+
+.sidebar--chats:hover .get-access {
+  animation: slideDown 1s;
+  opacity: 1;
 }
 
 @media (max-width: 850px) {
@@ -137,15 +145,6 @@ const setActiveFriend = (id) => {
     grid-row: 1 / -1;
     box-shadow: none;
   }
-
-  /* .sidebar--wrapper {
-    grid-column: 1 / -1;
-  } */
-}
-
-.sidebar--chats:hover .get-access {
-  animation: slideDown 1s;
-  opacity: 1;
 }
 
 @keyframes slideDown {

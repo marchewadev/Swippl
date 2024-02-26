@@ -5,11 +5,11 @@
       v-if="modalStore.showMessageModal"
     >
       <p
-        class="tracking-wide min-[1330px]:text-sm min-[1330px]:p-4 text-xs p-3"
+        class="tracking-wide text-xs p-3 min-[1330px]:text-sm min-[1330px]:p-4"
       >
         {{ modalStore.textMessageModal }}
       </p>
-      <div class="empty-bar bg-gray-400 w-full h-1">
+      <div class="empty-bar bg-gray-400 h-1 w-full">
         <div
           class="progess-bar h-full"
           :class="

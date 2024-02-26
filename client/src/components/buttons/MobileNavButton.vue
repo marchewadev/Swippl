@@ -1,20 +1,15 @@
 <template>
   <router-link
-    class="text-xs p-2 rounded-md transition-all duration-300 inline-block hover:-translate-y-0.5 min-[1200px]:text-base min-[1600px]:p-4"
     :to="path"
+    class="text-lg border-b border-gray-300 px-4 py-2 transition-colors duration-150 active:bg-primary active:text-gray-50"
     @click="handleClick"
   >
-    {{ text }}
+    <slot></slot>
   </router-link>
 </template>
 
 <script setup>
 const props = defineProps({
-  text: {
-    type: String,
-    required: true,
-  },
-
   path: {
     type: Object,
     required: true,

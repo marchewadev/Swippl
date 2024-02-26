@@ -1,12 +1,12 @@
 <template>
   <transition name="modal">
     <div
-      class="bg-white p-6 rounded-md shadow-md shadow-black/10 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-w-sm overflow-y-auto max-h-4/5 max-[500px]:min-w-4/5"
+      class="bg-white p-6 rounded-md shadow-md shadow-black/10 max-h-4/5 max-w-sm overflow-y-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 max-[500px]:min-w-4/5"
       v-if="modalStore.show && modalName === modalStore.selectedModal"
       v-on-click-outside="modalStore.closeModal"
     >
       <div class="mb-8 relative">
-        <h2 class="text-center uppercase min-[1330px]:text-lg text-base">
+        <h2 class="text-base text-center uppercase min-[1330px]:text-lg">
           {{ modalTitle }}
         </h2>
         <button
@@ -15,7 +15,7 @@
         >
           <ion-icon
             name="close-outline"
-            class="min-[1330px]:text-2xl text-xl"
+            class="text-xl min-[1330px]:text-2xl"
           ></ion-icon>
         </button>
       </div>
@@ -25,13 +25,21 @@
 </template>
 
 <script setup>
-import { vOnClickOutside } from "@vueuse/components";
 import { useModalStore } from "@/stores/ModalStore";
+import { vOnClickOutside } from "@vueuse/components";
+
 const modalStore = useModalStore();
 
 const props = defineProps({
-  modalTitle: String,
-  modalName: String,
+  modalTitle: {
+    type: String,
+    required: true,
+  },
+
+  modalName: {
+    type: String,
+    required: true,
+  },
 });
 </script>
 

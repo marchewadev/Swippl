@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="text-center text-gray-50 bg-primary py-3 min-[900px]:px-20 min-[500px]:px-10 mt-10 px-5 text-[10px] min-[1330px]:text-xs"
+    class="text-center text-gray-50 bg-primary py-3 px-5 mt-10 text-[10px] min-[500px]:px-10 min-[900px]:px-20 min-[1330px]:text-xs"
   >
     <p>
       Aby móc korzystać ze Swippl musisz mieć ukończone 18 lat. Korzystanie ze

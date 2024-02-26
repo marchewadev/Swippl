@@ -1,56 +1,48 @@
 <template>
-  <form @submit="onSubmit" id="deleteAccountForm">
+  <form id="deleteAccountForm" @submit="onSubmit">
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Adres e-mail</label
-      >
-      <InputText
+      <label-field>Adres e-mail</label-field>
+      <input-text
         name="email"
         type="email"
         :placeholder="'kowalski@example.com'"
-        :inputProps="{ minlength: 3, maxlength: 254 }"
-      />
+        :input-props="{ minlength: 3, maxlength: 254 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Hasło</label
-      >
-      <InputText
+      <label-field>Hasło</label-field>
+      <input-text
         name="password"
         type="password"
         :placeholder="'********'"
-        :inputProps="{ minlength: 8 }"
-      />
+        :input-props="{ minlength: 8 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Potwierdź hasło</label
-      >
-      <InputText
+      <label-field>Potwierdź hasło</label-field>
+      <input-text
         name="password2"
         type="password"
         :placeholder="'********'"
-        :inputProps="{ minlength: 8 }"
-      />
+        :input-props="{ minlength: 8 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block min-[1330px]:text-base text-sm"
-        >Powód usunięcia konta</label
-      >
-      <SelectField name="reason" :initialValue="'1'" :customClass="'w-full'">
+      <label-field>Powód usunięcia konta</label-field>
+      <select-field name="reason" :initial-value="'1'" :custom-class="'w-full'">
         <template #values>
           <option value="1">Nie podoba mi się</option>
           <option value="2">Nie chcę już korzystać</option>
           <option value="3">Inny</option>
         </template>
-      </SelectField>
+      </select-field>
     </div>
-    <FormButton
-      :formId="'deleteAccountForm'"
-      :buttonTitle="'Usuń konto'"
-      :isRed="true"
+    <form-button
+      :form-id="'deleteAccountForm'"
+      :button-title="'Usuń konto'"
+      :is-red="true"
       class="w-full"
-    />
+    ></form-button>
   </form>
 </template>
 
@@ -61,10 +53,10 @@ import { object, string, ref } from "yup";
 import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
 import FormButton from "@/components/settings/FormButton.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import SelectField from "@/components/form/SelectField.vue";
 
 const router = useRouter();
-
 const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
@@ -89,6 +81,5 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit((values) => {
   userStore.deleteUserAccount(router, values);
-  // console.log(JSON.stringify(values));
 });
 </script>

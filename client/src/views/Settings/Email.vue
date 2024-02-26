@@ -1,43 +1,37 @@
 <template>
-  <form @submit="onSubmit" id="emailChangeForm">
+  <form id="emailChangeForm" @submit="onSubmit">
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Nowy adres e-mail</label
-      >
-      <InputText
+      <label-field>Nowy adres e-mail</label-field>
+      <input-text
         name="email"
         type="email"
         :placeholder="'kowalski@example.com'"
-        :inputProps="{ minlength: 3, maxlength: 254 }"
-      />
+        :input-props="{ minlength: 3, maxlength: 254 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Potwierdź adres e-mail</label
-      >
-      <InputText
+      <label-field>Potwierdź adres e-mail</label-field>
+      <input-text
         name="email2"
         type="email"
         :placeholder="'kowalski@example.com'"
-        :inputProps="{ minlength: 3, maxlength: 254 }"
-      />
+        :input-props="{ minlength: 3, maxlength: 254 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Podaj hasło</label
-      >
-      <InputText
+      <label-field>Podaj hasło</label-field>
+      <input-text
         name="password"
         type="password"
         :placeholder="'********'"
-        :inputProps="{ minlength: 8 }"
-      />
+        :input-props="{ minlength: 8 }"
+      ></input-text>
     </div>
-    <FormButton
-      :formId="'emailChangeForm'"
-      :buttonTitle="'Zmień adres e-mail'"
+    <form-button
+      :form-id="'emailChangeForm'"
+      :button-title="'Zmień adres e-mail'"
       class="w-full"
-    />
+    ></form-button>
   </form>
 </template>
 
@@ -47,10 +41,10 @@ import { useForm } from "vee-validate";
 import { object, string, ref } from "yup";
 import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const router = useRouter();
-
 const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
@@ -74,6 +68,5 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit((values) => {
   userStore.updateUserEmail(router, values);
-  // console.log(JSON.stringify(values));
 });
 </script>

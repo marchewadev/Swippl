@@ -134,7 +134,7 @@ class ChatModel extends BaseModel {
       const { userID, friendID } = sessionObject;
 
       const query =
-        "UPDATE friends SET status = $1, updated_at = now() WHERE user_id = $2 AND friend_id = $3";
+        "UPDATE friends SET status = $1, updated_at = now() WHERE user_id = $2 AND friend_id = $3 AND status = 'pending'";
       const userValues = ["accepted", userID, friendID];
       const friendValues = ["accepted", friendID, userID];
 
@@ -153,7 +153,7 @@ class ChatModel extends BaseModel {
       const { userID, friendID } = sessionObject;
 
       const query =
-        "UPDATE friends SET status = $1 AND updated_at = now() WHERE user_id = $2 AND friend_id = $3";
+        "UPDATE friends SET status = $1, updated_at = now() WHERE user_id = $2 AND friend_id = $3";
       const userValues = ["rejected", userID, friendID];
       const friendValues = ["rejected", friendID, userID];
 

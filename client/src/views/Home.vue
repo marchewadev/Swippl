@@ -1,18 +1,18 @@
 <template>
   <main-navbar></main-navbar>
   <main
-    class="m-auto min-[1600px]:max-w-screen-2xl min-[1330px]:max-w-screen-xl min-[900px]:max-w-screen-md min-[500px]:max-w-screen-sm max-[700px]:mt-10"
+    class="m-auto max-[700px]:mt-10 min-[500px]:max-w-screen-sm min-[900px]:max-w-screen-md min-[1330px]:max-w-screen-xl min-[1600px]:max-w-screen-2xl"
   >
     <div
-      class="grid justify-items-center items-center min-[700px]:grid-cols-2 max-[700px]:mx-auto max-[699px]:max-w-xs"
+      class="grid justify-items-center items-center max-[699px]:max-w-xs max-[700px]:mx-auto min-[700px]:grid-cols-2"
     >
-      <div class="testgrida">
+      <div>
         <h1
-          class="mb-3 font-medium min-[1600px]:text-3xl min-[1200px]:text-2xl min-[900px]:text-xl"
+          class="font-medium mb-3 min-[900px]:text-xl min-[1200px]:text-2xl min-[1600px]:text-3xl"
         >
           Poznaj nowe osoby na Swippl
         </h1>
-        <p class="mb-5 min-[900px]:text-sm min-[1600px]:text-base text-xs">
+        <p class="text-xs mb-5 min-[900px]:text-sm min-[1600px]:text-base">
           Możesz tutaj zawierać nowe znajomości, całkowicie anonimowo. Jeżeli
           zechcesz, możesz również stworzyć swój własny, unikalny profil. Ty
           decydujesz, czym chcesz się podzielić!
@@ -21,13 +21,13 @@
           <home-button
             :path="{ name: 'Settings' }"
             :text="'Zacznij anonimowo'"
-            class="text-gray-50 bg-primary hover:bg-primaryLight mr-5"
+            class="text-gray-50 bg-primary mr-5 hover:bg-primaryLight"
           ></home-button>
           <home-button
-            :path="''"
+            :path="{}"
             :text="'Załóż konto'"
-            class="bg-secondary hover:bg-secondaryLight text-primaryDark"
-            @click="modalStore.openModal('register')"
+            class="text-primaryDark bg-secondary hover:bg-secondaryLight"
+            @click="openModal('register')"
           ></home-button>
         </div>
       </div>
@@ -41,12 +41,12 @@
 
     <div class="mt-16">
       <h2
-        class="text-center font-medium min-[1200px]:text-xl min-[1600px]:text-2xl min-[900px]:text-lg"
+        class="text-center font-medium min-[900px]:text-lg min-[1200px]:text-xl min-[1600px]:text-2xl"
       >
         Dlaczego warto założyć konto na Swippl?
       </h2>
       <div
-        class="mt-7 grid justify-items-center group [&>*:nth-child(odd)]:bg-primary [&>*:nth-child(odd)]:text-gray-50 [&>*:nth-child(even)]:text-primaryDark [&>*:nth-child(even)]:bg-secondary min-[1330px]:gap-x-20 min-[900px]:gap-x-10 min-[700px]:gap-x-5 min-[700px]:grid-cols-3 grid-cols-1 min-[700px]:gap-y-0 gap-y-5"
+        class="mt-7 grid justify-items-center grid-cols-1 gap-y-5 group [&>*:nth-child(odd)]:bg-primary [&>*:nth-child(odd)]:text-gray-50 [&>*:nth-child(even)]:text-primaryDark [&>*:nth-child(even)]:bg-secondary min-[700px]:gap-x-5 min-[700px]:grid-cols-3 min-[700px]:gap-y-0 min-[900px]:gap-x-10 min-[1330px]:gap-x-20"
       >
         <card :icon-name="'people-outline'" :card-title="'Dowolność'">
           U nas masz możliwość wyboru z kim zechcesz rozmawiać. Wystarczy
@@ -70,11 +70,12 @@
 </template>
 
 <script setup>
+import { useModalStore } from "@/stores/ModalStore";
+import Card from "@/components/home/Card.vue";
 import MainNavbar from "@/components/navbar/MainNavbar.vue";
 import HomeButton from "@/components/buttons/HomeButton.vue";
-import Card from "@/components/home/Card.vue";
 import FooterEl from "@/components/footer/FooterEl.vue";
-import { useModalStore } from "@/stores/ModalStore";
 
 const modalStore = useModalStore();
+const { openModal } = modalStore;
 </script>

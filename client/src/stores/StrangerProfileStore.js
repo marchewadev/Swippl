@@ -1,22 +1,21 @@
-import socket from "@/sockets/socket";
 import { defineStore } from "pinia";
 import { useUserStore } from "./UserStore";
 import { useModalStore } from "./ModalStore";
 import axios from "axios";
+import socket from "@/sockets/socket";
 
 export const useStrangerProfileStore = defineStore("strangerProfileStore", {
   state: () => ({
     stranger: {
-      id: null,
       name: "",
       gender: "",
       age: "",
       city: "",
       avatar: "",
     },
-    friendStatus: null,
+    showProfile: false,
     friendRequest: false,
-    show: false,
+    friendStatus: null,
   }),
   actions: {
     openProfile() {
@@ -39,9 +38,6 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     },
     acceptFriendRequest() {
       socket.emit("acceptFriendRequest");
-    },
-    rejectFriendRequest() {
-      socket.emit("rejectFriendRequest");
     },
     removeFriend(friendID, sessionID, router) {
       const userStore = useUserStore();

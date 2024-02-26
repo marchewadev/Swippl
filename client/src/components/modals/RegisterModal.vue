@@ -2,9 +2,7 @@
   <base-modal :modal-title="'Zarejestruj się'" :modal-name="'register'">
     <form action="/signup" id="signUpForm" @submit="onSubmit">
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Jak się nazywasz?</label
-        >
+        <label-field>Jak się nazywasz?</label-field>
         <input-text
           name="name"
           type="text"
@@ -13,9 +11,7 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Adres e-mail</label
-        >
+        <label-field>Adres e-mail</label-field>
         <input-text
           name="email"
           type="email"
@@ -24,9 +20,7 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Hasło</label
-        >
+        <label-field>Hasło</label-field>
         <input-text
           name="password"
           type="password"
@@ -35,9 +29,7 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Potwierdź hasło</label
-        >
+        <label-field>Potwierdź hasło</label-field>
         <input-text
           name="password2"
           type="password"
@@ -46,9 +38,7 @@
         ></input-text>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Płeć</label
-        >
+        <label-field>Płeć</label-field>
         <select-field
           name="gender"
           :initial-value="'female'"
@@ -61,47 +51,45 @@
         </select-field>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Data urodzenia</label
-        >
+        <label-field>Data urodzenia</label-field>
         <input-text name="birthdate" type="date"></input-text>
       </div>
-      <div class="mb-4 grid terms-container gap-x-2">
+      <div class="terms-container mb-4 grid gap-x-2">
         <input-text
           name="terms"
           type="checkbox"
           :custom-class="'mb-4'"
           :custom-error-class="'error-message-grid'"
         ></input-text>
-        <label for="" class="min-[1330px]:text-sm text-xs">
+        <label for="" class="text-xs min-[1330px]:text-sm">
           Rejestrując się w serwisie akceptuję
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
+            class="font-medium hover:text-primaryDark hover:underline"
           >
             regulamin
           </a>
           i zgadzam się z
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
+            class="font-medium hover:text-primaryDark hover:underline"
           >
             polityką prywatności </a
           >.
         </label>
       </div>
       <form-button
-        :formId="'signUpForm'"
-        :buttonTitle="'Załóż konto'"
         class="w-full mb-1"
+        :form-id="'signUpForm'"
+        :button-title="'Załóż konto'"
       ></form-button>
-      <div class="text-center min-[1330px]:text-sm text-xs">
+      <div class="text-xs text-center min-[1330px]:text-sm">
         <p>
           Masz już konto?
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
-            @click="modalStore.openModal('login')"
+            class="font-medium hover:text-primaryDark hover:underline"
+            @click="openModal('login')"
           >
             Zaloguj się tutaj!
           </a>
@@ -119,6 +107,7 @@ import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
+import LabelField from "../form/LabelField.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
@@ -127,6 +116,8 @@ const router = useRouter();
 
 const modalStore = useModalStore();
 const userStore = useUserStore();
+
+const { openModal } = modalStore;
 
 const { handleSubmit } = useForm({
   validationSchema: object({

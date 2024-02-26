@@ -1,20 +1,20 @@
 <template>
   <input
-    v-model="value"
-    v-bind="inputProps"
     :type="type || 'text'"
     :class="[
       type !== 'checkbox' && type !== 'file'
-        ? 'p-2 rounded-md bg-gray-100 border border-gray-300 w-full min-[1330px]:text-sm text-xs'
+        ? 'text-xs bg-gray-100 border border-gray-300 p-2 rounded-md w-full min-[1330px]:text-sm'
         : '',
       customClass,
     ]"
     :placeholder="placeholder"
+    v-model="value"
+    v-bind="inputProps"
   />
   <p
-    v-if="errorMessage"
-    class="text-xs mt-1 text-red-600"
+    class="text-xs text-red-600 mt-1"
     :class="customErrorClass"
+    v-if="errorMessage"
   >
     * {{ errorMessage }}
   </p>
@@ -28,20 +28,25 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
   type: {
     type: String,
   },
+
   placeholder: {
     type: String,
   },
+
   customClass: {
     type: String,
     default: "",
   },
+
   customErrorClass: {
     type: String,
     default: "",
   },
+
   inputProps: {
     type: Object,
     default: () => ({}),

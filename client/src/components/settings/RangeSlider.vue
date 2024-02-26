@@ -20,6 +20,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
   initialValue: {
     type: Array,
     required: true,

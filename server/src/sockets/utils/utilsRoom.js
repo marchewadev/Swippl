@@ -11,18 +11,22 @@ const {
   getClientIP,
 } = require("./helperFunctions");
 const { messageSchema } = require("../schemas/messageSchema");
+const { rejectFriendRequest } = require("../utils/utilsFriendStatus");
 
 async function leaveRoomBySocketID(socket, rooms) {
   try {
     let room = findRoomBySocketID(socket, rooms);
     if (!room) {
-      // throw new Error("Nie udało się opuścić pokoju");
       // If the room is not found, exit the function without taking any action
       return;
     }
 
     // Save the room ID so we can use it later to compare
     const roomID = room.id;
+
+    if (room.isFriendRequestPending) {
+      await rejectFriendRequest(socket, room);
+    }
 
     // Remove the user from the room
     room.users = room.users.filter((user) => user.id !== socket.id);
@@ -91,6 +95,7 @@ async function findFreeRoom(io, socket, rooms, userObject) {
         users: [{ id: socket.id, ...userObject }],
         isRoomOpen: true,
         sessionID: null,
+        isFriendRequestPending: false,
       };
       rooms.push(room);
     } else {

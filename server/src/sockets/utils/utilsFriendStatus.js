@@ -26,6 +26,8 @@ async function sendFriendRequest(io, socket, rooms) {
       friendID: stranger.userID,
     });
 
+    room.isFriendRequestPending = true;
+
     socket.emit("generateMessage", {
       content: `Zaproszenie do znajomych zostało wysłane do ${stranger.name}`,
       type: "admin",
@@ -64,17 +66,16 @@ async function acceptFriendRequest(io, socket, rooms) {
       friendID: stranger.userID,
     });
 
+    room.isFriendRequestPending = false;
+
     io.to(room.id).emit("friendStatus", "accepted");
   } catch (err) {
     throw new Error(err.message);
   }
 }
 
-async function rejectFriendRequest(io, socket, rooms) {
-  // TODO: zaimplementować tę funkcję przy rozłączeniu użytkownika (świadome opuszczenie pokoju lub rozłączenie z serwerem)
+async function rejectFriendRequest(socket, room) {
   try {
-    const room = findRoomBySocketID(socket, rooms);
-
     if (!room) {
       throw new Error(
         "Nie znaleziono pokoju, w którym można odrzucić zaproszenie"
@@ -93,7 +94,7 @@ async function rejectFriendRequest(io, socket, rooms) {
       friendID: stranger.userID,
     });
 
-    io.to(room.id).emit("friendStatus", "rejected");
+    room.isFriendRequestPending = false;
   } catch (err) {
     throw new Error(err.message);
   }

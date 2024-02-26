@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <template #boxTitle>
-      <div class="flex items-center h-full group is-settings">
+      <div class="h-full flex items-center group is-settings">
         <settings-navbar></settings-navbar>
       </div>
     </template>

@@ -1,14 +1,14 @@
 <template>
-  <form @submit="onSubmit" id="profileForm" class="form-container py-5">
+  <form id="profileForm" class="form-container py-5" @submit="onSubmit">
     <div class="mb-4">
       <div class="avatar-container relative">
         <img
           src="@/assets/avatar.png"
           alt="User's avatar"
-          class="min-[1600px]:h-72 min-[1330px]:h-64 h-56"
+          class="h-56 min-[1330px]:h-64 min-[1600px]:h-72"
         />
         <button
-          class="bg-gray-100/50 hover:text-red-600 p-2 rounded-md transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
+          class="bg-gray-100/50 p-2 rounded-md hover:text-red-600 transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
           type="button"
         >
           <ion-icon
@@ -17,45 +17,43 @@
           ></ion-icon>
         </button>
       </div>
-      <Field
+      <field
         name="avatar"
         type="file"
         accept=".png, .jpg, .jpeg"
         class="text-xs max-w-[15rem]"
-      />
-      <ErrorMessage name="avatar" as="p" class="text-xs mt-1 text-red-600" />
+      ></field>
+      <error-message
+        name="avatar"
+        as="p"
+        class="text-xs mt-1 text-red-600"
+      ></error-message>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Jak się nazywasz?</label
-      >
-      <InputText
+      <label-field>Jak się nazywasz?</label-field>
+      <input-text
         name="name"
         :placeholder="'Janek'"
-        :inputProps="{ minlength: 3, maxlength: 21 }"
-      />
+        :input-props="{ minlength: 3, maxlength: 21 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Miejscowość</label
-      >
-      <InputText
+      <label-field>Miejscowość</label-field>
+      <input-text
         name="city"
         :placeholder="'Warszawa'"
-        :inputProps="{ maxlength: 31 }"
-      />
+        :input-props="{ maxlength: 31 }"
+      ></input-text>
     </div>
     <div class="mb-4">
-      <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-        >Data urodzenia</label
-      >
-      <InputText type="date" name="birthdate" />
+      <label-field>Data urodzenia</label-field>
+      <input-text type="date" name="birthdate"></input-text>
     </div>
-    <FormButton
-      :formId="'profileForm'"
-      :buttonTitle="'Zapisz'"
+    <form-button
+      :form-id="'profileForm'"
+      :button-title="'Zapisz'"
       class="w-full"
-    />
+    ></form-button>
   </form>
 </template>
 
@@ -65,26 +63,27 @@ import { object, string, date, mixed } from "yup";
 import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const userStore = useUserStore();
 
 const { handleSubmit } = useForm({
   validationSchema: object({
-    // avatar: mixed()
-    //   .optional()
-    //   .test("fileSelected", "", (value) => value !== undefined)
-    //   .test(
-    //     "fileFormat",
-    //     "* Nieobsługiwany format",
-    //     (value) =>
-    //       value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
-    //   )
-    //   .test(
-    //     "fileSize",
-    //     "* Plik jest za duży",
-    //     (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
-    //   ),
+    avatar: mixed()
+      .optional()
+      .test("fileSelected", "", (value) => value !== undefined)
+      .test(
+        "fileFormat",
+        "* Nieobsługiwany format",
+        (value) =>
+          value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
+      )
+      .test(
+        "fileSize",
+        "* Plik jest za duży",
+        (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
+      ),
     name: string()
       .trim()
       .required("Imię jest wymagane")

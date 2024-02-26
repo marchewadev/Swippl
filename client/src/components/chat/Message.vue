@@ -1,14 +1,12 @@
 <template>
   <div
-    class="message-stranger p-2 mb-2 rounded break-words text-primary bg-gray-100"
+    class="message-stranger text-primary bg-gray-100 p-2 mb-2 rounded break-words"
   >
-    <p class="message--content min-[851px]:text-sm text-xs">
+    <p class="message--content text-xs min-[851px]:text-sm">
       <slot></slot>
     </p>
   </div>
 </template>
-
-<script setup></script>
 
 <style scoped>
 .message-stranger {

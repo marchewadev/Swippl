@@ -1,8 +1,8 @@
-import axios from "axios";
 import { createRouter, createWebHistory } from "vue-router";
-import { useSettingsStore } from "@/stores/SettingsStore";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
+import { useSettingsStore } from "@/stores/SettingsStore";
+import axios from "axios";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,9 +76,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const settingsStore = useSettingsStore();
   const userStore = useUserStore();
   const chatStore = useChatStore();
+  const settingsStore = useSettingsStore();
 
   const token = userStore.token;
   const authRequiredRoutes = settingsStore.buttons

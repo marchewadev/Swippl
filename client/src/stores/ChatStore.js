@@ -10,29 +10,25 @@ import dayjs from "dayjs";
 export const useChatStore = defineStore("chatStore", {
   state: () => ({
     totalUsers: 0,
-    sessionID: null,
-    roomID: null,
     roomUsers: 0,
-    messages: [],
     isSearching: true,
+    sessionID: null,
     privateSessionID: null,
     activeFriendID: null,
+    messages: [],
   }),
   actions: {
     connectToSocket() {
       socket.connect();
-
       socket.on("sessionInfo", (sessionID) => {
         this.sessionID = sessionID;
       });
-
       socket.on("connectedClients", (totalUsers) => {
         this.totalUsers = totalUsers;
       });
     },
     async joinRoom() {
       const userStore = useUserStore();
-
       try {
         let userObject = {};
 

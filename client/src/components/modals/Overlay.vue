@@ -1,7 +1,7 @@
 <template>
   <transition name="overlay">
     <div
-      class="overlay w-full h-full backdrop-blur-sm bg-black/20 absolute top-0 left-0 z-10"
+      class="overlay h-full w-full backdrop-blur-sm bg-black/20 absolute top-0 left-0 z-10"
       v-if="modalStore.show && modalStore.selectedModal !== 'message'"
     ></div>
   </transition>

@@ -5,9 +5,7 @@
   >
     <form action="" id="chatAnonymouslyForm" @submit="onSubmit">
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Płeć</label
-        >
+        <label-field>Płeć</label-field>
         <select-field
           name="gender"
           :initial-value="'female'"
@@ -20,47 +18,45 @@
         </select-field>
       </div>
       <div class="mb-4">
-        <label for="" class="block mb-1 min-[1330px]:text-base text-sm"
-          >Data urodzenia</label
-        >
+        <label-field>Data urodzenia</label-field>
         <input-text name="birthdate" type="date"></input-text>
       </div>
-      <div class="mb-4 grid terms-container gap-x-2">
+      <div class="terms-container mb-4 grid gap-x-2">
         <input-text
           name="terms"
           type="checkbox"
           :custom-class="'mb-4'"
           :custom-error-class="'error-message-grid'"
         ></input-text>
-        <label for="" class="min-[1330px]:text-sm text-xs">
+        <label for="" class="text-xs min-[1330px]:text-sm">
           Korzystając z serwisu akceptuję
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
+            class="font-medium hover:text-primaryDark hover:underline"
           >
             regulamin
           </a>
           i zgadzam się z
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
+            class="font-medium hover:text-primaryDark hover:underline"
           >
             polityką prywatności </a
           >.
         </label>
       </div>
       <form-button
-        :formId="'chatAnonymouslyForm'"
-        :buttonTitle="'Zacznij rozmawiać'"
         class="w-full mb-1"
+        :form-id="'chatAnonymouslyForm'"
+        :button-title="'Zacznij rozmawiać'"
       ></form-button>
-      <div class="text-center min-[1330px]:text-sm text-xs">
+      <div class="text-xs text-center min-[1330px]:text-sm">
         <p>
           Masz już konto?
           <a
             href="#"
-            class="font-medium hover:underline hover:text-primaryDark"
-            @click="modalStore.openModal('login')"
+            class="font-medium hover:text-primaryDark hover:underline"
+            @click="openModal('login')"
           >
             Zaloguj się tutaj!
           </a>
@@ -74,17 +70,21 @@
 import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
 import { object, string, date, boolean } from "yup";
+import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
-import BaseModal from "@/components/modals/BaseModal.vue";
 import InputText from "@/components/form/InputText.vue";
+import LabelField from "../form/LabelField.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
-import { useModalStore } from "@/stores/ModalStore";
+import BaseModal from "@/components/modals/BaseModal.vue";
 
-const userStore = useUserStore();
 const router = useRouter();
+
 const modalStore = useModalStore();
+const userStore = useUserStore();
+
+const { openModal } = modalStore;
 
 const { handleSubmit } = useForm({
   validationSchema: object({

@@ -1,24 +1,24 @@
 <template>
-  <div class="settings-grid grid grid-cols-2 min-[1600px]:gap-x-16 gap-x-8">
+  <div class="settings-grid grid grid-cols-2 gap-x-8 min-[1600px]:gap-x-16">
     <form id="searchCriteriaForm" class="mb-10" @submit="onSubmit">
       <div class="criteria--age mb-10">
-        <label for="" class="min-[1330px]:text-base text-sm"
+        <label for="" class="text-sm min-[1330px]:text-base"
           >Przedział wiekowy</label
         >
         <range-slider
-          class="slider-yellow mt-4 min-[1600px]:w-96 min-[1200px]:w-72 min-[1000px]:w-52 w-44"
+          class="slider-yellow w-44 mt-4 min-[1000px]:w-52 min-[1200px]:w-72 min-[1600px]:w-96"
           :name="'ageRangeSearch'"
           :initial-value="ageRangeValue"
           @change="updateAgeRange"
         ></range-slider>
       </div>
       <div class="criteria--gender">
-        <label for="" class="min-[1330px]:text-base text-sm"
+        <label for="" class="text-sm min-[1330px]:text-base"
           >Szukaj według płci</label
         >
         <select-field
           name="genderSearch"
-          :initial-value="userStore.searchCriteria.genderSearch"
+          :initial-value="searchCriteria.genderSearch"
           @change="updateGender"
         >
           <template #values>
@@ -30,12 +30,12 @@
       </div>
     </form>
     <form-button
-      :formId="'searchCriteriaForm'"
-      :buttonTitle="'Szukaj według kryteriów'"
+      :form-id="'searchCriteriaForm'"
+      :button-title="'Szukaj według kryteriów'"
       class="search-by-criteria--btn"
     ></form-button>
     <button
-      class="search-random--btn p-2 rounded-md bg-secondary text-primaryDark hover:bg-secondaryLight transition-colors duration-300 min-[1330px]:text-base min-[1200px]:text-sm text-xs"
+      class="search-random--btn text-xs text-primaryDark bg-secondary p-2 rounded-md hover:bg-secondaryLight transition-colors duration-300 min-[1200px]:text-sm min-[1330px]:text-base"
       type="button"
     >
       Szukaj dowolnie
@@ -45,17 +45,20 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { useForm } from "vee-validate";
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
+import { useModalStore } from "@/stores/ModalStore";
+import { useForm } from "vee-validate";
 import { object, string, number, array } from "yup";
-import RangeSlider from "@/components/settings/RangeSlider.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
-import { useModalStore } from "@/stores/ModalStore";
+import RangeSlider from "@/components/settings/RangeSlider.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
 const modalStore = useModalStore();
+
+const { searchCriteria } = storeToRefs(userStore);
 
 const ageRangeValue = userStore.searchCriteria.ageRangeSearch;
 const { handleSubmit } = useForm({
@@ -84,7 +87,7 @@ const updateGender = (newGender) => {
   userStore.searchCriteria.genderSearch = newGender;
 };
 
-const onSubmit = handleSubmit((values) => {
+const onSubmit = handleSubmit(() => {
   if (
     (!userStore.user.gender || !userStore.user.birthdate) &&
     !userStore.token

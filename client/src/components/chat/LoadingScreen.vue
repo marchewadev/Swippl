@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full gap-4">
+  <div class="h-full flex flex-col items-center justify-center gap-4">
     <div class="flex gap-2">
       <div class="dot"></div>
       <div class="dot"></div>

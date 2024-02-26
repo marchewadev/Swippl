@@ -235,13 +235,18 @@ class UserModel extends BaseModel {
       );
 
       const { password: databasePassword } = user.rows[0];
-      const { password: clientPassword } = userJSON;
+      const { oldPassword: clientOldPassword, newPassword: clientNewPassword } =
+        userJSON;
 
-      if (await bcrypt.compare(clientPassword, databasePassword)) {
+      if (!(await bcrypt.compare(clientOldPassword, databasePassword))) {
+        throw { status: 401, message: "Nieprawidłowe dane logowania" };
+      }
+
+      if (await bcrypt.compare(clientNewPassword, databasePassword)) {
         throw { status: 409, message: "Podane hasło jest takie samo" };
       }
 
-      const hashedPassword = await this.#hashPassword(clientPassword);
+      const hashedPassword = await this.#hashPassword(clientNewPassword);
 
       const query =
         "UPDATE users SET password = $1, updated_at = now() WHERE id = $2";

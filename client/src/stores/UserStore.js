@@ -1,7 +1,7 @@
-import axios from "axios";
-import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { useModalStore } from "./ModalStore";
+import { useStorage } from "@vueuse/core";
+import axios from "axios";
 
 export const useUserStore = defineStore("userStore", {
   state: () => ({
@@ -13,19 +13,22 @@ export const useUserStore = defineStore("userStore", {
       gender: "",
       avatar: "",
     },
-    blockedUsers: [],
-    friends: [],
     token: useStorage("token", null),
+    friends: [],
     searchCriteria: useStorage("searchCriteria", {
       ageRangeSearch: [18, 100],
       genderSearch: "any",
     }),
   }),
   actions: {
-    async signUpUser(router, userJSON) {
+    async performUserAction(action, router, userJSON) {
+      // Helper function to perform user actions such as register and login. The only difference is the URL.
+
       try {
+        const url = action === "register" ? "register" : "login";
+
         const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_SERVER}/user/register`,
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/${url}`,
           userJSON
         );
 
@@ -37,21 +40,35 @@ export const useUserStore = defineStore("userStore", {
         this.displayMessageModal(err.response.data.message, true);
       }
     },
-    async signInUser(router, userJSON) {
+    async performUserUpdateAction(url, router, userJSON) {
+      // Helper function to perform user update actions such as updating the user's email and password, both of which require reauthentication.
+
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_BACKEND_SERVER}/user/login`,
-          userJSON
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/${url}`,
+          userJSON,
+          { headers: { Authorization: `Bearer ${this.token}` } }
         );
 
-        this.token = response.data.userObject.token;
+        this.resetUserStore();
+        router.push({ name: "Home" });
 
-        // TODO: if the user is under Settings route already, then i dont know reload or something
-        this.closeModalAndRedirect(router, "Settings");
         this.displayMessageModal(response.data.message);
       } catch (err) {
         this.displayMessageModal(err.response.data.message, true);
       }
+    },
+    async signUpUser(router, userJSON) {
+      await this.performUserAction("register", router, userJSON);
+    },
+    async signInUser(router, userJSON) {
+      await this.performUserAction("login", router, userJSON);
+    },
+    async updateUserEmail(router, userJSON) {
+      await this.performUserUpdateAction("email", router, userJSON);
+    },
+    async updateUserPassword(router, userJSON) {
+      await this.performUserUpdateAction("password", router, userJSON);
     },
     async updateUserProfile(userJSON) {
       try {
@@ -66,39 +83,8 @@ export const useUserStore = defineStore("userStore", {
         this.displayMessageModal(err.response.data.message, true);
       }
     },
-    async updateUserEmail(router, userJSON) {
-      try {
-        const response = await axios.patch(
-          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/email`,
-          userJSON,
-          { headers: { Authorization: `Bearer ${this.token}` } }
-        );
-
-        this.resetUserStore();
-        router.push({ name: "Home" });
-
-        this.displayMessageModal(response.data.message);
-      } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
-      }
-    },
-    async updateUserPassword(router, userJSON) {
-      try {
-        const response = await axios.patch(
-          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/password`,
-          userJSON,
-          { headers: { Authorization: `Bearer ${this.token}` } }
-        );
-
-        this.resetUserStore();
-        router.push({ name: "Home" });
-
-        this.displayMessageModal(response.data.message);
-      } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
-      }
-    },
     async deleteUserAccount(router, userJSON) {
+      // TODO: rozważyć podłączenie pod funkcję performUserUpdateAction
       try {
         const response = await axios.delete(
           `${import.meta.env.VITE_BACKEND_SERVER}/user/delete`,
@@ -131,10 +117,6 @@ export const useUserStore = defineStore("userStore", {
       this.user.gender = userObject.gender;
       this.user.birthdate = userObject.birthdate;
     },
-    resetUserStore() {
-      this.$reset();
-      this.token = null;
-    },
     closeModalAndRedirect(router, path) {
       const modalStore = useModalStore();
       modalStore.closeModal();
@@ -143,6 +125,10 @@ export const useUserStore = defineStore("userStore", {
     displayMessageModal(message, isErrorMessage = false) {
       const modalStore = useModalStore();
       modalStore.displayMessageModal(message, isErrorMessage);
+    },
+    resetUserStore() {
+      this.$reset();
+      this.token = null;
     },
   },
   getters: {
