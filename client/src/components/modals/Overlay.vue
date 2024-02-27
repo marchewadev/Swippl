@@ -2,14 +2,17 @@
   <transition name="overlay">
     <div
       class="overlay h-full w-full backdrop-blur-sm bg-black/20 absolute top-0 left-0 z-10"
-      v-if="modalStore.show && modalStore.selectedModal !== 'message'"
+      v-if="showModal && selectedModal !== 'message'"
     ></div>
   </transition>
 </template>
 
 <script setup>
+import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
+
 const modalStore = useModalStore();
+const { showModal, selectedModal } = storeToRefs(modalStore);
 </script>
 
 <style scoped>

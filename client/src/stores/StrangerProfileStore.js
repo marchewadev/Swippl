@@ -19,10 +19,10 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
   }),
   actions: {
     openProfile() {
-      this.show = true;
+      this.showProfile = true;
     },
     closeProfile() {
-      this.show = false;
+      this.showProfile = false;
     },
     setStrangerData({ name, age, gender, city }) {
       this.stranger.name = name;

@@ -1,9 +1,5 @@
 "use strict";
 
-const ChatModel = require("../../models/chatModel");
-const { findRoomBySocketID, getClientIP } = require("./helperFunctions");
-const { messageSchema } = require("../schemas/messageSchema");
-
 function emitError(socket, errorTitle, message) {
   socket.emit(errorTitle, message);
 }

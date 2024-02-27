@@ -3,7 +3,7 @@ const dayjs = require("dayjs");
 
 class ChatModel extends BaseModel {
   async checkIfUsersAreFriends(sessionID) {
-    // Helper function for closeSession. If users are not friends, the session can be closed on disconnect.
+    // Helper function for closeSession. If users are not friends, the session can be set as closed on disconnect.
     try {
       const sessionQuery =
         "SELECT user1_id, user2_id FROM chat_sessions WHERE id = $1";
@@ -27,9 +27,9 @@ class ChatModel extends BaseModel {
         );
 
         if (friendsResult.rows.length > 0) {
-          return true; // Użytkownicy są znajomymi
+          return true; // Users are friends
         } else {
-          return false; // Użytkownicy nie są znajomymi
+          return false; // Users are not friends
         }
       } else {
         throw new Error("Nie znaleziono sesji o podanym ID");
@@ -80,7 +80,6 @@ class ChatModel extends BaseModel {
 
   async saveMessageToDatabase(sessionObject) {
     try {
-      //TODO: Sprawdzać za każdym razem czy ta sesja jest prawidłowa dla tych użytkowników...
       const { sessionID, senderID, senderIP, message } = sessionObject;
 
       const query =
@@ -97,8 +96,6 @@ class ChatModel extends BaseModel {
   async sendFriendRequest(sessionObject) {
     try {
       const { userID, friendID } = sessionObject;
-
-      // TODO: sprawdzić czy użytkownicy nie są już znajomymi, czy nie ma już wysłanego zaproszenia, czy nie mają tego samego id itp.
 
       const result = await this.pool.query(
         "SELECT status FROM friends WHERE user_id = $1 AND friend_id = $2",
@@ -190,6 +187,7 @@ class ChatModel extends BaseModel {
   }
 
   async getChatHistory(firstUserID, secondUserID, sessionID) {
+    // This function returns the chat history between two users who are friends.
     try {
       const query = `
         SELECT cm.message_content AS content,
@@ -198,16 +196,21 @@ class ChatModel extends BaseModel {
             ELSE 'stranger'
           END AS type
         FROM chat_sessions cs
-        JOIN chat_messages cm ON cs.id = cm.session_id
+        LEFT JOIN chat_messages cm ON cs.id = cm.session_id
         WHERE ((cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1))
         AND cs.id = $3
         AND cs.end_timestamp IS NULL;
       `;
       const values = [firstUserID, secondUserID, sessionID];
-      const { rows: chatHistory } = await this.pool.query(query, values);
+      let { rows: chatHistory } = await this.pool.query(query, values);
 
       if (chatHistory.length < 1) {
         throw new Error("Nie znaleziono podanego czatu");
+      }
+
+      // If the chat history is empty, the first message is null. In this case, we return an empty array.
+      if (chatHistory[0].content === null) {
+        chatHistory = [];
       }
 
       const queryForUser2 =

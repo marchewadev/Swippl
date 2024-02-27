@@ -1,7 +1,7 @@
 "use strict";
 
-const { v4: uuidv4 } = require("uuid");
 const ChatModel = require("../../models/chatModel");
+const { v4: uuidv4 } = require("uuid");
 const { userDataSchema } = require("../schemas/userSchema");
 const { anonDataSchema } = require("../schemas/anonSchema");
 const {

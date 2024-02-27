@@ -4,7 +4,7 @@ const ChatModel = require("../../models/chatModel");
 const { getClientIP } = require("./helperFunctions");
 const { messageSchema } = require("../schemas/messageSchema");
 
-async function createUserSession(io, socket, privateRooms, sessionObject) {
+async function createUserSession(socket, privateRooms, sessionObject) {
   try {
     sessionObject.friends.forEach((friend) => {
       // Check if the private room already exists

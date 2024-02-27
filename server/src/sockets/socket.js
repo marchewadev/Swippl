@@ -59,7 +59,6 @@ module.exports = (server) => {
         await leaveRoomBySocketID(socket, rooms);
         updateConnectedClients(io);
       } catch (err) {
-        // TODO: Consider creating a separate file for server logs to improve log management.
         if (err.message !== "Nie udało się opuścić pokoju") {
           console.error(err);
         }
@@ -76,7 +75,7 @@ module.exports = (server) => {
 
     socket.on("sendFriendRequest", async () => {
       try {
-        await sendFriendRequest(io, socket, rooms);
+        await sendFriendRequest(socket, rooms);
       } catch (err) {
         emitError(socket, "roomError", err.message);
       }
@@ -101,7 +100,7 @@ module.exports = (server) => {
 
     socket.on("createUserSession", async (sessionObject) => {
       try {
-        await createUserSession(io, socket, privateRooms, sessionObject);
+        await createUserSession(socket, privateRooms, sessionObject);
         socket.data = { userID: sessionObject.userID };
       } catch (err) {
         emitError(socket, "roomError", err.message);

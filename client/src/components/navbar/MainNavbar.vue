@@ -220,6 +220,7 @@ const { checkIfUserIsLoggedIn, resetUserStore, userAvatar } = userStore;
 const { openModal } = modalStore;
 const { friends } = storeToRefs(userStore);
 const { totalUsers } = storeToRefs(chatStore);
+const { showModal, selectedModal } = storeToRefs(modalStore);
 
 const dropdownOpen = ref(false);
 const isMobileNavOpen = ref(false);
@@ -239,8 +240,8 @@ function closeDropdown() {
 
 function toggleMobileNav() {
   isMobileNavOpen.value = !isMobileNavOpen.value;
-  modalStore.show = true;
-  modalStore.selectedModal = "mobile-nav";
+  showModal.value = true;
+  selectedModal.value = "mobile-nav";
 }
 
 function openLoginModal() {

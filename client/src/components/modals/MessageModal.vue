@@ -2,19 +2,17 @@
   <transition name="modal">
     <div
       class="message-modal bg-white rounded-tl-md rounded-tr-md absolute left-1/2 top-10 -translate-x-1/2 z-20"
-      v-if="modalStore.showMessageModal"
+      v-if="showMessageModal"
     >
       <p
         class="tracking-wide text-xs p-3 min-[1330px]:text-sm min-[1330px]:p-4"
       >
-        {{ modalStore.textMessageModal }}
+        {{ textMessageModal }}
       </p>
       <div class="empty-bar bg-gray-400 h-1 w-full">
         <div
           class="progess-bar h-full"
-          :class="
-            modalStore.isErrorMessageModal ? 'bg-red-600' : 'bg-emerald-600'
-          "
+          :class="isErrorMessageModal ? 'bg-red-600' : 'bg-emerald-600'"
           :style="{ width: `${width}%` }"
         ></div>
       </div>
@@ -24,12 +22,15 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
 
 const width = ref(100);
 const intervalId = ref(null);
 
 const modalStore = useModalStore();
+const { showMessageModal, textMessageModal, isErrorMessageModal } =
+  storeToRefs(modalStore);
 
 const decreaseWidth = () => {
   if (width.value > 0) {

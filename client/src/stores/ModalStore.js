@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export const useModalStore = defineStore("modalStore", {
   state: () => ({
-    show: false,
+    showModal: false,
     showMessageModal: false,
     isErrorMessageModal: false,
     selectedModal: "",
@@ -10,11 +10,11 @@ export const useModalStore = defineStore("modalStore", {
   }),
   actions: {
     openModal(selectedModal) {
-      this.show = true;
+      this.showModal = true;
       this.selectedModal = selectedModal;
     },
     closeModal() {
-      this.show = false;
+      this.showModal = false;
       this.selectedModal = "";
     },
     displayMessageModal(message, isErrorMessage = false) {

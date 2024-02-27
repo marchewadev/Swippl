@@ -3,7 +3,7 @@
 const ChatModel = require("../../models/chatModel");
 const { findRoomBySocketID } = require("./helperFunctions");
 
-async function sendFriendRequest(io, socket, rooms) {
+async function sendFriendRequest(socket, rooms) {
   try {
     const room = findRoomBySocketID(socket, rooms);
 
@@ -106,7 +106,6 @@ async function removeFriend(
   { userID, userName, friendID, sessionID }
 ) {
   try {
-    // TODO: delete room from privateRooms
     const room = privateRooms.find((room) => room.sessionID === sessionID);
 
     if (!room) {
