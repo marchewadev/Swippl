@@ -21,6 +21,7 @@ function getUserDataObject(user) {
     age: user.age,
     gender: user.gender,
     city: user.city,
+    avatar: user.avatar,
   };
 }
 

@@ -6,7 +6,7 @@
       @click="handleClick"
     >
       <img
-        src="@/assets/avatar.png"
+        :src="setFriendAvatar"
         alt="Friend's avatar"
         class="friend-avatar h-10 mr-2 rounded-full min-[1600px]:h-12"
       />
@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/ChatStore";
 import { useUserStore } from "@/stores/UserStore";
@@ -48,10 +48,19 @@ const props = defineProps({
     required: true,
   },
 
+  friend_avatar: {
+    type: String,
+    required: true,
+  },
+
   session_id: {
     type: Number,
     required: true,
   },
+});
+
+const setFriendAvatar = computed(() => {
+  return props.friend_avatar ? props.friend_avatar : "/src/assets/avatar.png";
 });
 
 const handleClick = () => {

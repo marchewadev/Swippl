@@ -78,6 +78,7 @@ exports.deleteUserSchema = yup.object({
 });
 
 exports.updateUserProfileSchema = yup.object({
+  // TODO: dodać walidację avatara!
   name: yup
     .string()
     .trim()

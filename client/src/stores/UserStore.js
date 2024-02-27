@@ -72,11 +72,26 @@ export const useUserStore = defineStore("userStore", {
     },
     async updateUserProfile(userJSON) {
       try {
+        const formData = new FormData();
+        for (const key in userJSON) {
+          formData.append(key, userJSON[key]);
+        }
+
         const response = await axios.patch(
           `${import.meta.env.VITE_BACKEND_SERVER}/user/update/profile`,
-          userJSON,
-          { headers: { Authorization: `Bearer ${this.token}` } }
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
+        // const response = await axios.patch(
+        //   `${import.meta.env.VITE_BACKEND_SERVER}/user/update/profile`,
+        //   userJSON,
+        //   { headers: { Authorization: `Bearer ${this.token}` } }
+        // );
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
@@ -103,15 +118,18 @@ export const useUserStore = defineStore("userStore", {
       }
     },
     setUserData(userObject) {
-      const { id, name, birthdate, city, gender } = userObject;
+      const { id, name, birthdate, city, gender, avatar } = userObject;
 
       this.user.id = id;
       this.user.name = name;
       this.user.birthdate = birthdate;
+      this.user.gender = gender;
       if (city) {
         this.user.city = city;
       }
-      this.user.gender = gender;
+      if (avatar) {
+        this.user.avatar = avatar;
+      }
     },
     setAnonData(userObject) {
       this.user.gender = userObject.gender;

@@ -84,8 +84,8 @@ const route = useRoute();
 const router = useRouter();
 const strangerProfileStore = useStrangerProfileStore();
 
-const { closeProfile, getAvatar } = strangerProfileStore;
-const { stranger, friendStatus } = storeToRefs(strangerProfileStore);
+const { closeProfile } = strangerProfileStore;
+const { stranger, friendStatus, getAvatar } = storeToRefs(strangerProfileStore);
 
 const handleFriendRequest = () => {
   if (!strangerProfileStore.friendRequest) {

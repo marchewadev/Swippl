@@ -214,7 +214,7 @@ class ChatModel extends BaseModel {
       }
 
       const queryForUser2 =
-        "SELECT name, city, birthdate, gender FROM users WHERE id = $1";
+        "SELECT name, city, birthdate, gender, avatar FROM users WHERE id = $1";
       const valuesForUser2 = [secondUserID];
       const { rows: friendRows } = await this.pool.query(
         queryForUser2,
@@ -226,6 +226,7 @@ class ChatModel extends BaseModel {
         city: friendRows[0].city,
         age: dayjs().diff(friendRows[0].birthdate, "year"),
         gender: friendRows[0].gender,
+        avatar: friendRows[0].avatar,
       };
 
       return {

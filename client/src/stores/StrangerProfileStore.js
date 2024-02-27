@@ -24,11 +24,12 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     closeProfile() {
       this.showProfile = false;
     },
-    setStrangerData({ name, age, gender, city }) {
+    setStrangerData({ name, age, gender, city, avatar }) {
       this.stranger.name = name;
       this.stranger.age = age;
       this.stranger.gender = gender;
       this.stranger.city = city;
+      this.stranger.avatar = avatar;
     },
     resetStrangerData() {
       this.$reset();

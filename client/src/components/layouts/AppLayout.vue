@@ -27,6 +27,7 @@
           :key="index"
           :friend_name="friend.name"
           :friend_id="friend.id"
+          :friend_avatar="friend.avatar"
           :session_id="friend.sessionID"
           @click="setActiveFriend(friend.id)"
         ></sidebar-friend>

@@ -52,6 +52,7 @@ export const useChatStore = defineStore("chatStore", {
               dayjs(response.data.userObject.birthdate),
               "year"
             ),
+            avatar: response.data.userObject.avatar,
             searchCriteria: {
               age: userStore.searchCriteria.ageRangeSearch,
               gender: userStore.searchCriteria.genderSearch,

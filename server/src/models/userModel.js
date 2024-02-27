@@ -11,6 +11,10 @@ const {
   updateUserEmailSchema,
   updateUserPasswordSchema,
 } = require("./userSchema");
+const {
+  uploadToAzureBlobStorage,
+  deleteFromAzureBlobStorage,
+} = require("../services/azureStorageService");
 
 class UserModel extends BaseModel {
   #generateAuthToken(userId) {
@@ -102,7 +106,7 @@ class UserModel extends BaseModel {
   async getUserById(userId) {
     try {
       const user = await this.pool.query(
-        "SELECT id, name, birthdate, city, gender FROM users WHERE id = $1",
+        "SELECT id, name, birthdate, city, gender, avatar FROM users WHERE id = $1",
         [userId]
       );
 
@@ -122,7 +126,7 @@ class UserModel extends BaseModel {
       await updateUserProfileSchema.validate(userJSON);
 
       const user = await this.pool.query(
-        "SELECT name, city, birthdate FROM users WHERE id = $1",
+        "SELECT name, city, birthdate, avatar FROM users WHERE id = $1",
         [userId]
       );
 
@@ -135,11 +139,13 @@ class UserModel extends BaseModel {
         name: databaseName,
         city: databaseCity,
         birthdate: databaseBirthdate,
+        avatar: databaseAvatar,
       } = user.rows[0];
       const {
         name: clientName,
         city: clientCity,
         birthdate: clientBirthdate,
+        avatar: clientAvatar,
       } = userJSON;
 
       // Convert the date strings to dayjs objects to compare them.
@@ -149,11 +155,25 @@ class UserModel extends BaseModel {
       if (clientName === databaseName) {
         delete userJSON.name;
       }
+
       if (clientCity === databaseCity) {
         delete userJSON.city;
       }
+
       if (dbDate.isSame(clientDate, "day")) {
         delete userJSON.birthdate;
+      }
+
+      if (!clientAvatar) {
+        delete userJSON.avatar;
+      } else {
+        const avatarURL = await uploadToAzureBlobStorage(clientAvatar);
+        Object.assign(userJSON, { avatar: avatarURL });
+      }
+
+      // If user already has an avatar, delete the old one from the Azure Blob Storage.
+      if (clientAvatar && databaseAvatar) {
+        await deleteFromAzureBlobStorage(databaseAvatar);
       }
 
       if (Object.keys(userJSON).length === 0) {
@@ -303,11 +323,12 @@ class UserModel extends BaseModel {
 
       let friends = [];
       for (let friend of result.rows) {
-        const query = "SELECT name FROM users WHERE id = $1";
+        const query = "SELECT name, avatar FROM users WHERE id = $1";
         const values = [friend.friend_id];
 
         const result = await this.pool.query(query, values);
         const friendName = result.rows[0].name;
+        const friendAvatar = result.rows[0].avatar || "";
 
         const sessionIDQuery = `
           SELECT id FROM chat_sessions 
@@ -337,6 +358,7 @@ class UserModel extends BaseModel {
 
         friends.push({
           name: friendName,
+          avatar: friendAvatar,
           id: friend.friend_id,
           sessionID: sessionID,
           latestMessage,

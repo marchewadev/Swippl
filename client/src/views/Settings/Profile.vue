@@ -3,7 +3,7 @@
     <div class="mb-4">
       <div class="avatar-container relative">
         <img
-          src="@/assets/avatar.png"
+          :src="userAvatar"
           alt="User's avatar"
           class="h-56 min-[1330px]:h-64 min-[1600px]:h-72"
         />
@@ -60,6 +60,7 @@
 <script setup>
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
@@ -67,22 +68,23 @@ import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const userStore = useUserStore();
+const { userAvatar } = storeToRefs(userStore);
 
 const { handleSubmit } = useForm({
   validationSchema: object({
     avatar: mixed()
       .optional()
-      .test("fileSelected", "", (value) => value !== undefined)
       .test(
         "fileFormat",
         "* Nieobsługiwany format",
         (value) =>
-          value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
+          !value ||
+          ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
       )
       .test(
         "fileSize",
         "* Plik jest za duży",
-        (value) => value && value.size <= 1024 * 1024 * 2 // 2MB
+        (value) => !value || value.size <= 1024 * 1024 * 2 // 2MB
       ),
     name: string()
       .trim()

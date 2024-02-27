@@ -74,6 +74,7 @@
                     :key="index"
                     :friend_name="friend.name"
                     :friend_id="friend.id"
+                    :friend_avatar="friend.avatar"
                     :session_id="friend.sessionID"
                     @click="setActiveFriend(friend.id)"
                   ></sidebar-friend>
@@ -216,9 +217,9 @@ const modalStore = useModalStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
 
-const { checkIfUserIsLoggedIn, resetUserStore, userAvatar } = userStore;
+const { checkIfUserIsLoggedIn, resetUserStore } = userStore;
 const { openModal } = modalStore;
-const { friends } = storeToRefs(userStore);
+const { friends, userAvatar } = storeToRefs(userStore);
 const { totalUsers } = storeToRefs(chatStore);
 const { showModal, selectedModal } = storeToRefs(modalStore);
 

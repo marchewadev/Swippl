@@ -70,8 +70,8 @@ const strangerProfileStore = useStrangerProfileStore();
 const { isSearching } = storeToRefs(chatStore);
 const { changeRoom } = chatStore;
 // Stranger's profile store
-const { stranger } = storeToRefs(strangerProfileStore);
-const { openProfile, getAvatar } = strangerProfileStore;
+const { stranger, getAvatar } = storeToRefs(strangerProfileStore);
+const { openProfile } = strangerProfileStore;
 
 const isChatRouletteRoute = computed(() => route.name === "Chat");
 
