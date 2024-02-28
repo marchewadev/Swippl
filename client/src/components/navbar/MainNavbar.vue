@@ -158,7 +158,7 @@
                 <ul>
                   <navbar-link
                     :path="{ name: 'Profile' }"
-                    :custom-class-link="'text-base block rounded-none rounded-tl-md rounded-tr-md flex items-center gap-2'"
+                    :custom-class-link="'block rounded-none rounded-tl-md rounded-tr-md flex items-center gap-2'"
                   >
                     <template #icon>
                       <ion-icon
@@ -170,7 +170,7 @@
                   </navbar-link>
                   <navbar-link
                     :path="{ name: 'ChatSettings' }"
-                    :custom-class-link="'text-base block rounded-none flex items-center gap-2'"
+                    :custom-class-link="'block rounded-none flex items-center gap-2'"
                   >
                     <template #icon>
                       <ion-icon
@@ -182,7 +182,7 @@
                   </navbar-link>
                   <navbar-link
                     :path="{ name: 'Home' }"
-                    :custom-class-link="'text-base block rounded-none rounded-bl-md rounded-br-md flex items-center gap-2'"
+                    :custom-class-link="'block rounded-none rounded-bl-md rounded-br-md flex items-center gap-2'"
                     @click="resetUserStore"
                   >
                     <template #icon>

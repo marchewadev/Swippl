@@ -1,3 +1,4 @@
+const sharp = require("sharp");
 const { BlobServiceClient } = require("@azure/storage-blob");
 
 async function uploadToAzureBlobStorage(file) {
@@ -17,8 +18,17 @@ async function uploadToAzureBlobStorage(file) {
       file.originalname
     );
 
+    // Resize and reduce quality of the image to save storage space
+    const processedBuffer = await sharp(file.buffer)
+      .resize(300, 300, {
+        fit: "cover",
+        position: "center",
+      })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
     // Upload the blob
-    await blockBlobClient.upload(file.buffer, file.buffer.length);
+    await blockBlobClient.upload(processedBuffer, processedBuffer.length);
 
     // Return the URL of the uploaded blob
     return blockBlobClient.url;
