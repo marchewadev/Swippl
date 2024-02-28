@@ -8,7 +8,7 @@
       <img
         :src="setFriendAvatar"
         alt="Friend's avatar"
-        class="friend-avatar h-10 mr-2 rounded-full min-[1600px]:h-12"
+        class="friend-avatar h-10 mr-2 rounded-full aspect-square min-[1600px]:h-12"
       />
       <p
         class="friend-name h-min text-sm text-ellipsis font-medium overflow-hidden min-[1600px]:text-base"

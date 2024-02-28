@@ -55,8 +55,13 @@ router.patch(
         avatarToDelete: req.body.avatarToDelete,
       };
 
-      await UserModel.updateUserProfileById(userObject, req.userId);
-      res.status(200).send({ message: "Twoje konto zostało zaktualizowane" });
+      const response = await UserModel.updateUserProfileById(
+        userObject,
+        req.userId
+      );
+      res
+        .status(200)
+        .send({ message: "Twoje konto zostało zaktualizowane", response });
     } catch (err) {
       res.status(err.status).send({ message: err.message });
     }

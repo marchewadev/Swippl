@@ -3,9 +3,9 @@
     <div class="mb-4">
       <div class="avatar-container relative">
         <img
-          :src="userAvatar"
+          :src="previewAvatar || userAvatar"
           alt="User's avatar"
-          class="h-56 min-[1330px]:h-64 min-[1600px]:h-72"
+          class="h-56 aspect-square min-[1330px]:h-64 min-[1600px]:h-72"
         />
         <button
           class="bg-gray-100/50 p-2 rounded-md hover:text-red-600 transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
@@ -23,6 +23,7 @@
         type="file"
         accept=".png, .jpg, .jpeg"
         class="text-xs max-w-[15rem]"
+        @change="previewImage"
       ></field>
       <error-message
         name="avatar"
@@ -59,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
 import { storeToRefs } from "pinia";
@@ -73,7 +74,9 @@ const userStore = useUserStore();
 
 const { deleteUserAvatar } = userStore;
 const { userAvatar } = storeToRefs(userStore);
+
 const avatarToDelete = ref(false);
+const previewAvatar = ref(null);
 
 const { handleSubmit } = useForm({
   validationSchema: object({
@@ -122,10 +125,9 @@ const { handleSubmit } = useForm({
   },
 });
 
-const markAvatarForDeletion = () => {
-  avatarToDelete.value = true;
-  deleteUserAvatar();
-};
+watch(userAvatar, () => {
+  previewAvatar.value = null;
+});
 
 const onSubmit = handleSubmit((values) => {
   if (avatarToDelete.value) {
@@ -135,4 +137,16 @@ const onSubmit = handleSubmit((values) => {
   userStore.updateUserProfile(values);
   avatarToDelete.value = false;
 });
+
+const previewImage = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    previewAvatar.value = URL.createObjectURL(file);
+  }
+};
+
+const markAvatarForDeletion = () => {
+  avatarToDelete.value = true;
+  deleteUserAvatar();
+};
 </script>

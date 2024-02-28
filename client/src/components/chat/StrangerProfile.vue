@@ -18,7 +18,7 @@
       <img
         :src="getAvatar"
         alt="Stranger avatar"
-        class="stranger--avatar w-1/2 mx-auto rounded-full"
+        class="stranger--avatar w-1/2 mx-auto rounded-full aspect-square"
       />
     </div>
     <div

@@ -147,7 +147,7 @@
               <img
                 :src="userAvatar"
                 alt="User's avatar"
-                class="cursor-pointer h-10 rounded-full"
+                class="cursor-pointer h-10 rounded-full aspect-square"
                 v-on-click-outside="closeDropdown"
                 @click="dropdownOpen = !dropdownOpen"
               />

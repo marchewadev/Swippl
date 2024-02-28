@@ -165,10 +165,11 @@ class UserModel extends BaseModel {
         delete userJSON.birthdate;
       }
 
+      let avatarURL;
       if (!clientAvatar) {
         delete userJSON.avatar;
       } else {
-        const avatarURL = await uploadToAzureBlobStorage(clientAvatar);
+        avatarURL = await uploadToAzureBlobStorage(clientAvatar);
         Object.assign(userJSON, { avatar: avatarURL });
       }
 
@@ -207,7 +208,7 @@ class UserModel extends BaseModel {
 
       await this.pool.query(query, values);
 
-      return;
+      return { avatarURL };
     } catch (err) {
       this.handleValidationErrorOrServerIssue(err);
     }

@@ -6,7 +6,7 @@
     <img
       :src="getAvatar"
       alt="Stranger's avatar"
-      class="stranger--avatar h-10 rounded-full cursor-pointer min-[1600px]:h-12"
+      class="stranger--avatar h-10 rounded-full cursor-pointer aspect-square min-[1600px]:h-12"
       @click="openProfile"
     />
     <div>

@@ -88,6 +88,10 @@ export const useUserStore = defineStore("userStore", {
           }
         );
 
+        if (response.data.response.avatarURL) {
+          this.user.avatar = response.data.response.avatarURL;
+        }
+
         this.displayMessageModal(response.data.message);
       } catch (err) {
         this.displayMessageModal(err.response.data.message, true);
