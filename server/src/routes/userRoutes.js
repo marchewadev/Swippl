@@ -52,6 +52,7 @@ router.patch(
         city: req.body.city,
         birthdate: req.body.birthdate,
         avatar: req.file,
+        avatarToDelete: req.body.avatarToDelete,
       };
 
       await UserModel.updateUserProfileById(userObject, req.userId);

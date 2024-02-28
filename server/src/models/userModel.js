@@ -146,6 +146,7 @@ class UserModel extends BaseModel {
         city: clientCity,
         birthdate: clientBirthdate,
         avatar: clientAvatar,
+        avatarToDelete: clientAvatarToDelete,
       } = userJSON;
 
       // Convert the date strings to dayjs objects to compare them.
@@ -174,6 +175,16 @@ class UserModel extends BaseModel {
       // If user already has an avatar, delete the old one from the Azure Blob Storage.
       if (clientAvatar && databaseAvatar) {
         await deleteFromAzureBlobStorage(databaseAvatar);
+      }
+
+      // If the user wants to delete the avatar, delete it from the Azure Blob Storage and remove the avatar field from the userJSON object.
+      if (clientAvatarToDelete && databaseAvatar) {
+        await deleteFromAzureBlobStorage(databaseAvatar);
+
+        delete userJSON.avatarToDelete;
+        userJSON.avatar = null;
+      } else {
+        delete userJSON.avatarToDelete;
       }
 
       if (Object.keys(userJSON).length === 0) {

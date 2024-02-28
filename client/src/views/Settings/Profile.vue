@@ -10,6 +10,7 @@
         <button
           class="bg-gray-100/50 p-2 rounded-md hover:text-red-600 transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
           type="button"
+          @click="markAvatarForDeletion"
         >
           <ion-icon
             name="trash-outline"
@@ -58,6 +59,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
 import { storeToRefs } from "pinia";
@@ -68,7 +70,10 @@ import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/settings/FormButton.vue";
 
 const userStore = useUserStore();
+
+const { deleteUserAvatar } = userStore;
 const { userAvatar } = storeToRefs(userStore);
+const avatarToDelete = ref(false);
 
 const { handleSubmit } = useForm({
   validationSchema: object({
@@ -117,7 +122,17 @@ const { handleSubmit } = useForm({
   },
 });
 
+const markAvatarForDeletion = () => {
+  avatarToDelete.value = true;
+  deleteUserAvatar();
+};
+
 const onSubmit = handleSubmit((values) => {
+  if (avatarToDelete.value) {
+    values.avatarToDelete = avatarToDelete.value;
+  }
+
   userStore.updateUserProfile(values);
+  avatarToDelete.value = false;
 });
 </script>

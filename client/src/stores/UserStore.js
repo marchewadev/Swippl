@@ -87,16 +87,14 @@ export const useUserStore = defineStore("userStore", {
             },
           }
         );
-        // const response = await axios.patch(
-        //   `${import.meta.env.VITE_BACKEND_SERVER}/user/update/profile`,
-        //   userJSON,
-        //   { headers: { Authorization: `Bearer ${this.token}` } }
-        // );
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
         this.displayMessageModal(err.response.data.message, true);
       }
+    },
+    async deleteUserAvatar() {
+      this.user.avatar = "";
     },
     async deleteUserAccount(router, userJSON) {
       // TODO: rozważyć podłączenie pod funkcję performUserUpdateAction
