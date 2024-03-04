@@ -36,7 +36,9 @@
     ></form-button>
     <button
       class="search-random--btn text-xs text-primaryDark bg-secondary p-2 rounded-md hover:bg-secondaryLight transition-colors duration-300 min-[1200px]:text-sm min-[1330px]:text-base"
-      type="button"
+      form="searchCriteriaForm"
+      type="submit"
+      @click="setCriteriasArbitrary"
     >
       Szukaj dowolnie
     </button>
@@ -58,7 +60,7 @@ const router = useRouter();
 const userStore = useUserStore();
 const modalStore = useModalStore();
 
-const { searchCriteria } = storeToRefs(userStore);
+const { searchCriteria, areCriteriaArbitrary } = storeToRefs(userStore);
 
 const ageRangeValue = userStore.searchCriteria.ageRangeSearch;
 const { handleSubmit } = useForm({
@@ -83,8 +85,13 @@ const { handleSubmit } = useForm({
 const updateAgeRange = (newAgeRange) => {
   userStore.searchCriteria.ageRangeSearch = newAgeRange;
 };
+
 const updateGender = (newGender) => {
   userStore.searchCriteria.genderSearch = newGender;
+};
+
+const setCriteriasArbitrary = () => {
+  areCriteriaArbitrary.value = true;
 };
 
 const onSubmit = handleSubmit(() => {

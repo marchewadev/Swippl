@@ -15,21 +15,25 @@
 
 <script setup>
 import { onMounted, watch } from "vue";
-import { onBeforeRouteLeave } from "vue-router";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";
+import { useUserStore } from "@/stores/UserStore";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import LoadingScreen from "@/components/chat/LoadingScreen.vue";
 import StrangerTitle from "@/components/chat/StrangerTitle.vue";
 import ChatContent from "@/components/chat/ChatContent.vue";
 
+const router = useRouter();
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const strangerProfileStore = useStrangerProfileStore();
 
 const { joinRoom, leaveRoom, sendMessage } = chatStore;
 const { updateFriendRequest, updateFriendStatus } = strangerProfileStore;
 
+const { areCriteriaArbitrary } = storeToRefs(userStore);
 const { roomUsers, isSearching } = storeToRefs(chatStore);
 
 const sendMessageFn = (message) => {
@@ -48,12 +52,16 @@ onMounted(() => {
     }
   );
 
-  joinRoom();
+  joinRoom(router);
   updateFriendRequest();
   updateFriendStatus();
 });
 
 onBeforeRouteLeave(() => {
   leaveRoom();
+
+  if (areCriteriaArbitrary.value) {
+    areCriteriaArbitrary.value = false;
+  }
 });
 </script>

@@ -1,6 +1,7 @@
 "use strict";
 
 const ChatModel = require("../../models/chatModel");
+const UserModel = require("../../models/userModel");
 const { v4: uuidv4 } = require("uuid");
 const { userDataSchema } = require("../schemas/userSchema");
 const { anonDataSchema } = require("../schemas/anonSchema");
@@ -61,6 +62,7 @@ async function findFreeRoom(io, socket, rooms, userObject) {
     // First, validate the user object
     if (userObject.token) {
       await userDataSchema.validate(userObject);
+      await UserModel.checkIfUserIsBanned(userObject.userID);
     } else {
       await anonDataSchema.validate(userObject);
       Object.assign(userObject, { name: "Anonim" });
@@ -77,8 +79,12 @@ async function findFreeRoom(io, socket, rooms, userObject) {
         const otherUser = room.users.find((user) => user.id !== socket.id);
 
         if (userObject.token) {
-          // Check if the user is not already friends with the other user
-          if (otherUser && !userObject.friends.includes(otherUser.userID)) {
+          // Check if the user is not already friends with the other user and if the other user is not the same user
+          if (
+            otherUser &&
+            !userObject.friends.includes(otherUser.userID) &&
+            otherUser.userID !== userObject.userID
+          ) {
             return areUsersCompatible(userObject, otherUser);
           }
         } else {
@@ -172,8 +178,33 @@ async function sendMessage(io, socket, rooms, message) {
   }
 }
 
+async function reportStranger(socket, rooms) {
+  try {
+    const room = findRoomBySocketID(socket, rooms);
+
+    if (!room) {
+      throw new Error(
+        "Nie znaleziono pokoju, w którym znajduje się użytkownik"
+      );
+    }
+
+    const user = room.users.find((user) => user.id === socket.id);
+
+    const sessionObject = {
+      sessionID: room.sessionID,
+      senderID: typeof user.userID === "undefined" ? null : user.userID,
+      senderIP: user.clientIP,
+    };
+
+    await ChatModel.reportStranger(sessionObject);
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
 module.exports = {
   leaveRoomBySocketID,
   findFreeRoom,
   sendMessage,
+  reportStranger,
 };

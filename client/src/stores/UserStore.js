@@ -19,6 +19,7 @@ export const useUserStore = defineStore("userStore", {
       ageRangeSearch: [18, 100],
       genderSearch: "any",
     }),
+    areCriteriaArbitrary: false,
   }),
   actions: {
     async performUserAction(action, router, userJSON) {
@@ -101,7 +102,6 @@ export const useUserStore = defineStore("userStore", {
       this.user.avatar = "";
     },
     async deleteUserAccount(router, userJSON) {
-      // TODO: rozważyć podłączenie pod funkcję performUserUpdateAction
       try {
         const response = await axios.delete(
           `${import.meta.env.VITE_BACKEND_SERVER}/user/delete`,
@@ -113,6 +113,18 @@ export const useUserStore = defineStore("userStore", {
 
         this.resetUserStore();
         router.push({ name: "Home" });
+
+        this.displayMessageModal(response.data.message);
+      } catch (err) {
+        this.displayMessageModal(err.response.data.message, true);
+      }
+    },
+    async resetUserPassword(userJSON) {
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_BACKEND_SERVER}/user/update/reset-password`,
+          userJSON
+        );
 
         this.displayMessageModal(response.data.message);
       } catch (err) {

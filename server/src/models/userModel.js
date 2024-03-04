@@ -1,8 +1,12 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
 
 const BaseModel = require("./baseModel");
+const generateRandomPassword = require("../utils/generateRandomPassword");
+const sendMail = require("../services/sendgridEmailService");
 const {
   createUserSchema,
   loginUserSchema,
@@ -24,22 +28,25 @@ class UserModel extends BaseModel {
     return jwt.sign(payload, secret, options);
   }
 
-  async #checkIfUserIsBanned(userId) {
+  async #hashPassword(password) {
+    return await bcrypt.hash(password, 10);
+  }
+
+  async checkIfUserIsBanned(userId) {
     const bannedUser = await this.pool.query(
       "SELECT * FROM banned_users WHERE user_id = $1",
       [userId]
     );
 
     if (bannedUser.rows.length > 0) {
+      const date = dayjs.utc(bannedUser.rows[0].ban_until);
+      const localDate = date.local().format("DD.MM.YYYY");
+
       throw {
         status: 403,
-        message: `Twoje konto zostało zablokowane do ${bannedUser.rows[0].ban_until}`,
+        message: `Twoje konto zostało zablokowane do ${localDate} z powodu: ${bannedUser.rows[0].reason}`,
       };
     }
-  }
-
-  async #hashPassword(password) {
-    return await bcrypt.hash(password, 10);
   }
 
   async createUser(userJSON) {
@@ -121,7 +128,7 @@ class UserModel extends BaseModel {
 
   async updateUserProfileById(userJSON, userId) {
     try {
-      await this.#checkIfUserIsBanned(userId);
+      await this.checkIfUserIsBanned(userId);
 
       await updateUserProfileSchema.validate(userJSON);
 
@@ -216,7 +223,7 @@ class UserModel extends BaseModel {
 
   async updateUserEmailById(userJSON, userId) {
     try {
-      await this.#checkIfUserIsBanned(userId);
+      await this.checkIfUserIsBanned(userId);
 
       await updateUserEmailSchema.validate(userJSON);
 
@@ -257,7 +264,7 @@ class UserModel extends BaseModel {
 
   async updateUserPasswordById(userJSON, userId) {
     try {
-      await this.#checkIfUserIsBanned(userId);
+      await this.checkIfUserIsBanned(userId);
 
       await updateUserPasswordSchema.validate(userJSON);
 
@@ -378,6 +385,53 @@ class UserModel extends BaseModel {
       }
 
       return friends;
+    } catch (err) {
+      this.handleValidationErrorOrServerIssue(err);
+    }
+  }
+
+  async resetUserPassword({ email }) {
+    try {
+      const searchForUserQuery =
+        "SELECT id, name, last_password_reset FROM users WHERE email = $1";
+      const searchForUserValues = [email];
+
+      const user = await this.pool.query(
+        searchForUserQuery,
+        searchForUserValues
+      );
+
+      if (user.rows.length < 1) {
+        throw {
+          status: 404,
+          message: "Nie znaleziono użytkownika o takim adresie e-mail",
+        };
+      }
+
+      if (user.rows[0].last_password_reset) {
+        const lastReset = dayjs.utc(user.rows[0].last_password_reset);
+        const now = dayjs.utc();
+        const diffInMinutes = now.diff(lastReset, "minute");
+
+        if (diffInMinutes < 10) {
+          throw {
+            status: 429,
+            message: "Hasło zostało już zresetowane w ciągu ostatnich 10 minut",
+          };
+        }
+      }
+
+      const password = generateRandomPassword(40);
+      const hashedPassword = await this.#hashPassword(password);
+
+      const updatePasswordQuery =
+        "UPDATE users SET password = $1, updated_at = now(), last_password_reset = now() WHERE id = $2";
+      const updatePasswordValues = [hashedPassword, user.rows[0].id];
+
+      await this.pool.query(updatePasswordQuery, updatePasswordValues);
+      await sendMail(email, user.rows[0].name, password);
+
+      return;
     } catch (err) {
       this.handleValidationErrorOrServerIssue(err);
     }

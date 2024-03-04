@@ -78,7 +78,6 @@ exports.deleteUserSchema = yup.object({
 });
 
 exports.updateUserProfileSchema = yup.object({
-  // TODO: dodać walidację avatara!
   name: yup
     .string()
     .trim()
@@ -137,4 +136,13 @@ exports.updateUserPasswordSchema = yup.object({
     .required("Hasło jest wymagane")
     .min(8, "Hasło musi mieć co najmniej 8 znaków")
     .oneOf([yup.ref("newPassword")], "Hasła muszą być takie same"),
+});
+
+exports.resetUserPasswordSchema = yup.object({
+  email: yup
+    .string()
+    .required("Adres e-mail jest wymagany")
+    .email("Niepoprawny adres e-mail")
+    .min(3, "Adres e-mail jest zbyt krótki")
+    .max(254, "Adres e-mail jest zbyt długi"),
 });

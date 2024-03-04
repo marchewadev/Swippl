@@ -34,6 +34,17 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     resetStrangerData() {
       this.$reset();
     },
+    reportStranger() {
+      const modalStore = useModalStore();
+
+      socket.emit("reportStranger", () => {
+        modalStore.displayMessageModal(
+          "Użytkownik został zgłoszony. Dziękujemy za pomoc!",
+          false
+        );
+        this.closeProfile();
+      });
+    },
     sendFriendRequest() {
       socket.emit("sendFriendRequest");
     },

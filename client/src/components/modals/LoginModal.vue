@@ -20,12 +20,12 @@
         ></input-text>
       </div>
       <div class="text-center mb-3">
-        <a
-          href="#"
+        <router-link
+          :to="{ name: 'ResetPassword' }"
           class="text-xs hover:text-primaryDark hover:underline min-[1330px]:text-sm"
         >
           Nie pamiętam hasła
-        </a>
+        </router-link>
       </div>
       <form-button
         class="w-full mb-1"
@@ -35,13 +35,13 @@
       <div class="text-xs text-center min-[1330px]:text-sm">
         <p>
           Nie masz jeszcze konta?
-          <a
-            href="#"
+          <router-link
+            :to="''"
             class="font-medium hover:text-primaryDark hover:underline"
             @click="openModal('register')"
           >
             Możesz je założyć tutaj!
-          </a>
+          </router-link>
         </p>
       </div>
     </form>

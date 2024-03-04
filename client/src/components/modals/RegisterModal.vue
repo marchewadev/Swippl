@@ -86,13 +86,13 @@
       <div class="text-xs text-center min-[1330px]:text-sm">
         <p>
           Masz już konto?
-          <a
-            href="#"
+          <router-link
+            :to="''"
             class="font-medium hover:text-primaryDark hover:underline"
             @click="openModal('login')"
           >
             Zaloguj się tutaj!
-          </a>
+          </router-link>
         </p>
       </div>
     </form>

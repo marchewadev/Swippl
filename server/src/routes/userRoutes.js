@@ -92,6 +92,17 @@ router.patch("/update/password", authUser, async (req, res) => {
   }
 });
 
+router.patch("/update/reset-password", async (req, res) => {
+  try {
+    await UserModel.resetUserPassword(req.body);
+    res.status(200).send({
+      message: "Na twój adres e-mail zostało wysłane nowe hasło",
+    });
+  } catch (err) {
+    res.status(err.status).send({ message: err.message });
+  }
+});
+
 router.delete("/delete", authUser, async (req, res) => {
   try {
     await UserModel.deleteUser(req.body, req.userId);

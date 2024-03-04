@@ -27,7 +27,7 @@ export const useChatStore = defineStore("chatStore", {
         this.totalUsers = totalUsers;
       });
     },
-    async joinRoom() {
+    async joinRoom(router) {
       const userStore = useUserStore();
       try {
         let userObject = {};
@@ -53,16 +53,24 @@ export const useChatStore = defineStore("chatStore", {
               "year"
             ),
             avatar: response.data.userObject.avatar,
-            searchCriteria: {
-              age: userStore.searchCriteria.ageRangeSearch,
-              gender: userStore.searchCriteria.genderSearch,
-            },
             friends: userStore.friends.map((friend) => friend.id),
           });
         } else {
           Object.assign(userObject, {
             gender: userStore.user.gender,
             age: dayjs().diff(dayjs(userStore.user.birthdate), "year"),
+          });
+        }
+
+        if (userStore.areCriteriaArbitrary) {
+          Object.assign(userObject, {
+            searchCriteria: {
+              age: [18, 100],
+              gender: "any",
+            },
+          });
+        } else {
+          Object.assign(userObject, {
             searchCriteria: {
               age: userStore.searchCriteria.ageRangeSearch,
               gender: userStore.searchCriteria.genderSearch,
@@ -75,7 +83,7 @@ export const useChatStore = defineStore("chatStore", {
         // Add listeners related to the new room
         this.updateRoomData();
         this.generateMessage();
-        this.onJoinRoomError();
+        this.onJoinRoomError(router);
         this.onRoomError();
       } catch (err) {
         const router = useRouter();
@@ -143,9 +151,8 @@ export const useChatStore = defineStore("chatStore", {
         this.$patch({ messages: [...this.messages, message] });
       });
     },
-    onJoinRoomError() {
+    onJoinRoomError(router) {
       const modalStore = useModalStore();
-      const router = useRouter();
 
       socket.on("joinRoomError", (error) => {
         modalStore.displayMessageModal(error, true);

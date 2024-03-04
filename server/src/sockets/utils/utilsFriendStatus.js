@@ -17,8 +17,18 @@ async function sendFriendRequest(socket, rooms) {
     const stranger = room.users.find((user) => user.id !== socket.id);
 
     // If the user or the stranger does not have a user ID, throw an error
-    if (!user.userID || !stranger.userID) {
-      throw new Error("Nie udało się wysłać zaproszenia");
+    if (!user.userID) {
+      throw new Error("Aby wysłać zaproszenie, musisz być zalogowany");
+    }
+
+    if (!stranger.userID) {
+      throw new Error(
+        "Możesz wysłać zaproszenie tylko zalogowanym użytkownikom"
+      );
+    }
+
+    if (user.userID === stranger.userID) {
+      throw new Error("Nie możesz wysłać zaproszenia do siebie");
     }
 
     await ChatModel.sendFriendRequest({

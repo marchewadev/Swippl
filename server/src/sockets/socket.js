@@ -5,6 +5,7 @@ const {
   leaveRoomBySocketID,
   findFreeRoom,
   sendMessage,
+  reportStranger,
 } = require("./utils/utilsRoom");
 const {
   getChatHistory,
@@ -68,6 +69,15 @@ module.exports = (server) => {
     socket.on("sendMessage", async ({ message }) => {
       try {
         await sendMessage(io, socket, rooms, message);
+      } catch (err) {
+        emitError(socket, "roomError", err.message);
+      }
+    });
+
+    socket.on("reportStranger", async (callback) => {
+      try {
+        await reportStranger(socket, rooms);
+        callback();
       } catch (err) {
         emitError(socket, "roomError", err.message);
       }

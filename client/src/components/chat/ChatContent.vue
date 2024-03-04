@@ -5,8 +5,7 @@
     >
       <message class="message-admin" v-if="isChatRouletteRoute">
         Pamiętaj, aby zachowywać się w sposób stosowny! Możesz w szybki sposób
-        zmienić swojego rozmówcę wciskając dwa razy klawisz
-        <strong>ESC</strong> bądź klikając przycisk <strong>X</strong> w prawym
+        zmienić swojego rozmówcę klikając przycisk <strong>X</strong> w prawym
         górnym rogu.
       </message>
 
@@ -49,6 +48,7 @@
             !isChatRouletteRoute || roomUsers === 2,
         }"
         :disabled="isChatRouletteRoute && roomUsers < 2"
+        @click="sendMessage"
       >
         <ion-icon name="send" class="text-xl min-[1600px]:text-2xl"></ion-icon>
       </button>

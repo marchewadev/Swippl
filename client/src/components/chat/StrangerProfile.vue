@@ -63,6 +63,7 @@
       </button>
       <button
         class="text-primary bg-gray-200 rounded-md p-1 transition-colors duration-300 hover:text-gray-50 hover:bg-red-700 flex flex-col items-center min-[1600px]:p-2"
+        @click="reportStranger"
       >
         <ion-icon
           name="flag-outline"
@@ -84,7 +85,7 @@ const route = useRoute();
 const router = useRouter();
 const strangerProfileStore = useStrangerProfileStore();
 
-const { closeProfile } = strangerProfileStore;
+const { closeProfile, reportStranger } = strangerProfileStore;
 const { stranger, friendStatus, getAvatar } = storeToRefs(strangerProfileStore);
 
 const handleFriendRequest = () => {

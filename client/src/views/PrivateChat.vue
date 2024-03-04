@@ -11,7 +11,7 @@
 
 <script setup>
 import { onMounted, onUnmounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
@@ -22,6 +22,7 @@ import StrangerTitle from "@/components/chat/StrangerTitle.vue";
 import ChatContent from "@/components/chat/ChatContent.vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const chatStore = useChatStore();
 const userStore = useUserStore();
@@ -33,6 +34,7 @@ const {
   generatePrivateMessage,
   onJoinRoomError,
   sendPrivateMessage,
+  onRoomError,
 } = chatStore;
 
 const { privateSessionID, activeFriendID, messages } = storeToRefs(chatStore);
@@ -47,7 +49,8 @@ const sendMessageFn = (message) => {
 };
 
 onMounted(() => {
-  onJoinRoomError();
+  onJoinRoomError(router);
+  onRoomError();
 
   watch(
     () => [route.params.friendID, route.params.sessionID],

@@ -237,6 +237,35 @@ class ChatModel extends BaseModel {
       this.handleValidationErrorOrServerIssue(err);
     }
   }
+
+  async reportStranger(sessionObject) {
+    // This function is responsible for persisting a report to the database. It accomplishes this by creating a new record that includes the session ID, the sender's ID, and the sender's IP address.
+    try {
+      const { sessionID, senderID, senderIP } = sessionObject;
+
+      const isReportedQuery =
+        "SELECT * FROM reported_chats WHERE session_id = $1 AND sender_ip_address = $2";
+      const isReportedValues = [sessionID, senderIP];
+
+      const isReportedResult = await this.pool.query(
+        isReportedQuery,
+        isReportedValues
+      );
+
+      if (isReportedResult.rows.length > 0) {
+        throw new Error("Rozmowa została już zgłoszona");
+      }
+
+      const query =
+        "INSERT INTO reported_chats(session_id, sender_id, sender_ip_address) VALUES($1, $2, $3)";
+      const values = [sessionID, senderID, senderIP];
+
+      await this.pool.query(query, values);
+      return;
+    } catch (err) {
+      this.handleValidationErrorOrServerIssue(err);
+    }
+  }
 }
 
 module.exports = new ChatModel();

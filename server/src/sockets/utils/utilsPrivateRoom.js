@@ -1,6 +1,7 @@
 "use strict";
 
 const ChatModel = require("../../models/chatModel");
+const UserModel = require("../../models/userModel");
 const { getClientIP } = require("./helperFunctions");
 const { messageSchema } = require("../schemas/messageSchema");
 
@@ -68,6 +69,8 @@ async function sendPrivateMessage(
   { message, userID, sessionID }
 ) {
   try {
+    await UserModel.checkIfUserIsBanned(userID);
+
     // First, validate the message
     messageSchema.validate({ message });
     // Get the client's IP address
