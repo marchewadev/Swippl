@@ -6,6 +6,13 @@ import axios from "axios";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+      };
+    }
+  },
   routes: [
     {
       path: "/",
@@ -76,6 +83,11 @@ const router = createRouter({
       path: "/reset-password",
       name: "ResetPassword",
       component: () => import("@/views/ResetPassword.vue"),
+    },
+    {
+      path: "/terms",
+      name: "Terms",
+      component: () => import("@/views/Terms.vue"),
     },
   ],
 });

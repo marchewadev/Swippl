@@ -63,19 +63,13 @@
         ></input-text>
         <label for="" class="text-xs min-[1330px]:text-sm">
           Rejestrując się w serwisie akceptuję
-          <a
-            href="#"
+          <router-link
+            :to="{ name: 'Terms' }"
             class="font-medium hover:text-primaryDark hover:underline"
           >
             regulamin
-          </a>
-          i zgadzam się z
-          <a
-            href="#"
-            class="font-medium hover:text-primaryDark hover:underline"
-          >
-            polityką prywatności </a
-          >.
+          </router-link>
+          i zgadzam się z polityką prywatności.
         </label>
       </div>
       <form-button

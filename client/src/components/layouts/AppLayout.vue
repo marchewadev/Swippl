@@ -20,7 +20,6 @@
         class="sidebar--chats h-full relative max-[850px]:hidden"
         v-if="!showProfile"
       >
-        <!-- TODO: rozważyć poprawę według VueJS Style Guide: nie łączyć v-if z v-for -->
         <sidebar-friend
           v-if="checkIfUserIsLoggedIn"
           v-for="(friend, index) in friends"

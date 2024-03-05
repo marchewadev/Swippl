@@ -76,7 +76,7 @@ const newMessage = ref("");
 const messageTextarea = ref(null);
 
 const chatStore = useChatStore();
-const { roomUsers, messages } = storeToRefs(chatStore);
+const { roomUsers } = storeToRefs(chatStore);
 
 const isChatRouletteRoute = computed(() => route.name === "Chat");
 
@@ -97,7 +97,7 @@ onMounted(() => {
   messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
 
   watch(
-    () => messages,
+    () => chatStore.messages,
     async (newMessages, oldMessages) => {
       await nextTick();
       messagesWrapper.scrollTop = messagesWrapper.scrollHeight;

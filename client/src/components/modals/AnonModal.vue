@@ -30,19 +30,13 @@
         ></input-text>
         <label for="" class="text-xs min-[1330px]:text-sm">
           Korzystając z serwisu akceptuję
-          <a
-            href="#"
+          <router-link
+            :to="{ name: 'Terms' }"
             class="font-medium hover:text-primaryDark hover:underline"
           >
             regulamin
-          </a>
-          i zgadzam się z
-          <a
-            href="#"
-            class="font-medium hover:text-primaryDark hover:underline"
-          >
-            polityką prywatności </a
-          >.
+          </router-link>
+          i zgadzam się z polityką prywatności.
         </label>
       </div>
       <form-button
@@ -53,13 +47,13 @@
       <div class="text-xs text-center min-[1330px]:text-sm">
         <p>
           Masz już konto?
-          <a
-            href="#"
+          <router-link
+            :to="''"
             class="font-medium hover:text-primaryDark hover:underline"
             @click="openModal('login')"
           >
             Zaloguj się tutaj!
-          </a>
+          </router-link>
         </p>
       </div>
     </form>

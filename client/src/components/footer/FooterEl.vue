@@ -6,10 +6,9 @@
       Aby móc korzystać ze Swippl musisz mieć ukończone 18 lat. Korzystanie ze
       strony oznacza zgodę na wykorzystanie plików cookie. Rozpoczęcie rozmowy
       oznacza akceptację
-      <a href="#" class="text-secondary">regulaminu</a>, a także zgodę na
-      przetwarzanie danych, w tym danych osobowych (RODO). Więcej informacji
-      możesz uzyskać na stronie naszej
-      <a href="#" class="text-secondary">polityki prywatności</a>.
+      <router-link :to="{ name: 'Terms' }" class="text-secondary">
+        regulaminu </router-link
+      >, a także zgodę na przetwarzanie danych, w tym danych osobowych (RODO).
     </p>
     <p class="mt-1">
       Copyright &copy; <span id="copyright-year">{{ copyrightYear }}</span> by
