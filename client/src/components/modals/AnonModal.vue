@@ -5,11 +5,12 @@
   >
     <form action="" id="chatAnonymouslyForm" @submit="onSubmit">
       <div class="mb-4">
-        <label-field>Płeć</label-field>
+        <label-field :label-for="'gender'">Płeć</label-field>
         <select-field
           name="gender"
           :initial-value="'female'"
           :custom-class="'w-full'"
+          :select-id="'gender'"
         >
           <template #values>
             <option value="female">Kobieta</option>
@@ -18,8 +19,12 @@
         </select-field>
       </div>
       <div class="mb-4">
-        <label-field>Data urodzenia</label-field>
-        <input-text name="birthdate" type="date"></input-text>
+        <label-field :label-for="'birthdate'">Data urodzenia</label-field>
+        <input-text
+          name="birthdate"
+          type="date"
+          :input-id="'birthdate'"
+        ></input-text>
       </div>
       <div class="terms-container mb-4 grid gap-x-2">
         <input-text
@@ -27,12 +32,13 @@
           type="checkbox"
           :custom-class="'mb-4'"
           :custom-error-class="'error-message-grid'"
+          :input-id="'terms'"
         ></input-text>
-        <label for="" class="text-xs min-[1330px]:text-sm">
+        <label for="terms" class="text-xs min-[1330px]:text-sm">
           Korzystając z serwisu akceptuję
           <router-link
             :to="{ name: 'Terms' }"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
           >
             regulamin
           </router-link>
@@ -49,7 +55,7 @@
           Masz już konto?
           <router-link
             :to="''"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
             @click="openModal('login')"
           >
             Zaloguj się tutaj!

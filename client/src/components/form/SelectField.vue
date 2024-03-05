@@ -4,6 +4,7 @@
       'text-xs bg-gray-100 border border-gray-300 p-2 mt-1 rounded cursor-pointer block min-[1330px]:text-sm full',
       customClass,
     ]"
+    :id="selectId"
     v-model="value"
     @change="handleChange"
   >
@@ -18,6 +19,11 @@ import { useField } from "vee-validate";
 
 const props = defineProps({
   name: {
+    type: String,
+    required: true,
+  },
+
+  selectId: {
     type: String,
     required: true,
   },

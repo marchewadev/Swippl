@@ -2,47 +2,52 @@
   <base-modal :modal-title="'Zarejestruj się'" :modal-name="'register'">
     <form action="/signup" id="signUpForm" @submit="onSubmit">
       <div class="mb-4">
-        <label-field>Jak się nazywasz?</label-field>
+        <label-field :label-for="'name'">Jak się nazywasz?</label-field>
         <input-text
           name="name"
           type="text"
           :placeholder="'Janek'"
           :input-props="{ minlength: 3, maxlength: 21 }"
+          :input-id="'name'"
         ></input-text>
       </div>
       <div class="mb-4">
-        <label-field>Adres e-mail</label-field>
+        <label-field :label-for="'email'">Adres e-mail</label-field>
         <input-text
           name="email"
           type="email"
           :placeholder="'kowalski@example.com'"
           :input-props="{ minlength: 3, maxlength: 254 }"
+          :input-id="'email'"
         ></input-text>
       </div>
       <div class="mb-4">
-        <label-field>Hasło</label-field>
+        <label-field :label-for="'password'">Hasło</label-field>
         <input-text
           name="password"
           type="password"
           :placeholder="'********'"
           :input-props="{ minlength: 8 }"
+          :input-id="'password'"
         ></input-text>
       </div>
       <div class="mb-4">
-        <label-field>Potwierdź hasło</label-field>
+        <label-field :label-for="'password2'">Potwierdź hasło</label-field>
         <input-text
           name="password2"
           type="password"
           :placeholder="'********'"
           :input-props="{ minlength: 8 }"
+          :input-id="'password2'"
         ></input-text>
       </div>
       <div class="mb-4">
-        <label-field>Płeć</label-field>
+        <label-field :label-for="'gender'">Płeć</label-field>
         <select-field
           name="gender"
           :initial-value="'female'"
           :custom-class="'w-full'"
+          :select-id="'gender'"
         >
           <template #values>
             <option value="female">Kobieta</option>
@@ -51,8 +56,12 @@
         </select-field>
       </div>
       <div class="mb-4">
-        <label-field>Data urodzenia</label-field>
-        <input-text name="birthdate" type="date"></input-text>
+        <label-field :label-for="'birthdate'">Data urodzenia</label-field>
+        <input-text
+          name="birthdate"
+          type="date"
+          :input-id="'birthdate'"
+        ></input-text>
       </div>
       <div class="terms-container mb-4 grid gap-x-2">
         <input-text
@@ -60,12 +69,13 @@
           type="checkbox"
           :custom-class="'mb-4'"
           :custom-error-class="'error-message-grid'"
+          :input-id="'terms'"
         ></input-text>
-        <label for="" class="text-xs min-[1330px]:text-sm">
+        <label for="terms" class="text-xs min-[1330px]:text-sm">
           Rejestrując się w serwisie akceptuję
           <router-link
             :to="{ name: 'Terms' }"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
           >
             regulamin
           </router-link>
@@ -82,7 +92,7 @@
           Masz już konto?
           <router-link
             :to="''"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
             @click="openModal('login')"
           >
             Zaloguj się tutaj!

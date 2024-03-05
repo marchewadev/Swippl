@@ -10,7 +10,7 @@
           {{ modalTitle }}
         </h2>
         <button
-          class="absolute left-full top-full -translate-x-full -translate-y-full transition-colors duration-300 hover:text-red-700"
+          class="absolute left-full top-full -translate-x-full -translate-y-full transition-colors duration-300 hover:text-red-700 active:text-red-700"
           @click="closeModal"
         >
           <ion-icon

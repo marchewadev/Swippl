@@ -1,30 +1,35 @@
 <template>
   <form id="passwordChangeForm" @submit="onSubmit">
     <div class="mb-4">
-      <label-field>Stare hasło</label-field>
+      <label-field :label-for="'oldPassword'">Stare hasło</label-field>
       <input-text
         name="oldPassword"
         type="password"
         :placeholder="'********'"
         :input-props="{ minlength: 8 }"
+        :input-id="'oldPassword'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Nowe hasło</label-field>
+      <label-field :label-for="'newPassword'">Nowe hasło</label-field>
       <input-text
         name="newPassword"
         type="password"
         :placeholder="'********'"
         :input-props="{ minlength: 8 }"
+        :input-id="'newPassword'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Potwierdź nowe hasło</label-field>
+      <label-field :label-for="'newPassword2'"
+        >Potwierdź nowe hasło</label-field
+      >
       <input-text
         name="newPassword2"
         type="password"
         :placeholder="'********'"
         :inputProps="{ minlength: 8 }"
+        :input-id="'newPassword2'"
       ></input-text>
     </div>
     <form-button

@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
     <div
-      class="message-modal bg-white rounded-tl-md rounded-tr-md absolute left-1/2 top-10 -translate-x-1/2 z-20"
+      class="message-modal bg-white rounded-tl-md rounded-tr-md absolute left-1/2 top-10 -translate-x-1/2 z-50"
       v-if="showMessageModal"
     >
       <p

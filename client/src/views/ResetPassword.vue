@@ -16,12 +16,15 @@
     </p>
     <form action="" id="resetPasswordForm" class="w-full" @submit="onSubmit">
       <div class="mb-3">
-        <label-field>Adres e-mail powiązany z kontem</label-field>
+        <label-field :label-for="'email'"
+          >Adres e-mail powiązany z kontem</label-field
+        >
         <input-text
           name="email"
           type="email"
           :placeholder="'kowalski@example.com'"
           :input-props="{ minlength: 3, maxlength: 254 }"
+          :input-id="'email'"
         ></input-text>
       </div>
       <form-button
@@ -34,7 +37,7 @@
           Aby powrócić na stronę główną,
           <router-link
             :to="{ name: 'Home' }"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
             >kliknij tutaj.</router-link
           >
         </p>

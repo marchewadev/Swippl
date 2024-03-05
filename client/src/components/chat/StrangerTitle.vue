@@ -22,7 +22,7 @@
     <button class="flex" @click="openProfile">
       <ion-icon
         name="information-outline"
-        class="text-sm border border-primary rounded-full transition-colors duration-300 hover:bg-primary hover:text-gray-50 min-[1600px]:text-base"
+        class="text-sm border border-primary rounded-full transition-colors duration-300 hover:bg-primary hover:text-gray-50 active:bg-primary active:text-gray-50 min-[1600px]:text-base"
       ></ion-icon>
     </button>
   </div>
@@ -42,7 +42,7 @@
     ></router-link>
 
     <button
-      class="disconnect--btn transition-colors duration-300 hover:text-red-700"
+      class="disconnect--btn transition-colors duration-300 hover:text-red-700 active:text-red-700"
       v-if="isChatRouletteRoute"
       @click="changeRoom"
     >

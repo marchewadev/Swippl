@@ -8,6 +8,7 @@
       customClass,
     ]"
     :placeholder="placeholder"
+    :id="inputId"
     v-model="value"
     v-bind="inputProps"
   />
@@ -31,6 +32,11 @@ const props = defineProps({
 
   type: {
     type: String,
+  },
+
+  inputId: {
+    type: String,
+    required: true,
   },
 
   placeholder: {

@@ -7,6 +7,7 @@
     :tooltips="true"
     :showTooltip="'always'"
     :tooltipPosition="'bottom'"
+    :id="sliderId"
     @change="handleChange"
   />
 </template>
@@ -17,6 +18,11 @@ import Slider from "@vueform/slider";
 
 const props = defineProps({
   name: {
+    type: String,
+    required: true,
+  },
+
+  sliderId: {
     type: String,
     required: true,
   },

@@ -2,23 +2,25 @@
   <div class="settings-grid grid grid-cols-2 gap-x-8 min-[1600px]:gap-x-16">
     <form id="searchCriteriaForm" class="mb-10" @submit="onSubmit">
       <div class="criteria--age mb-10">
-        <label for="" class="text-sm min-[1330px]:text-base"
+        <label for="ageRangeSearch" class="text-sm min-[1330px]:text-base"
           >Przedział wiekowy</label
         >
         <range-slider
           class="slider-yellow w-44 mt-4 min-[1000px]:w-52 min-[1200px]:w-72 min-[1600px]:w-96"
           :name="'ageRangeSearch'"
           :initial-value="ageRangeValue"
+          :slider-id="'ageRangeSearch'"
           @change="updateAgeRange"
         ></range-slider>
       </div>
       <div class="criteria--gender">
-        <label for="" class="text-sm min-[1330px]:text-base"
+        <label for="genderSearch" class="text-sm min-[1330px]:text-base"
           >Szukaj według płci</label
         >
         <select-field
           name="genderSearch"
           :initial-value="searchCriteria.genderSearch"
+          :select-id="'genderSearch'"
           @change="updateGender"
         >
           <template #values>
@@ -35,7 +37,7 @@
       class="search-by-criteria--btn"
     ></form-button>
     <button
-      class="search-random--btn text-xs text-primaryDark bg-secondary p-2 rounded-md hover:bg-secondaryLight transition-colors duration-300 min-[1200px]:text-sm min-[1330px]:text-base"
+      class="search-random--btn text-xs text-primaryDark bg-secondary p-2 rounded-md hover:bg-secondaryLight active:bg-secondaryLight transition-colors duration-300 min-[1200px]:text-sm min-[1330px]:text-base"
       form="searchCriteriaForm"
       type="submit"
       @click="setCriteriasArbitrary"

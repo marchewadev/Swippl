@@ -21,12 +21,12 @@
           <home-button
             :path="{ name: 'Settings' }"
             :text="'Zacznij anonimowo'"
-            class="text-gray-50 bg-primary mr-5 hover:bg-primaryLight"
+            class="text-gray-50 bg-primary mr-5 hover:bg-primaryLight active:bg-primaryLight"
           ></home-button>
           <home-button
             :path="{}"
             :text="'Załóż konto'"
-            class="text-primaryDark bg-secondary hover:bg-secondaryLight"
+            class="text-primaryDark bg-secondary hover:bg-secondaryLight active:bg-secondaryLight"
             @click="openModal('register')"
           ></home-button>
         </div>

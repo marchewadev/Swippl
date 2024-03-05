@@ -8,7 +8,7 @@
           class="h-56 aspect-square min-[1330px]:h-64 min-[1600px]:h-72"
         />
         <button
-          class="bg-gray-100/50 p-2 rounded-md hover:text-red-600 transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
+          class="bg-gray-100/50 p-2 rounded-md hover:text-red-600 active:text-red-600 transition-colors duration-300 absolute left-99 bottom-99 -translate-x-full translate-y-full flex"
           type="button"
           @click="markAvatarForDeletion"
         >
@@ -32,24 +32,30 @@
       ></error-message>
     </div>
     <div class="mb-4">
-      <label-field>Jak się nazywasz?</label-field>
+      <label-field :label-for="'name'">Jak się nazywasz?</label-field>
       <input-text
         name="name"
         :placeholder="'Janek'"
         :input-props="{ minlength: 3, maxlength: 21 }"
+        :input-id="'name'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Miejscowość</label-field>
+      <label-field :label-for="'city'">Miejscowość</label-field>
       <input-text
         name="city"
         :placeholder="'Warszawa'"
         :input-props="{ maxlength: 31 }"
+        :input-id="'city'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Data urodzenia</label-field>
-      <input-text type="date" name="birthdate"></input-text>
+      <label-field :label-for="'birthdate'">Data urodzenia</label-field>
+      <input-text
+        type="date"
+        name="birthdate"
+        :input-id="'birthdate'"
+      ></input-text>
     </div>
     <form-button
       :form-id="'profileForm'"

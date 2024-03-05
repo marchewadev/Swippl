@@ -37,7 +37,8 @@
       <button
         class="text-gray-50 bg-primary rounded-md p-1 transition-colors duration-300 flex flex-col items-center min-[1600px]:p-2"
         :class="{
-          'hover:bg-primaryLight': friendStatus !== 'pending',
+          'hover:bg-primaryLight active:bg-primaryLight':
+            friendStatus !== 'pending',
           'opacity-50 cursor-not-allowed': friendStatus === 'pending',
         }"
         :disabled="friendStatus === 'pending'"
@@ -51,7 +52,7 @@
         <span class="text-xs">Dodaj do znajomych</span>
       </button>
       <button
-        class="text-primary bg-gray-200 rounded-md p-1 transition-colors duration-300 hover:text-gray-50 hover:bg-red-700 flex flex-col items-center min-[1600px]:p-2"
+        class="text-primary bg-gray-200 rounded-md p-1 transition-colors duration-300 hover:text-gray-50 hover:bg-red-700 active:text-gray-50 active:bg-red-700 flex flex-col items-center min-[1600px]:p-2"
         v-else
         @click="removeFriend"
       >
@@ -62,7 +63,7 @@
         <span class="text-xs">Usuń ze znajomych</span>
       </button>
       <button
-        class="text-primary bg-gray-200 rounded-md p-1 transition-colors duration-300 hover:text-gray-50 hover:bg-red-700 flex flex-col items-center min-[1600px]:p-2"
+        class="text-primary bg-gray-200 rounded-md p-1 transition-colors duration-300 hover:text-gray-50 hover:bg-red-700 active:text-gray-50 active:bg-red-700 flex flex-col items-center min-[1600px]:p-2"
         @click="reportStranger"
       >
         <ion-icon
@@ -106,6 +107,10 @@ const removeFriend = () => {
 
 <style scoped>
 .stranger--close-profile-btn:hover .arrow-back {
+  transform: scale(1.1);
+}
+
+.stranger--close-profile-btn:active .arrow-back {
   transform: scale(1.1);
 }
 

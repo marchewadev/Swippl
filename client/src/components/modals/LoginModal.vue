@@ -2,27 +2,29 @@
   <base-modal :modal-title="'Zaloguj się'" :modal-name="'login'">
     <form action="/signin" id="signInForm" @submit="onSubmit">
       <div class="mb-4">
-        <label-field>Adres e-mail</label-field>
+        <label-field :label-for="'email'">Adres e-mail</label-field>
         <input-text
           name="email"
           type="email"
           :placeholder="'kowalski@example.com'"
           :input-props="{ minlength: 3, maxlength: 254 }"
+          :input-id="'email'"
         ></input-text>
       </div>
       <div class="mb-1">
-        <label-field>Hasło</label-field>
+        <label-field :label-for="'password'">Hasło</label-field>
         <input-text
           name="password"
           type="password"
           :placeholder="'********'"
           :input-props="{ minlength: 8 }"
+          :input-id="'password'"
         ></input-text>
       </div>
       <div class="text-center mb-3">
         <router-link
           :to="{ name: 'ResetPassword' }"
-          class="text-xs hover:text-primaryDark hover:underline min-[1330px]:text-sm"
+          class="text-xs hover:text-primaryDark hover:underline active:text-primaryDark active:underline min-[1330px]:text-sm"
         >
           Nie pamiętam hasła
         </router-link>
@@ -37,7 +39,7 @@
           Nie masz jeszcze konta?
           <router-link
             :to="''"
-            class="font-medium hover:text-primaryDark hover:underline"
+            class="font-medium hover:text-primaryDark hover:underline active:text-primaryDark active:underline"
             @click="openModal('register')"
           >
             Możesz je założyć tutaj!

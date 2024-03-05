@@ -1,35 +1,43 @@
 <template>
   <form id="deleteAccountForm" @submit="onSubmit">
     <div class="mb-4">
-      <label-field>Adres e-mail</label-field>
+      <label-field :label-for="'email'">Adres e-mail</label-field>
       <input-text
         name="email"
         type="email"
         :placeholder="'kowalski@example.com'"
         :input-props="{ minlength: 3, maxlength: 254 }"
+        :input-id="'email'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Hasło</label-field>
+      <label-field :label-for="'password'">Hasło</label-field>
       <input-text
         name="password"
         type="password"
         :placeholder="'********'"
         :input-props="{ minlength: 8 }"
+        :input-id="'password'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Potwierdź hasło</label-field>
+      <label-field :label-for="'password2'">Potwierdź hasło</label-field>
       <input-text
         name="password2"
         type="password"
         :placeholder="'********'"
         :input-props="{ minlength: 8 }"
+        :input-id="'password2'"
       ></input-text>
     </div>
     <div class="mb-4">
-      <label-field>Powód usunięcia konta</label-field>
-      <select-field name="reason" :initial-value="'1'" :custom-class="'w-full'">
+      <label-field :label-for="'reason'">Powód usunięcia konta</label-field>
+      <select-field
+        name="reason"
+        :initial-value="'1'"
+        :custom-class="'w-full'"
+        :select-id="'reason'"
+      >
         <template #values>
           <option value="1">Nie podoba mi się</option>
           <option value="2">Nie chcę już korzystać</option>
