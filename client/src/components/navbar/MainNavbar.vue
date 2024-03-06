@@ -4,7 +4,7 @@
   >
     <router-link :to="{ name: 'Home' }">
       <img
-        src="../../assets/swippl-logo-light.png"
+        src="../../assets/images/swippl-logo-light.png"
         alt="Swippl logo"
         class="h-6 min-[400px]:h-7 min-[1200px]:h-9"
       />

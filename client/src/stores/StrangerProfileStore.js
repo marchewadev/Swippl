@@ -93,7 +93,7 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
   },
   getters: {
     getAvatar() {
-      return this.stranger.avatar || "/src/assets/avatar.png";
+      return this.stranger.avatar;
     },
   },
 });

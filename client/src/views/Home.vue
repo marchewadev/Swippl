@@ -33,7 +33,7 @@
       </div>
       <div class="max-[699px]:hidden">
         <img
-          src="../assets/chat-showcase.png"
+          src="../assets/images/chat-showcase.png"
           alt="Showcase of an Swippl application"
         />
       </div>

@@ -165,7 +165,7 @@ export const useUserStore = defineStore("userStore", {
   },
   getters: {
     userAvatar() {
-      return this.user.avatar || "/src/assets/avatar.png";
+      return this.user.avatar;
     },
     checkIfUserIsLoggedIn() {
       return this.token !== null;

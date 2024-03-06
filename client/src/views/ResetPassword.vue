@@ -3,7 +3,7 @@
     class="box p-4 rounded-md max-w-sm flex flex-col items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-[600px]:p-6"
   >
     <router-link :to="{ name: 'Home' }" class="w-2/3 mb-5 min-[600px]:w-1/2">
-      <img src="@/assets/swippl-logo-light.png" alt="Swippl logo" />
+      <img src="@/assets/images/swippl-logo-light.png" alt="Swippl logo" />
     </router-link>
     <h1
       class="text-base mb-1 min-[450px]:text-lg min-[600px]:text-xl min-[1330px]:text-2xl"

@@ -29,6 +29,7 @@ import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/ChatStore";
 import { useUserStore } from "@/stores/UserStore";
+import defaultAvatar from "@/assets/images/avatar.png";
 import socket from "@/sockets/socket";
 
 const chatStore = useChatStore();
@@ -60,7 +61,7 @@ const props = defineProps({
 });
 
 const setFriendAvatar = computed(() => {
-  return props.friend_avatar ? props.friend_avatar : "/src/assets/avatar.png";
+  return props.friend_avatar ? props.friend_avatar : defaultAvatar;
 });
 
 const handleClick = () => {

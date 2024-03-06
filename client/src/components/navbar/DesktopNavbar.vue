@@ -20,7 +20,7 @@
     <li v-if="checkIfUserIsLoggedIn">
       <div class="relative">
         <img
-          :src="userAvatar"
+          :src="setAvatarFn"
           alt="User's avatar"
           class="cursor-pointer h-10 rounded-full aspect-square"
           v-on-click-outside="closeDropdown"
@@ -72,6 +72,8 @@ import { vOnClickOutside } from "@vueuse/components";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
 import { useModalStore } from "@/stores/ModalStore";
+import { setAvatar } from "@/utils/setAvatar";
+import defaultAvatar from "@/assets/images/avatar.png";
 import NavbarLink from "./NavbarLink.vue";
 
 const userStore = useUserStore();
@@ -82,6 +84,8 @@ const { openModal } = modalStore;
 const { userAvatar } = storeToRefs(userStore);
 
 const isDropdownOpen = ref(false);
+
+const setAvatarFn = setAvatar(userAvatar, defaultAvatar);
 
 const closeDropdown = () => {
   isDropdownOpen.value = false;

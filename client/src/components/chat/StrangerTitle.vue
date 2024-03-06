@@ -4,7 +4,7 @@
     v-if="shouldShowStrangerInfo"
   >
     <img
-      :src="getAvatar"
+      :src="setAvatarFn"
       alt="Stranger's avatar"
       class="stranger--avatar h-10 rounded-full cursor-pointer aspect-square min-[1600px]:h-12"
       @click="openProfile"
@@ -60,6 +60,8 @@ import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { setAvatar } from "@/utils/setAvatar";
+import defaultAvatar from "@/assets/images/avatar.png";
 
 const route = useRoute();
 
@@ -72,6 +74,8 @@ const { changeRoom } = chatStore;
 // Stranger's profile store
 const { stranger, getAvatar } = storeToRefs(strangerProfileStore);
 const { openProfile } = strangerProfileStore;
+
+const setAvatarFn = setAvatar(getAvatar, defaultAvatar);
 
 const isChatRouletteRoute = computed(() => route.name === "Chat");
 

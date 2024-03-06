@@ -3,7 +3,7 @@
     <div class="mb-4">
       <div class="avatar-container relative">
         <img
-          :src="previewAvatar || userAvatar"
+          :src="previewAvatar || setAvatarFn"
           alt="User's avatar"
           class="h-56 aspect-square min-[1330px]:h-64 min-[1600px]:h-72"
         />
@@ -71,10 +71,12 @@ import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
+import { setAvatar } from "@/utils/setAvatar";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
 import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/buttons/FormButton.vue";
+import defaultAvatar from "@/assets/images/avatar.png";
 
 const userStore = useUserStore();
 
@@ -143,6 +145,8 @@ const onSubmit = handleSubmit((values) => {
   userStore.updateUserProfile(values);
   avatarToDelete.value = false;
 });
+
+const setAvatarFn = setAvatar(userAvatar, defaultAvatar);
 
 const previewImage = (event) => {
   const file = event.target.files[0];

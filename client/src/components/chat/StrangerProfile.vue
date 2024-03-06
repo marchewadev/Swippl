@@ -16,7 +16,7 @@
     </button>
     <div class="stranger--avatar-wrapper">
       <img
-        :src="getAvatar"
+        :src="setAvatarFn"
         alt="Stranger avatar"
         class="stranger--avatar w-1/2 mx-auto rounded-full aspect-square"
       />
@@ -80,7 +80,9 @@
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { setAvatar } from "@/utils/setAvatar";
 import socket from "@/sockets/socket";
+import defaultAvatar from "@/assets/images/avatar.png";
 
 const route = useRoute();
 const router = useRouter();
@@ -88,6 +90,8 @@ const strangerProfileStore = useStrangerProfileStore();
 
 const { closeProfile, reportStranger } = strangerProfileStore;
 const { stranger, friendStatus, getAvatar } = storeToRefs(strangerProfileStore);
+
+const setAvatarFn = setAvatar(getAvatar, defaultAvatar);
 
 const handleFriendRequest = () => {
   if (!strangerProfileStore.friendRequest) {
