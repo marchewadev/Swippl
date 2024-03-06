@@ -47,12 +47,13 @@ async function createUserSession(socket, privateRooms, sessionObject) {
   }
 }
 
-async function getChatHistory({ userID, friendID, sessionID }) {
+async function getChatHistory({ userID, friendID, sessionID, page }) {
   try {
     const chatHistory = await ChatModel.getChatHistory(
       userID,
       friendID,
-      sessionID
+      sessionID,
+      page
     );
     Object.assign(chatHistory, { friendStatus: "accepted" });
 

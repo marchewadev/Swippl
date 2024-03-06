@@ -55,7 +55,7 @@ import { useModalStore } from "@/stores/ModalStore";
 import { useForm } from "vee-validate";
 import { object, string, number, array } from "yup";
 import SelectField from "@/components/form/SelectField.vue";
-import FormButton from "@/components/settings/FormButton.vue";
+import FormButton from "@/components/buttons/FormButton.vue";
 import RangeSlider from "@/components/settings/RangeSlider.vue";
 
 const router = useRouter();

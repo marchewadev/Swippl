@@ -45,7 +45,7 @@ import { object, string, ref } from "yup";
 import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
 import LabelField from "@/components/form/LabelField.vue";
-import FormButton from "@/components/settings/FormButton.vue";
+import FormButton from "@/components/buttons/FormButton.vue";
 
 const router = useRouter();
 const userStore = useUserStore();

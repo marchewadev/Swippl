@@ -76,7 +76,7 @@ import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
 import LabelField from "../form/LabelField.vue";
 import SelectField from "@/components/form/SelectField.vue";
-import FormButton from "@/components/settings/FormButton.vue";
+import FormButton from "@/components/buttons/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
 
 const router = useRouter();

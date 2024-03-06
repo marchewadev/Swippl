@@ -2,6 +2,7 @@
   <div class="chat-container h-full grid">
     <div
       class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
+      v-infinite-scroll="loadMoreMessages || (() => {})"
     >
       <message class="message-admin" v-if="isChatRouletteRoute">
         Pamiętaj, aby zachowywać się w sposób stosowny! Możesz w szybki sposób
@@ -57,16 +58,22 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";
+import { vInfiniteScroll } from "@vueuse/components";
 import Message from "@/components/chat/Message.vue";
 
 const props = defineProps({
   sendMessage: {
     type: Function,
     required: true,
+  },
+
+  loadMoreMessages: {
+    type: Array,
+    required: false,
   },
 });
 
@@ -76,6 +83,7 @@ const newMessage = ref("");
 const messageTextarea = ref(null);
 
 const chatStore = useChatStore();
+
 const { roomUsers } = storeToRefs(chatStore);
 
 const isChatRouletteRoute = computed(() => route.name === "Chat");
@@ -92,15 +100,35 @@ const sendMessage = () => {
 onMounted(() => {
   focusTextarea();
 
-  // Automatically scroll to the bottom of the messages container
   const messagesWrapper = document.querySelector(".messages-wrapper");
   messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
 
+  // Automatically scroll to the bottom of the messages container
   watch(
     () => chatStore.messages,
     async (newMessages, oldMessages) => {
       await nextTick();
       messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+    }
+  );
+
+  // Keep the scroll position when old messages are loaded
+  let oldScrollTop = 0;
+  let oldScrollHeight = 0;
+
+  watch(
+    () => chatStore.areMessagesLoading,
+    (newValue, oldValue) => {
+      if (newValue) {
+        oldScrollTop = messagesWrapper.scrollTop;
+        oldScrollHeight = messagesWrapper.scrollHeight;
+      } else if (!newValue && oldValue) {
+        nextTick().then(() => {
+          const newScrollHeight = messagesWrapper.scrollHeight;
+          messagesWrapper.scrollTop =
+            oldScrollTop + (newScrollHeight - oldScrollHeight);
+        });
+      }
     }
   );
 });

@@ -186,9 +186,16 @@ class ChatModel extends BaseModel {
     }
   }
 
-  async getChatHistory(firstUserID, secondUserID, sessionID) {
+  async getChatHistory(
+    firstUserID,
+    secondUserID,
+    sessionID,
+    page = 1,
+    limit = 40
+  ) {
     // This function returns the chat history between two users who are friends.
     try {
+      const offset = (page - 1) * limit;
       const query = `
         SELECT cm.message_content AS content,
           CASE
@@ -199,10 +206,15 @@ class ChatModel extends BaseModel {
         LEFT JOIN chat_messages cm ON cs.id = cm.session_id
         WHERE ((cs.user1_id = $1 AND cs.user2_id = $2) OR (cs.user1_id = $2 AND cs.user2_id = $1))
         AND cs.id = $3
-        AND cs.end_timestamp IS NULL;
+        AND cs.end_timestamp IS NULL
+        ORDER BY cm.sent_at DESC
+        LIMIT $4 OFFSET $5;
       `;
-      const values = [firstUserID, secondUserID, sessionID];
+      const values = [firstUserID, secondUserID, sessionID, limit, offset];
       let { rows: chatHistory } = await this.pool.query(query, values);
+
+      // Reverse the order of messages to display the latest messages at the bottom
+      chatHistory = chatHistory.reverse();
 
       if (chatHistory.length < 1) {
         throw new Error("Nie znaleziono podanego czatu");
@@ -229,9 +241,23 @@ class ChatModel extends BaseModel {
         avatar: friendRows[0].avatar,
       };
 
+      // Check if there are more messages to load
+      const checkMoreMessagesQuery = `
+        SELECT 1 FROM chat_messages
+        WHERE session_id = $1
+        OFFSET $2;
+      `;
+      const checkMoreMessagesValues = [sessionID, offset + limit];
+      const { rows: moreMessagesRows } = await this.pool.query(
+        checkMoreMessagesQuery,
+        checkMoreMessagesValues
+      );
+      const hasMoreMessages = moreMessagesRows.length > 0;
+
       return {
         chatHistory,
         friendObject,
+        hasMoreMessages,
       };
     } catch (err) {
       this.handleValidationErrorOrServerIssue(err);

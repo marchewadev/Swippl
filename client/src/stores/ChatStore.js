@@ -15,6 +15,10 @@ export const useChatStore = defineStore("chatStore", {
     sessionID: null,
     privateSessionID: null,
     activeFriendID: null,
+    page: 1,
+    areMessagesLoaded: false,
+    areMessagesLoading: false,
+    hasMoreMessages: false,
     messages: [],
   }),
   actions: {
@@ -111,6 +115,19 @@ export const useChatStore = defineStore("chatStore", {
       socket.off("joinRoomError");
       socket.off("roomError");
     },
+    leavePrivateRoom() {
+      const strangerProfileStore = useStrangerProfileStore();
+
+      this.privateSessionID = null;
+      this.activeFriendID = null;
+      this.areMessagesLoaded = false;
+      this.hasMoreMessages = false;
+      this.messages = [];
+      this.page = 1;
+
+      strangerProfileStore.resetStrangerData();
+      socket.off("generatePrivateMessage");
+    },
     changeRoom() {
       this.leaveRoom();
       this.joinRoom();
@@ -175,13 +192,29 @@ export const useChatStore = defineStore("chatStore", {
       });
     },
     getChatHistory(chatObject) {
+      this.areMessagesLoaded = false;
       this.privateSessionID = chatObject.sessionID;
 
       socket.emit("getChatHistory", chatObject, (chatHistory) => {
         const strangerProfileStore = useStrangerProfileStore();
+
         this.messages = chatHistory.chatHistory;
+        this.areMessagesLoaded = true;
+        this.hasMoreMessages = chatHistory.hasMoreMessages;
+
         strangerProfileStore.friendStatus = chatHistory.friendStatus;
         strangerProfileStore.setStrangerData(chatHistory.friendObject);
+      });
+    },
+    loadMoreMessages(chatObject) {
+      this.areMessagesLoading = true;
+
+      socket.emit("getChatHistory", chatObject, (chatHistory) => {
+        this.messages.unshift(...chatHistory.chatHistory);
+        this.hasMoreMessages = chatHistory.hasMoreMessages;
+        this.page++;
+
+        this.areMessagesLoading = false;
       });
     },
     onFriendRemoved(router) {
