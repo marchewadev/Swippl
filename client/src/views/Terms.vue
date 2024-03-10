@@ -180,9 +180,9 @@
         <p class="text-sm mb-2 min-[1330px]:text-base">
           W razie jakichkolwiek pytań, prosimy o kontakt pod adresem:
           <a
-            href="mailto:kontakt@swippl.pl"
+            href="mailto:swipplchat@gmail.com"
             class="font-medium hover:text-primaryDark hover:underline"
-            >kontakt@swippl.pl</a
+            >swipplchat@gmail.com</a
           >
         </p>
       </section>
