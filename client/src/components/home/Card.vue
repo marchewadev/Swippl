@@ -19,8 +19,8 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
+<script setup lang="ts">
+defineProps({
   iconName: {
     type: String,
     required: true,

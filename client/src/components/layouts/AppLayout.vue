@@ -56,7 +56,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -105,6 +105,7 @@ const setActiveFriend = (id) => {
   width: 80vw;
   height: 85vh;
 }
+
 .sidebar--profile {
   grid-column: 1;
   grid-row: 1;

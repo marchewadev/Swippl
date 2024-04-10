@@ -8,8 +8,8 @@
   </router-link>
 </template>
 
-<script setup>
-const props = defineProps({
+<script setup lang="ts">
+defineProps({
   text: {
     type: String,
     required: true,
