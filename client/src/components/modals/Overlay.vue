@@ -7,7 +7,7 @@
   </transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
 

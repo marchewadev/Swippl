@@ -20,13 +20,13 @@
   </transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
 
 const width = ref(100);
-const intervalId = ref(null);
+const intervalId = ref<number | undefined>(undefined);
 
 const modalStore = useModalStore();
 const { showMessageModal, textMessageModal, isErrorMessageModal } =

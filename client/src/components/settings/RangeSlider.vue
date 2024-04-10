@@ -12,7 +12,7 @@
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useFieldArray } from "vee-validate";
 import Slider from "@vueform/slider";
 
@@ -39,7 +39,7 @@ const value = props.initialValue;
 
 const { update } = useFieldArray(() => props.name);
 
-const handleChange = (values) => {
+const handleChange = (values: number[]) => {
   values.forEach((value, index) => update(index, value));
   emits("change", values);
 };

@@ -24,7 +24,7 @@
   </transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useModalStore } from "@/stores/ModalStore";
 import { vOnClickOutside } from "@vueuse/components";
@@ -34,7 +34,7 @@ const modalStore = useModalStore();
 const { closeModal } = modalStore;
 const { showModal, selectedModal } = storeToRefs(modalStore);
 
-const props = defineProps({
+defineProps({
   modalTitle: {
     type: String,
     required: true,

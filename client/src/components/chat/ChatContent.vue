@@ -57,8 +57,8 @@
   </div>
 </template>
 
-<script setup>
-import { computed, nextTick, onMounted, ref, watch, watchEffect } from "vue";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";

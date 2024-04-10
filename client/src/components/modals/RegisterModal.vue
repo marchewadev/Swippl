@@ -103,7 +103,7 @@
   </base-modal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
 import { object, string, ref, date, boolean } from "yup";
@@ -111,7 +111,7 @@ import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
 import dayjs from "dayjs";
 import InputText from "@/components/form/InputText.vue";
-import LabelField from "../form/LabelField.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/buttons/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
@@ -165,7 +165,7 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit((values) => {
-  userStore.signUpUser(router, values);
+  userStore.performUserAction("register", router, values);
 });
 </script>
 

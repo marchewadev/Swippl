@@ -66,7 +66,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { storeToRefs } from "pinia";

@@ -50,14 +50,14 @@
   </base-modal>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from "vue-router";
 import { useForm } from "vee-validate";
 import { object, string } from "yup";
 import { useModalStore } from "@/stores/ModalStore";
 import { useUserStore } from "@/stores/UserStore";
 import InputText from "@/components/form/InputText.vue";
-import LabelField from "../form/LabelField.vue";
+import LabelField from "@/components/form/LabelField.vue";
 import FormButton from "@/components/buttons/FormButton.vue";
 import BaseModal from "@/components/modals/BaseModal.vue";
 
@@ -82,6 +82,6 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit((values) => {
-  userStore.signInUser(router, values);
+  userStore.performUserAction("login", router, values);
 });
 </script>

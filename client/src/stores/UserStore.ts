@@ -1,10 +1,14 @@
 import { defineStore } from "pinia";
-import { useModalStore } from "./ModalStore";
+import { Router } from "vue-router";
 import { useStorage } from "@vueuse/core";
+import { useModalStore } from "@/stores/ModalStore";
+import { handleAxiosError } from "@/utils/handleAxiosError";
+import { AnonData, UserData, UserState } from "@/interfaces/user";
+import { UserAction } from "@/types/user";
 import axios from "axios";
 
 export const useUserStore = defineStore("userStore", {
-  state: () => ({
+  state: (): UserState => ({
     user: {
       id: null,
       name: "",
@@ -22,7 +26,11 @@ export const useUserStore = defineStore("userStore", {
     areCriteriaArbitrary: false,
   }),
   actions: {
-    async performUserAction(action, router, userJSON) {
+    async handleUserAuthRequest(
+      action: string,
+      router: Router,
+      userJSON: object
+    ) {
       // Helper function to perform user actions such as register and login. The only difference is the URL.
 
       try {
@@ -38,10 +46,14 @@ export const useUserStore = defineStore("userStore", {
         this.closeModalAndRedirect(router, "Settings");
         this.displayMessageModal(response.data.message);
       } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
+        handleAxiosError(err);
       }
     },
-    async performUserUpdateAction(url, router, userJSON) {
+    async handleUserUpdateRequest(
+      url: string,
+      router: Router,
+      userJSON: object
+    ) {
       // Helper function to perform user update actions such as updating the user's email and password, both of which require reauthentication.
 
       try {
@@ -56,26 +68,34 @@ export const useUserStore = defineStore("userStore", {
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
+        handleAxiosError(err);
       }
     },
-    async signUpUser(router, userJSON) {
-      await this.performUserAction("register", router, userJSON);
+    async performUserAction(
+      action: UserAction,
+      router: Router,
+      userJSON: object
+    ) {
+      switch (action) {
+        case "register":
+        case "login":
+          await this.handleUserAuthRequest(action, router, userJSON);
+          break;
+        case "email":
+        case "password":
+          await this.handleUserUpdateRequest(action, router, userJSON);
+          break;
+        default:
+          throw new Error(`Nieprawidłowa akcja: ${action}`);
+      }
     },
-    async signInUser(router, userJSON) {
-      await this.performUserAction("login", router, userJSON);
-    },
-    async updateUserEmail(router, userJSON) {
-      await this.performUserUpdateAction("email", router, userJSON);
-    },
-    async updateUserPassword(router, userJSON) {
-      await this.performUserUpdateAction("password", router, userJSON);
-    },
-    async updateUserProfile(userJSON) {
+    async updateUserProfile(userJSON: Record<string, string | boolean | File>) {
       try {
         const formData = new FormData();
         for (const key in userJSON) {
-          formData.append(key, userJSON[key]);
+          if (Object.prototype.hasOwnProperty.call(userJSON, key)) {
+            formData.append(key, String(userJSON[key]));
+          }
         }
 
         const response = await axios.patch(
@@ -95,13 +115,13 @@ export const useUserStore = defineStore("userStore", {
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
+        handleAxiosError(err);
       }
     },
     async deleteUserAvatar() {
       this.user.avatar = "";
     },
-    async deleteUserAccount(router, userJSON) {
+    async deleteUserAccount(router: Router, userJSON: object) {
       try {
         const response = await axios.delete(
           `${import.meta.env.VITE_BACKEND_SERVER}/user/delete`,
@@ -116,10 +136,10 @@ export const useUserStore = defineStore("userStore", {
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
+        handleAxiosError(err);
       }
     },
-    async resetUserPassword(userJSON) {
+    async resetUserPassword(userJSON: object) {
       try {
         const response = await axios.patch(
           `${import.meta.env.VITE_BACKEND_SERVER}/user/update/reset-password`,
@@ -128,12 +148,10 @@ export const useUserStore = defineStore("userStore", {
 
         this.displayMessageModal(response.data.message);
       } catch (err) {
-        this.displayMessageModal(err.response.data.message, true);
+        handleAxiosError(err);
       }
     },
-    setUserData(userObject) {
-      const { id, name, birthdate, city, gender, avatar } = userObject;
-
+    setUserData({ id, name, birthdate, city, gender, avatar }: UserData) {
       this.user.id = id;
       this.user.name = name;
       this.user.birthdate = birthdate;
@@ -145,16 +163,16 @@ export const useUserStore = defineStore("userStore", {
         this.user.avatar = avatar;
       }
     },
-    setAnonData(userObject) {
+    setAnonData(userObject: AnonData) {
       this.user.gender = userObject.gender;
       this.user.birthdate = userObject.birthdate;
     },
-    closeModalAndRedirect(router, path) {
+    closeModalAndRedirect(router: Router, path: string) {
       const modalStore = useModalStore();
       modalStore.closeModal();
       router.push({ name: path });
     },
-    displayMessageModal(message, isErrorMessage = false) {
+    displayMessageModal(message: string, isErrorMessage = false) {
       const modalStore = useModalStore();
       modalStore.displayMessageModal(message, isErrorMessage);
     },
@@ -164,10 +182,10 @@ export const useUserStore = defineStore("userStore", {
     },
   },
   getters: {
-    userAvatar() {
+    userAvatar(): string {
       return this.user.avatar;
     },
-    checkIfUserIsLoggedIn() {
+    checkIfUserIsLoggedIn(): boolean {
       return this.token !== null;
     },
   },
