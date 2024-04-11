@@ -28,7 +28,7 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";
 import BaseNavbar from "./BaseNavbar.vue";

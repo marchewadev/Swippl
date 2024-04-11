@@ -14,11 +14,12 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useIsFormValid } from "vee-validate";
+
 const isValid = useIsFormValid();
 
-const props = defineProps({
+defineProps({
   formId: {
     type: String,
     required: true,

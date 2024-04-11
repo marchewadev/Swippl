@@ -4,8 +4,8 @@
   </label>
 </template>
 
-<script setup>
-const props = defineProps({
+<script setup lang="ts">
+defineProps({
   labelFor: {
     type: String,
     required: true,

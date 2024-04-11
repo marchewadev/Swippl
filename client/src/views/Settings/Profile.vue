@@ -65,7 +65,7 @@
   </form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from "vue";
 import { useForm, Field, ErrorMessage } from "vee-validate";
 import { object, string, date, mixed } from "yup";
@@ -82,9 +82,8 @@ const userStore = useUserStore();
 
 const { deleteUserAvatar } = userStore;
 const { userAvatar } = storeToRefs(userStore);
-
 const avatarToDelete = ref(false);
-const previewAvatar = ref(null);
+const previewAvatar = ref<string | null>(null);
 
 const { handleSubmit } = useForm({
   validationSchema: object({
@@ -95,12 +94,14 @@ const { handleSubmit } = useForm({
         "* Nieobsługiwany format",
         (value) =>
           !value ||
-          ["image/jpg", "image/jpeg", "image/png"].includes(value.type)
+          ["image/jpg", "image/jpeg", "image/png"].includes(
+            (value as File).type
+          )
       )
       .test(
         "fileSize",
         "* Plik jest za duży",
-        (value) => !value || value.size <= 1024 * 1024 * 2 // 2MB
+        (value) => !value || (value as File).size <= 1024 * 1024 * 2 // 2MB
       ),
     name: string()
       .trim()
@@ -130,6 +131,7 @@ const { handleSubmit } = useForm({
     name: userStore.user.name,
     city: userStore.user.city,
     birthdate: userStore.user.birthdate,
+    avatarToDelete: false,
   },
 });
 
@@ -137,26 +139,27 @@ watch(userAvatar, () => {
   previewAvatar.value = null;
 });
 
+const setAvatarFn = setAvatar(userAvatar, defaultAvatar);
+
+const markAvatarForDeletion = () => {
+  avatarToDelete.value = true;
+  deleteUserAvatar();
+};
+
 const onSubmit = handleSubmit((values) => {
   if (avatarToDelete.value) {
     values.avatarToDelete = avatarToDelete.value;
   }
+  console.log(values);
 
   userStore.updateUserProfile(values);
   avatarToDelete.value = false;
 });
 
-const setAvatarFn = setAvatar(userAvatar, defaultAvatar);
-
-const previewImage = (event) => {
-  const file = event.target.files[0];
+const previewImage = (event: InputEvent) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
     previewAvatar.value = URL.createObjectURL(file);
   }
-};
-
-const markAvatarForDeletion = () => {
-  avatarToDelete.value = true;
-  deleteUserAvatar();
 };
 </script>

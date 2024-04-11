@@ -66,7 +66,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { storeToRefs } from "pinia";
@@ -74,7 +74,7 @@ import { useUserStore } from "@/stores/UserStore";
 import { useModalStore } from "@/stores/ModalStore";
 import { setAvatar } from "@/utils/setAvatar";
 import defaultAvatar from "@/assets/images/avatar.png";
-import NavbarLink from "./NavbarLink.vue";
+import NavbarLink from "@/components/navbar/NavbarLink.vue";
 
 const userStore = useUserStore();
 const modalStore = useModalStore();

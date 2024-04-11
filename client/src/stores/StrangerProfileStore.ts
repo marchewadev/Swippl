@@ -1,15 +1,18 @@
 import { defineStore } from "pinia";
-import { useUserStore } from "./UserStore";
-import { useModalStore } from "./ModalStore";
-import axios from "axios";
+import { Router } from "vue-router";
+import { useUserStore } from "@/stores/UserStore";
+import { useModalStore } from "@/stores/ModalStore";
+import { handleAxiosError } from "@/utils/handleAxiosError";
+import { StrangerState, StrangerData } from "@/interfaces/user";
 import socket from "@/sockets/socket";
+import axios from "axios";
 
 export const useStrangerProfileStore = defineStore("strangerProfileStore", {
-  state: () => ({
+  state: (): StrangerState => ({
     stranger: {
       name: "",
       gender: "",
-      age: "",
+      age: 18,
       city: "",
       avatar: "",
     },
@@ -24,15 +27,15 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     closeProfile() {
       this.showProfile = false;
     },
-    setStrangerData({ name, age, gender, city, avatar }) {
+    resetStrangerData() {
+      this.$reset();
+    },
+    setStrangerData({ name, age, gender, city, avatar }: StrangerData) {
       this.stranger.name = name;
       this.stranger.age = age;
       this.stranger.gender = gender;
       this.stranger.city = city;
       this.stranger.avatar = avatar;
-    },
-    resetStrangerData() {
-      this.$reset();
     },
     reportStranger() {
       const modalStore = useModalStore();
@@ -51,7 +54,7 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     acceptFriendRequest() {
       socket.emit("acceptFriendRequest");
     },
-    removeFriend(friendID, sessionID, router) {
+    removeFriend(friendID: number, sessionID: number, router: Router) {
       const userStore = useUserStore();
       const userID = userStore.user.id;
       const userName = userStore.user.name;
@@ -65,12 +68,10 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
       );
     },
     updateFriendStatus() {
-      const userStore = useUserStore();
-      const modalStore = useModalStore();
-
       socket.on("friendStatus", async (friendStatus) => {
         try {
           if (friendStatus === "accepted") {
+            const userStore = useUserStore();
             const response = await axios.get(
               `${import.meta.env.VITE_BACKEND_SERVER}/user/verify`,
               { headers: { Authorization: `Bearer ${userStore.token}` } }
@@ -81,7 +82,7 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
 
           this.friendStatus = friendStatus;
         } catch (err) {
-          modalStore.displayMessageModal(err.response.data.message, true);
+          handleAxiosError(err);
         }
       });
     },
@@ -92,7 +93,7 @@ export const useStrangerProfileStore = defineStore("strangerProfileStore", {
     },
   },
   getters: {
-    getAvatar() {
+    getAvatar(): string {
       return this.stranger.avatar;
     },
   },

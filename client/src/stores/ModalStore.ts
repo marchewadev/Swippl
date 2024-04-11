@@ -9,7 +9,7 @@ export const useModalStore = defineStore("modalStore", {
     textMessageModal: "",
   }),
   actions: {
-    openModal(selectedModal) {
+    openModal(selectedModal: string) {
       this.showModal = true;
       this.selectedModal = selectedModal;
     },
@@ -17,7 +17,7 @@ export const useModalStore = defineStore("modalStore", {
       this.showModal = false;
       this.selectedModal = "";
     },
-    displayMessageModal(message, isErrorMessage = false) {
+    displayMessageModal(message: string, isErrorMessage = false) {
       this.showMessageModal = true;
       this.textMessageModal = message;
       this.isErrorMessageModal = isErrorMessage;

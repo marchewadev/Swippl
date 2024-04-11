@@ -1,14 +1,17 @@
-import { useStrangerProfileStore } from "./StrangerProfileStore";
-import { useUserStore } from "./UserStore";
-import { useModalStore } from "./ModalStore";
-import { useRouter } from "vue-router";
 import { defineStore } from "pinia";
+import { Router } from "vue-router";
+import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
+import { useUserStore } from "@/stores/UserStore";
+import { useModalStore } from "@/stores/ModalStore";
+import { handleAxiosError } from "@/utils/handleAxiosError";
+import { ChatHistoryObject, ChatObject, ChatState } from "@/interfaces/chat";
+import { MessageType } from "@/types/chat";
 import socket from "@/sockets/socket";
 import axios from "axios";
 import dayjs from "dayjs";
 
 export const useChatStore = defineStore("chatStore", {
-  state: () => ({
+  state: (): ChatState => ({
     totalUsers: 0,
     roomUsers: 0,
     isSearching: true,
@@ -31,9 +34,10 @@ export const useChatStore = defineStore("chatStore", {
         this.totalUsers = totalUsers;
       });
     },
-    async joinRoom(router) {
-      const userStore = useUserStore();
+    async joinRoom(router: Router) {
       try {
+        const userStore = useUserStore();
+
         let userObject = {};
 
         if (userStore.token) {
@@ -90,11 +94,7 @@ export const useChatStore = defineStore("chatStore", {
         this.onJoinRoomError(router);
         this.onRoomError();
       } catch (err) {
-        const router = useRouter();
-        const modalStore = useModalStore();
-
-        userStore.resetUserStore();
-        modalStore.displayMessageModal(err.message, true);
+        handleAxiosError(err);
         router.push({ name: "Settings" });
       }
     },
@@ -128,9 +128,9 @@ export const useChatStore = defineStore("chatStore", {
       strangerProfileStore.resetStrangerData();
       socket.off("generatePrivateMessage");
     },
-    changeRoom() {
+    changeRoom(router: Router) {
       this.leaveRoom();
-      this.joinRoom();
+      this.joinRoom(router);
     },
     updateRoomData() {
       const strangerProfileStore = useStrangerProfileStore();
@@ -143,14 +143,14 @@ export const useChatStore = defineStore("chatStore", {
         strangerProfileStore.setStrangerData(strangerObject);
       });
     },
-    sendMessage(message) {
+    sendMessage(message: string) {
       socket.emit("sendMessage", {
         message,
       });
     },
     generateMessage() {
       socket.on("generateMessage", (messageObject) => {
-        let messageType;
+        let messageType: MessageType;
 
         if (messageObject.type === "admin") {
           messageType = "admin";
@@ -168,7 +168,7 @@ export const useChatStore = defineStore("chatStore", {
         this.$patch({ messages: [...this.messages, message] });
       });
     },
-    onJoinRoomError(router) {
+    onJoinRoomError(router: Router) {
       const modalStore = useModalStore();
 
       socket.on("joinRoomError", (error) => {
@@ -191,33 +191,41 @@ export const useChatStore = defineStore("chatStore", {
         friends: userStore.friends,
       });
     },
-    getChatHistory(chatObject) {
+    getChatHistory(chatObject: ChatObject) {
       this.areMessagesLoaded = false;
       this.privateSessionID = chatObject.sessionID;
 
-      socket.emit("getChatHistory", chatObject, (chatHistory) => {
-        const strangerProfileStore = useStrangerProfileStore();
+      socket.emit(
+        "getChatHistory",
+        chatObject,
+        (chatHistory: ChatHistoryObject) => {
+          const strangerProfileStore = useStrangerProfileStore();
 
-        this.messages = chatHistory.chatHistory;
-        this.areMessagesLoaded = true;
-        this.hasMoreMessages = chatHistory.hasMoreMessages;
+          this.messages = chatHistory.chatHistory;
+          this.areMessagesLoaded = true;
+          this.hasMoreMessages = chatHistory.hasMoreMessages;
 
-        strangerProfileStore.friendStatus = chatHistory.friendStatus;
-        strangerProfileStore.setStrangerData(chatHistory.friendObject);
-      });
+          strangerProfileStore.friendStatus = chatHistory.friendStatus;
+          strangerProfileStore.setStrangerData(chatHistory.friendObject);
+        }
+      );
     },
-    loadMoreMessages(chatObject) {
+    loadMoreMessages(chatObject: ChatObject) {
       this.areMessagesLoading = true;
 
-      socket.emit("getChatHistory", chatObject, (chatHistory) => {
-        this.messages.unshift(...chatHistory.chatHistory);
-        this.hasMoreMessages = chatHistory.hasMoreMessages;
-        this.page++;
+      socket.emit(
+        "getChatHistory",
+        chatObject,
+        (chatHistory: ChatHistoryObject) => {
+          this.messages.unshift(...chatHistory.chatHistory);
+          this.hasMoreMessages = chatHistory.hasMoreMessages;
+          this.page++;
 
-        this.areMessagesLoading = false;
-      });
+          this.areMessagesLoading = false;
+        }
+      );
     },
-    onFriendRemoved(router) {
+    onFriendRemoved(router: Router) {
       const modalStore = useModalStore();
       const userStore = useUserStore();
 
@@ -238,7 +246,7 @@ export const useChatStore = defineStore("chatStore", {
         callback();
       });
     },
-    sendPrivateMessage({ message }) {
+    sendPrivateMessage({ message }: { message: string }) {
       const userStore = useUserStore();
 
       socket.emit("sendPrivateMessage", {
@@ -251,7 +259,7 @@ export const useChatStore = defineStore("chatStore", {
       socket.on("generatePrivateMessage", (messageObject) => {
         const userStore = useUserStore();
 
-        let messageType;
+        let messageType: MessageType;
 
         if (messageObject.type === "admin") {
           messageType = "admin";

@@ -13,7 +13,7 @@
   </app-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AppLayout from "@/components/layouts/AppLayout.vue";
 import SettingsNavbar from "@/components/navbar/SettingsNavbar.vue";
 </script>

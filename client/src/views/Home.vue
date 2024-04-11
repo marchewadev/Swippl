@@ -69,7 +69,7 @@
   <footer-el></footer-el>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useModalStore } from "@/stores/ModalStore";
 import Card from "@/components/home/Card.vue";
 import MainNavbar from "@/components/navbar/MainNavbar.vue";

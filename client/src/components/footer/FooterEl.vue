@@ -7,7 +7,7 @@
       strony oznacza zgodę na wykorzystanie plików cookie. Rozpoczęcie rozmowy
       oznacza akceptację
       <router-link :to="{ name: 'Terms' }" class="text-secondary">
-        regulaminu </router-link
+        regulaminu</router-link
       >, a także zgodę na przetwarzanie danych, w tym danych osobowych (RODO).
     </p>
     <p class="mt-1">
@@ -18,6 +18,6 @@
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const copyrightYear = new Date().getFullYear();
 </script>

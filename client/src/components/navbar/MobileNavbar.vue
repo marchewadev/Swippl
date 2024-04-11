@@ -97,19 +97,18 @@
   </transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 import { vOnClickOutside } from "@vueuse/components";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
-import { useChatStore } from "@/stores/ChatStore";
 import { useModalStore } from "@/stores/ModalStore";
-import SidebarFriend from "../chat/SidebarFriend.vue";
-import MobileNavButton from "../buttons/MobileNavButton.vue";
+import { setActiveFriend } from "@/utils/setActiveFriend";
+import SidebarFriend from "@/components/chat/SidebarFriend.vue";
+import MobileNavButton from "@/components/buttons/MobileNavButton.vue";
 
 const userStore = useUserStore();
-const chatStore = useChatStore();
 const modalStore = useModalStore();
 
 const { checkIfUserIsLoggedIn, resetUserStore } = userStore;
@@ -119,10 +118,6 @@ const { showModal, selectedModal } = storeToRefs(modalStore);
 
 const isFriendListOpen = ref(false);
 const isMobileNavOpen = ref(false);
-
-const setActiveFriend = (id) => {
-  chatStore.activeFriendID = id;
-};
 
 const toggleFriendList = () => {
   isFriendListOpen.value = !isFriendListOpen.value;

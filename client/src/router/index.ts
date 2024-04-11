@@ -6,7 +6,7 @@ import axios from "axios";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior(to) {
     if (to.hash) {
       return {
         el: to.hash,
@@ -28,14 +28,14 @@ const router = createRouter({
       path: "/private-chat/user/:friendID/session/:sessionID",
       name: "PrivateChat",
       component: () => import("@/views/PrivateChat.vue"),
-      beforeEnter: (to, from) => {
+      beforeEnter: (to) => {
         const chatStore = useChatStore();
         const userStore = useUserStore();
 
-        if (userStore.token) {
+        if (userStore.token && userStore.user.id) {
           chatStore.getChatHistory({
             userID: userStore.user.id,
-            friendID: to.params.friendID,
+            friendID: Number(to.params.friendID),
             sessionID: Number(to.params.sessionID),
           });
         }
@@ -92,7 +92,7 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   const userStore = useUserStore();
   const chatStore = useChatStore();
   const settingsStore = useSettingsStore();
