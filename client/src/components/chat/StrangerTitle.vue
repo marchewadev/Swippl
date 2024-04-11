@@ -44,7 +44,7 @@
     <button
       class="disconnect--btn transition-colors duration-300 hover:text-red-700 active:text-red-700"
       v-if="isChatRouletteRoute"
-      @click="changeRoom"
+      @click="changeRoom(router)"
     >
       <ion-icon
         name="close-outline"
@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useChatStore } from "@/stores/ChatStore";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
@@ -64,6 +64,7 @@ import { setAvatar } from "@/utils/setAvatar";
 import defaultAvatar from "@/assets/images/avatar.png";
 
 const route = useRoute();
+const router = useRouter();
 
 const chatStore = useChatStore();
 const strangerProfileStore = useStrangerProfileStore();

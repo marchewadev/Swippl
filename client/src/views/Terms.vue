@@ -191,7 +191,7 @@
   <footer-el></footer-el>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import MainNavbar from "@/components/navbar/MainNavbar.vue";
 import FooterEl from "@/components/footer/FooterEl.vue";
 import SectionEl from "@/components/terms/SectionEl.vue";

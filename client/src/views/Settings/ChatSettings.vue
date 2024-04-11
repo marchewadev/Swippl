@@ -47,13 +47,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import { useUserStore } from "@/stores/UserStore";
-import { useModalStore } from "@/stores/ModalStore";
 import { useForm } from "vee-validate";
 import { object, string, number, array } from "yup";
+import { useUserStore } from "@/stores/UserStore";
+import { useModalStore } from "@/stores/ModalStore";
+import { GenderSearch } from "@/types/user";
 import SelectField from "@/components/form/SelectField.vue";
 import FormButton from "@/components/buttons/FormButton.vue";
 import RangeSlider from "@/components/settings/RangeSlider.vue";
@@ -84,16 +85,16 @@ const { handleSubmit } = useForm({
   }),
 });
 
-const updateAgeRange = (newAgeRange) => {
+const setCriteriasArbitrary = () => {
+  areCriteriaArbitrary.value = true;
+};
+
+const updateAgeRange = (newAgeRange: [number, number]) => {
   userStore.searchCriteria.ageRangeSearch = newAgeRange;
 };
 
-const updateGender = (newGender) => {
+const updateGender = (newGender: GenderSearch) => {
   userStore.searchCriteria.genderSearch = newGender;
-};
-
-const setCriteriasArbitrary = () => {
-  areCriteriaArbitrary.value = true;
 };
 
 const onSubmit = handleSubmit(() => {

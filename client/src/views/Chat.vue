@@ -13,7 +13,7 @@
   </app-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted, watch } from "vue";
 import { onBeforeRouteLeave, useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -36,7 +36,7 @@ const { updateFriendRequest, updateFriendStatus } = strangerProfileStore;
 const { areCriteriaArbitrary } = storeToRefs(userStore);
 const { roomUsers, isSearching } = storeToRefs(chatStore);
 
-const sendMessageFn = (message) => {
+const sendMessageFn = (message: string) => {
   if (message.trim() !== "") {
     sendMessage(message);
   }
@@ -45,7 +45,7 @@ const sendMessageFn = (message) => {
 onMounted(() => {
   watch(
     () => roomUsers.value,
-    (newVal, oldVal) => {
+    (newVal) => {
       if (newVal === 2) {
         isSearching.value = false;
       }

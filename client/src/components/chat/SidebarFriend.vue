@@ -72,18 +72,22 @@ const handleClick = () => {
 };
 
 const setLatestMessage = () => {
-  latestMessage.value = userStore.friends.find(
+  const friend = userStore.friends.find(
     (friend) => friend.id === props.friend_id
-  ).latestMessage.message_content;
+  );
+
+  if (friend) latestMessage.value = friend.latestMessage.message_content;
 };
 
 setLatestMessage();
 
 onMounted(() => {
   socket.on("generatePrivateMessage", (messageObject) => {
-    userStore.friends.find(
+    const friend = userStore.friends.find(
       (friend) => friend.sessionID === messageObject.sessionID
-    ).latestMessage.message_content = messageObject.content;
+    );
+
+    if (friend) latestMessage.value = messageObject.content;
 
     setLatestMessage();
   });

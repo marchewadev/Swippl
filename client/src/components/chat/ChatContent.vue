@@ -2,7 +2,7 @@
   <div class="chat-container h-full grid">
     <div
       class="messages-wrapper px-6 pt-6 overflow-y-scroll grid grid-cols-2 auto-rows-min"
-      v-infinite-scroll="loadMoreMessages || (() => {})"
+      ref="infiniteScrollWrapper"
     >
       <message class="message-admin" v-if="isChatRouletteRoute">
         Pamiętaj, aby zachowywać się w sposób stosowny! Możesz w szybki sposób
@@ -58,12 +58,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch, PropType } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useInfiniteScroll } from "@vueuse/core";
 import { useChatStore } from "@/stores/ChatStore";
-import { vInfiniteScroll } from "@vueuse/components";
+import { LoadOldMessages } from "@/interfaces/chat";
 import Message from "@/components/chat/Message.vue";
+
+const route = useRoute();
+const chatStore = useChatStore();
+
+const { roomUsers } = storeToRefs(chatStore);
+const newMessage = ref("");
+const messageTextarea = ref<HTMLTextAreaElement | null>(null);
+const infiniteScrollWrapper = ref<HTMLElement | null>(null);
 
 const props = defineProps({
   sendMessage: {
@@ -71,25 +80,14 @@ const props = defineProps({
     required: true,
   },
 
-  loadMoreMessages: {
-    type: Array,
+  loadOldMessages: {
+    type: Object as PropType<LoadOldMessages>,
     required: false,
   },
 });
 
-const route = useRoute();
-
-const newMessage = ref("");
-const messageTextarea = ref(null);
-
-const chatStore = useChatStore();
-
-const { roomUsers } = storeToRefs(chatStore);
-
-const isChatRouletteRoute = computed(() => route.name === "Chat");
-
 const focusTextarea = () => {
-  messageTextarea.value.focus();
+  messageTextarea?.value?.focus();
 };
 
 const sendMessage = () => {
@@ -97,40 +95,60 @@ const sendMessage = () => {
   newMessage.value = "";
 };
 
+const isChatRouletteRoute = computed(() => route.name === "Chat");
+
 onMounted(() => {
   focusTextarea();
 
   const messagesWrapper = document.querySelector(".messages-wrapper");
-  messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
 
-  // Automatically scroll to the bottom of the messages container
-  watch(
-    () => chatStore.messages,
-    async (newMessages, oldMessages) => {
-      await nextTick();
-      messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
-    }
-  );
-
-  // Keep the scroll position when old messages are loaded
-  let oldScrollTop = 0;
-  let oldScrollHeight = 0;
-
-  watch(
-    () => chatStore.areMessagesLoading,
-    (newValue, oldValue) => {
-      if (newValue) {
-        oldScrollTop = messagesWrapper.scrollTop;
-        oldScrollHeight = messagesWrapper.scrollHeight;
-      } else if (!newValue && oldValue) {
-        nextTick().then(() => {
-          const newScrollHeight = messagesWrapper.scrollHeight;
-          messagesWrapper.scrollTop =
-            oldScrollTop + (newScrollHeight - oldScrollHeight);
-        });
+  if (props.loadOldMessages) {
+    useInfiniteScroll(
+      infiniteScrollWrapper,
+      () => {
+        props.loadOldMessages?.loadMoreMessagesFn();
+      },
+      {
+        direction: props.loadOldMessages?.options.direction,
+        interval: props.loadOldMessages?.options.interval,
+        distance: props.loadOldMessages?.options.distance,
+        canLoadMore: props.loadOldMessages?.options.canLoadMore,
       }
-    }
-  );
+    );
+  }
+
+  if (messagesWrapper) {
+    messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+
+    // Automatically scroll to the bottom of the messages container
+    watch(
+      () => chatStore.messages,
+      async () => {
+        await nextTick();
+        messagesWrapper.scrollTop = messagesWrapper.scrollHeight;
+      }
+    );
+
+    // Keep the scroll position when old messages are loaded
+    let oldScrollTop = 0;
+    let oldScrollHeight = 0;
+
+    watch(
+      () => chatStore.areMessagesLoading,
+      (newValue, oldValue) => {
+        if (newValue) {
+          oldScrollTop = messagesWrapper.scrollTop;
+          oldScrollHeight = messagesWrapper.scrollHeight;
+        } else if (!newValue && oldValue) {
+          nextTick().then(() => {
+            const newScrollHeight = messagesWrapper.scrollHeight;
+            messagesWrapper.scrollTop =
+              oldScrollTop + (newScrollHeight - oldScrollHeight);
+          });
+        }
+      }
+    );
+  }
 });
 </script>
 

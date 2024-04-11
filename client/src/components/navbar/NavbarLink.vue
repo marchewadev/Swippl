@@ -16,13 +16,15 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
 import { useRoute } from "vue-router";
+import { Path } from "@/interfaces/misc";
 
 const route = useRoute();
 
 defineProps({
   path: {
-    type: Object,
+    type: Object as PropType<Path>,
     required: true,
   },
 
@@ -33,8 +35,11 @@ defineProps({
 });
 
 const emit = defineEmits(["click"]);
+const handleClick = () => {
+  emit("click");
+};
 
-const setActiveClass = ({ path }) => {
+const setActiveClass = ({ path }: Path) => {
   if (path === route.path) {
     if (path.includes("delete-account")) {
       return "!bg-red-700 !text-gray-50";
@@ -42,9 +47,5 @@ const setActiveClass = ({ path }) => {
     return "!bg-primary !text-gray-50";
   }
   return "";
-};
-
-const handleClick = () => {
-  emit("click");
 };
 </script>

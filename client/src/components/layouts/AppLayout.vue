@@ -63,9 +63,10 @@ import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/UserStore";
 import { useChatStore } from "@/stores/ChatStore";
 import { useStrangerProfileStore } from "@/stores/StrangerProfileStore";
-import MainNavbar from "../navbar/MainNavbar.vue";
-import StrangerProfile from "../chat/StrangerProfile.vue";
-import SidebarFriend from "../chat/SidebarFriend.vue";
+import { setActiveFriend } from "@/utils/setActiveFriend";
+import MainNavbar from "@/components/navbar/MainNavbar.vue";
+import StrangerProfile from "@/components/chat/StrangerProfile.vue";
+import SidebarFriend from "@/components/chat/SidebarFriend.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -90,10 +91,6 @@ onMounted(() => {
 
   chatStore.onFriendRemoved(router);
 });
-
-const setActiveFriend = (id) => {
-  chatStore.activeFriendID = id;
-};
 </script>
 
 <style scoped>

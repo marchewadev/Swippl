@@ -31,8 +31,8 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/UserStore";
 import { useSettingsStore } from "@/stores/SettingsStore";
-import BaseNavbar from "./BaseNavbar.vue";
-import NavbarLink from "./NavbarLink.vue";
+import BaseNavbar from "@/components/navbar/BaseNavbar.vue";
+import NavbarLink from "@/components/navbar/NavbarLink.vue";
 
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();

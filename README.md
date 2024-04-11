@@ -15,14 +15,17 @@ npm install
 ```
 
 ## Before usage
+
 Before using the application, ensure that nodemon and PostgreSQL are installed on your machine. Then, create and configure .env files inside the client and server folders as outlined below:
 
 ### Client
+
 ```
 VITE_BACKEND_SERVER=localhost:3000
 ```
 
 ### Server
+
 Ensure you've created the database beforehand. Then, populate the .env file with your database credentials:
 
 ```
@@ -34,6 +37,7 @@ DB_PORT=your_db_data
 ```
 
 ## Usage
+
 To start using the application, execute the following commands:
 
 ```bash

@@ -1,10 +1,21 @@
 import { Ref } from "vue";
+import { GenderSearch } from "@/types/user";
 
 interface BaseProfileData {
   name: string;
   gender: string;
   city: string;
   avatar: string;
+}
+
+interface Friend {
+  id: number;
+  avatar: string;
+  name: string;
+  sessionID: number;
+  latestMessage: {
+    message_content: string;
+  };
 }
 
 export interface AnonData {
@@ -24,10 +35,10 @@ export interface StrangerData extends BaseProfileData {
 export interface UserState {
   user: UserData;
   token: Ref<string | null>;
-  friends: [];
+  friends: Friend[];
   searchCriteria: Ref<{
     ageRangeSearch: [number, number];
-    genderSearch: string;
+    genderSearch: GenderSearch;
   }>;
   areCriteriaArbitrary: boolean;
 }
